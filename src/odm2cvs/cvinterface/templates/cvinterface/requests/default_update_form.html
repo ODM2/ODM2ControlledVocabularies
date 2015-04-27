@@ -1,0 +1,50 @@
+{% extends 'cvinterface/base.html' %}
+{% load widget_tweaks %}
+
+{% block body %}
+    <section class="request-update">
+        <header>
+            <h2>
+                {{ object.term }} ({{ object.status }})<span class="vocabulary-type">{{ request_verbose }}</span>
+                <span class="parent-link">
+                    <a href="{% url request_name %}" class="tooltip" data-tip="Navigate to the {{ request_verbose }}s list.">⤴</a>
+                </span>
+            </h2>
+            <h4 class="request-info-box">
+                <span class="request-info">Requested on {{ object.date_submitted }}</span>
+                <span class="request-info">{{ object.status }} since {{ object.date_status_changed }}</span>
+                {% if object.original_request_id %}
+                    <span class="request-info">
+                        <a href="{% url update_url object.original_request_id %}">Original Request</a>
+                    </span>
+                {% endif %}
+            </h4>
+        </header>
+
+        <form class="column three-columns data-view" action="" method="post">{% csrf_token %}
+            {% for field in form %}
+
+                <div class="list-item column three-columns">
+                    <div class="form-label-item"><h3><label for="{{ field.id_for_label }}">{{ field.label }}</label></h3></div>
+                    <div class="form-input-item">
+                        {% if field.name in read_only or all_disabled %}
+                                {{ field.value|default:"-" }}
+                            {% else %}
+                                {{ field|add_class:"form-input" }}
+                            {% endif %}
+                    </div>
+                    <div class="form-errors-item">{{ field.errors }}</div>
+                </div>
+            {% endfor %}
+
+            <div class="clear"></div>
+            <div class="form-buttons">
+                {% if object.status == 'Pending' %}
+                    <input name="request_accept" class="button white" type="submit" value="Accept Request" />
+                    <input name="request_reject" class="button white" type="submit" value="Reject Request" />
+                {% endif %}
+            </div>
+        </form>
+        <div class="clear"></div>
+    </section>
+{% endblock %}

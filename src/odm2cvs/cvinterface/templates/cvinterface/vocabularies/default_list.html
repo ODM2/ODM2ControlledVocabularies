@@ -1,0 +1,45 @@
+{% extends 'cvinterface/index.html' %}
+
+{% block body %}
+    <section class="concepts-table">
+        <header>
+            <div class="vocabulary-links">
+                <a id="btnAddNew" href="{% url create_url %}" class="button white">New</a>
+                <a id="btnSKOSVocab" target="_blank" href="{% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %}?format=skos" class="button white">View in SKOS</a>
+                <a id="btnSKOS" download="{{ vocabulary }}.rdf" href="{% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %}?format=skos" class="button white">Download Vocabulary (SKOS)</a>
+                <a id="btnSKOS" download="{{ vocabulary }}.csv" href="{% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %}?format=csv" class="button white">Download Vocabulary (CSV)</a>
+            </div>
+            <h2>
+                {{ vocabulary_verbose }} Vocabulary Concepts
+                <span class="parent-link">
+                    <a href="{% url 'home' %}" class="tooltip" data-tip="Navigate to the home page.">⤴</a>
+                </span>
+            </h2>
+            <h4>{{ vocabulary_def }}</h4>
+
+        </header>
+        <div class="column three-columns">
+            {% block data_table %}
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Term</th>
+                        <th>Name</th>
+                        <th>Definition</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for concept in object_list %}
+                            <tr>
+                                <td><a href="{% url detail_url concept.term %}">{{ concept.term }}</a></td>
+                                <td>{{ concept.name }}</td>
+                                <td>{{ concept.definition }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endblock %}
+        </div>
+        <div class="clear"></div>
+    </section>
+{% endblock %}

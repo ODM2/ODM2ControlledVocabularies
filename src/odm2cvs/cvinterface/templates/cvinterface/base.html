@@ -1,0 +1,53 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>ODM2 Controlled Vocabularies</title>
+        <link rel="stylesheet" href="{% static 'css/reset.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    </head>
+    <body>
+        <div id="top-bar" class="fix-width">
+            <a href="{% url "home" %}" class="brand-name">ODM2 Controlled Vocabularies</a>
+            <span id="login-info">
+                {% if user.is_authenticated %}
+                    <span class="user-name">{{ user.get_full_name }}</span> <a href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                {% endif %}
+            </span>
+        </div>
+
+
+        <div id="main" class="fix-width">
+            {% if messages %}
+                <div class="messages-container">
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                            {{ message }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            <div id="content">
+                {% block body %}
+                {% endblock %}
+            </div>
+        </div>
+
+        <footer class="fix-width">
+            <hr>
+            <p>
+                This material is based upon work supported by the National Science Foundation under Grants 1224638 and 1332257.
+                Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s)
+                and do not necessarily reflect the views of the National Science Foundation.
+            </p>
+        </footer>
+    </body>
+</html>
+

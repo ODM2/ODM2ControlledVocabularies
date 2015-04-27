@@ -1,0 +1,41 @@
+{% extends 'cvinterface/base.html' %}
+{% load widget_tweaks %}
+
+{% block body %}
+    <section class="request-create">
+        <header>
+            <h2>
+                New Request<span class="vocabulary-type">{{ vocabulary_verbose }}</span>
+                <span class="parent-link">
+                    {% if term|length_is:0 %}
+                        <a href="{% url vocabulary %}" class="tooltip" data-tip="Navigate to the {{ vocabulary_verbose }} vocabulary list.">⤴</a>
+                    {% else %}
+                        <a href="{% url vocabulary|add:'_detail' term %}" class="tooltip" data-tip="Navigate to the {{ term }} term details.">⤴</a>
+                    {% endif %}
+                </span>
+            </h2>
+            <h4>Make a request to add or modify a term.</h4>
+        </header>
+        
+        <div class="row">
+            <form class="column" action="" method="post">{% csrf_token %}
+                {% for field in form %}
+                    <div class="column help-text">
+                        <h4><label for="{{ field.id_for_label }}">{{ field.help_text }}</label></h4>
+                    </div>   
+                    <div class="list-item" style="clear: both">
+                        <div class="form-label-item col-lg-3"><h3><label for="{{ field.id_for_label }}">{{ field.label }}</label></h3></div>
+                        <div class="form-input-item col-lg-9">{{ field|add_class:"form-input" }}</div>
+                        <div class="form-errors-item">{{ field.errors }}</div>
+                    </div>
+                {% endfor %}
+
+                <div class="clear"></div>
+                <div class="form-buttons">
+                    <input class="button white" type="submit" value="Submit Request">
+                </div>
+            </form>
+        </div>
+        <div class="clear"></div>
+    </section>
+{% endblock %}
