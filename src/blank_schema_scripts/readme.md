@@ -1,1 +1,0 @@
-This folder contains SQL scripts for generating blank ODM2 schemas within Microsoft SQL Server, PostgreSQL, and MySQL.
