@@ -1,6 +1,0 @@
-export ODM2CVS_SECRET_KEY='thisisthenewkey'
-export ODM2CVS_DATABASE_HOST='localhost'
-export ODM2CVS_DATABASE_USER='django'
-export ODM2CVS_DATABASE_PASSWORD='django4pp!'
-export ODM2CVS_STATIC_ROOT='/var/www/static/'
-export DJANGO_SETTINGS_MODULE=odm2cvs.settings.apache_sandbox
