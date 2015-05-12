@@ -8,7 +8,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
-import logging
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
@@ -72,14 +71,6 @@ DATABASES = {
         'PORT': '3306',
     },
     'control_vocabularies': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'odm2cvs',
-        'USER': DATABASE_USER,
-        'PASSWORD': DATABASE_PASSWORD,
-        'HOST': DATABASE_HOST,
-        'PORT': '3306',
-    },
-    'control_vocabularies_new': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'odm2cvs',
         'USER': DATABASE_USER,
