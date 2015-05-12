@@ -25,10 +25,13 @@ p {
     padding: 45px 30px;
 }
 
-.user-name {
+.right-border {
     padding-right: 5px;
-    color: #bebebe;
     border-right: 1px solid rgba(100, 100, 100, .4);
+}
+
+.user-name {
+    color: #bebebe;
 }
 
 .fix-width {
