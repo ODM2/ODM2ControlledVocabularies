@@ -17,9 +17,8 @@ class Migration(migrations.Migration):
                 ('field_name', models.CharField(max_length=255, db_column=b'fieldName')),
             ],
             options={
-                'db_table': 'FieldsRelations',
+                'db_table': 'fieldsrelations',
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Namespace',
@@ -28,9 +27,8 @@ class Migration(migrations.Migration):
                 ('reference', models.URLField(max_length=255)),
             ],
             options={
-                'db_table': 'Namespaces',
+                'db_table': 'namespaces',
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Node',
@@ -40,9 +38,8 @@ class Migration(migrations.Migration):
                 ('namespace', models.ForeignKey(to='rdfserializer.Namespace')),
             ],
             options={
-                'db_table': 'Nodes',
+                'db_table': 'nodes',
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Scheme',
@@ -54,14 +51,12 @@ class Migration(migrations.Migration):
                 ('uri', models.URLField()),
             ],
             options={
-                'db_table': 'Schemes',
+                'db_table': 'schemes',
             },
-            bases=(models.Model,),
         ),
         migrations.AddField(
             model_name='fieldrelation',
             name='node',
             field=models.ForeignKey(to='rdfserializer.Node', db_column=b'nodeId'),
-            preserve_default=True,
         ),
     ]
