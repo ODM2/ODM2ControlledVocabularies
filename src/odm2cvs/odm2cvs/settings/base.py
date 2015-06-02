@@ -6,23 +6,29 @@ https://docs.djangoproject.com/en/1.7/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
+
+To setup the settings json file:
+    1. rename settings_template.json to settings.json
+    2. then write all the necessary data in it
+    3. ???
+    4. Profit!
 """
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import json
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 try:
-    SECRET_KEY = os.environ['ODM2CVS_SECRET_KEY']
-    DATABASE_HOST = os.environ['ODM2CVS_DATABASE_HOST']
-    DATABASE_USER = os.environ['ODM2CVS_DATABASE_USER']
-    DATABASE_PASSWORD = os.environ['ODM2CVS_DATABASE_PASSWORD']
-except KeyError:
-    print "Please set the required environment variables ODM2CVS_SECRET_KEY, ODM2CVS_DATABASE_HOST, " \
-          "ODM2CVS_DATABASE_USER, ODM2CVS_DATABASE_PASSWORD"
-    exit(True)
+    with open(os.path.join(BASE_DIR, 'settings', 'settings.json')) as data_file:
+        data = json.load(data_file)
+except IOError:
+    print("You need to setup the settings data file (see instructions in base.py file.)")
 
+
+SECRET_KEY = data["secret_key"]
 
 ALLOWED_HOSTS = []
 
@@ -54,31 +60,21 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'odm2cvs.urls'
-
-WSGI_APPLICATION = 'odm2cvs.wsgi.wsgi.application'
-
+WSGI_APPLICATION = 'odm2cvs.wsgi.application'
 
 
-# Database
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'odm2cvsconfig',
-        'USER': DATABASE_USER,
-        'PASSWORD': DATABASE_PASSWORD,
-        'HOST': DATABASE_HOST,
-        'PORT': '3306',
-    },
-    'control_vocabularies': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'odm2cvs',
-        'USER': DATABASE_USER,
-        'PASSWORD': DATABASE_PASSWORD,
-        'HOST': DATABASE_HOST,
-        'PORT': '3306',
+# Databases
+DATABASES = {}
+for database in data['databases']:
+    DATABASES[database['name']] = {
+        'ENGINE': database['engine'],
+        'NAME': database['schema'],
+        'USER': database['user'],
+        'PASSWORD': database['password'],
+        'HOST': database['host'],
+        'PORT': database['port']
     }
-}
+
 
 # Internationalization
 
