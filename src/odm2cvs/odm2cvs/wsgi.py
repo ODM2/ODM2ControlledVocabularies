@@ -10,7 +10,12 @@ https://docs.djangoproject.com/en/1.7/howto/deployment/wsgi/
 """
 
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "odm2cvs.settings")
+import sys
+
+from odm2cvs.settings.base import BASE_DIR
+
+PROJECT_BASE = os.path.join(BASE_DIR, os.pardir)
+sys.path.append(PROJECT_BASE)
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
