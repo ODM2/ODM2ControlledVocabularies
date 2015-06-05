@@ -13,8 +13,6 @@ request_list_template = 'cvinterface/requests/default_list.html'
 request_create_template = 'cvinterface/requests/default_form.html'
 request_update_template = 'cvinterface/requests/default_update_form.html'
 
-
-
 vocabularies = {
     # optional keys:
     # list_view, detail_view, list_template, detail_template
@@ -34,117 +32,117 @@ vocabularies = {
         'definition': 'A vocabulary for describing the calculated statistic associated with recorded observations. The aggregation statistic is calculated over the time aggregation interval associated with the recorded observation. ',
         'model': AggregationStatistic,
     },
-     'annotationtype': {
+    'annotationtype': {
         'name': AnnotationType._meta.verbose_name,
         'definition': 'A vocabulary for describing the type of annotation. In ODM2 the annotation type determines whether the annotation forms a grouping of related entities (e.g., a group of sites or variables) or an annotation of a particular entity (e.g., a comment about an individual Site or data value). ',
         'model': AnnotationType,
     },
-     'censorcode': {
+    'censorcode': {
         'name': CensorCode._meta.verbose_name,
         'definition': 'A vocabulary for describing whether a data value was determined or whether the actual value is unknown due to right or left censoring.',
         'model': CensorCode,
     },
-     'datasettype': {
+    'datasettype': {
         'name': DatasetType._meta.verbose_name,
         'definition': 'A vocabulary for describing types of Datasets in ODM2. Datasets are logical groupings of Results.',
         'model': DatasetType,
     },
-     'directivetype': {
+    'directivetype': {
         'name': DirectiveType._meta.verbose_name,
         'definition': 'A vocabulary for describing types of directives under which observations are made. Examples include projects, monitoring programs, campaigns, etc.',
         'model': DirectiveType,
     },
-     'elevationdatum': {
+    'elevationdatum': {
         'name': ElevationDatum._meta.verbose_name,
         'definition': 'A vocabulary for describing vertical datums. Vertical datums are used in ODM2 to specify the origin for elevations assocated with SamplingFeatures.',
         'model': ElevationDatum,
     },
-     'equipmenttype': {
+    'equipmenttype': {
         'name': EquipmentType._meta.verbose_name,
         'definition': 'A vocabulary for describing types of equipment used for making observations. Examples include sensors, batteries, radios, dataloggers, samplers, etc.',
         'model': EquipmentType,
     },
-     'organizationtype': {
+    'organizationtype': {
         'name': OrganizationType._meta.verbose_name,
         'definition': 'A vocabulary for describing types of Organizations. In ODM2, People may or may not be affiliated with an Organization. People can also be affiliated with more than one Organization.',
         'model': OrganizationType,
     },
-     'propertydatatype': {
+    'propertydatatype': {
         'name': PropertyDataType._meta.verbose_name,
         'definition': 'A vocabulary for describing the data type for an extension property in ODM2.  Extension properties can be added to many of the entities in ODM2 (e.g., Sites, Variables, etc.). The values of these extension properties must be of one of the listed primitive data types.',
         'model': PropertyDataType,
     },
-     'qualitycode': {
+    'qualitycode': {
         'name': QualityCode._meta.verbose_name,
         'definition': 'A vocabulary for describing the quality of the observation.',
         'model': QualityCode,
     },
-     'referencematerialmedium': {
+    'referencematerialmedium': {
         'name': ReferenceMaterialMedium._meta.verbose_name,
         'definition': 'A vocabulary for describing the physical medium of a reference material.',
         'model': ReferenceMaterialMedium,
     },
-     'resulttype': {
+    'resulttype': {
         'name': ResultType._meta.verbose_name,
         'definition': 'A vocabulary for describing the type of the Result. In ODM2 Results are separated from, but related to their data values. Each ResultType has a set of related tables for storing the data values for any result of that type.',
         'model': ResultType,
     },
-     'sampledmedium': {
+    'sampledmedium': {
         'name': SampledMedium._meta.verbose_name,
         'definition': 'A vocabulary for describing the physical medium within which an observation was made. For sensors this will be the physical medium in which the sensor is emplaced to make measurements. For Specimens, this will be the physical medium that was sampled.',
         'model': SampledMedium,
     },
-     'samplingfeaturegeotype': {
+    'samplingfeaturegeotype': {
         'name': SamplingFeatureGeotype._meta.verbose_name,
         'definition': 'A vocabulary for describing the geospatial feature type associated with a SamplingFeature. For example, Site SamplingFeatures are represented as points. In ODM2, each SamplingFeature may have only one geospatial type, but a geospatial types may range from simple points to a complex polygons or even three dimensional volumes.',
         'model': SamplingFeatureGeotype,
     },
-     'samplingfeaturetype': {
+    'samplingfeaturetype': {
         'name': SamplingFeatureType._meta.verbose_name,
         'definition': 'A vocabulary for describing the type of SamplingFeature. Many different SamplingFeature types can be represented in ODM2. SamplingFeatures of type Site and Specimen will be the most common, but many different types of varying levels of complexity can be used.',
         'model': SamplingFeatureType,
     },
-     'sitetype': {
+    'sitetype': {
         'name': SiteType._meta.verbose_name,
         'definition': 'A vocabulary for describing the type of a data collection Site. To some extent, these types represent the ultimate feature of interest that the site was established to measure. For example, a Stream Site was established to measure properties of a Stream.',
         'model': SiteType,
     },
-     'spatialoffsettype': {
+    'spatialoffsettype': {
         'name': SpatialOffsetType._meta.verbose_name,
         'definition': 'A vocabulary for describing the type of SpatialOffset that exists between two SamplingFeatures.',
         'model': SpatialOffsetType,
     },
-     'speciation': {
+    'speciation': {
         'name': Speciation._meta.verbose_name,
-        'definition': 'A vocabulary for describing the type of SpatialOffset that exists between two SamplingFeatures.',
+        'definition': 'A vocabulary for describing the speciation in which a measured variable is expressed.',
         'model': Speciation,
     },
-     'specimenmedium': {
+    'specimenmedium': {
         'name': SpecimenMedium._meta.verbose_name,
         'definition': 'A vocabulary for describing the physical medium of a physical Specimen.',
         'model': SpecimenMedium,
     },
-     'specimentype': {
+    'specimentype': {
         'name': SpecimenType._meta.verbose_name,
         'definition': 'A vocabulary for describing the type of a physical Specimen.',
         'model': SpecimenType,
     },
-     'status': {
+    'status': {
         'name': Status._meta.verbose_name,
         'definition': 'A vocabulary for describing the data collection status of a Result. In ODM2 the StatusCV can be used to specify whether data collection is planned, ongoing, or complete.',
         'model': Status,
     },
-     'taxonomicclassifiertype': {
+    'taxonomicclassifiertype': {
         'name': TaxonomicClassifierType._meta.verbose_name,
         'definition': 'A vocabulary for describing types of taxonomies from which descriptive terms used in an ODM2 database have been drawn. Taxonomic classifiers provide a way to classify Results and Specimens according to terms from a formal taxonomy.',
         'model': TaxonomicClassifierType,
     },
-     'variablename': {
+    'variablename': {
         'name': VariableName._meta.verbose_name,
         'definition': 'A vocabulary for describing the name of Variables.',
         'model': VariableName,
     },
-     'variabletype': {
+    'variabletype': {
         'name': VariableType._meta.verbose_name,
         'definition': 'A vocabulary for describing the type of Variables. VariableTypes provide a way to group Variables into categories for easier querying and filtering.',
         'model': VariableType,

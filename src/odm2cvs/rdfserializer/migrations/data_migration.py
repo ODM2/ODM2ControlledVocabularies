@@ -192,8 +192,7 @@ def forwards(apps, schema_editor):
                uri='http://vocabulary.odm2.org/spatialoffsettype'
                ),
         scheme(name='speciation', title='ODM2 Speciation Controlled Vocabulary', creator='ODM2 Working Group',
-               description='A vocabulary for describing the type of Spatial Offset '
-                           'that exists between two Sampling Features.',
+               description='A vocabulary for describing the speciation in which a measured variable is expressed.',
                uri='http://vocabulary.odm2.org/speciation'
                ),
         scheme(name='specimenMedium', title='ODM2 Specimen Medium Controlled Vocabulary', creator='ODM2 Working Group',
