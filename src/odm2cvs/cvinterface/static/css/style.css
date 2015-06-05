@@ -191,6 +191,15 @@ footer.fix-width hr {
     line-height: 1.55em;
 }
 
+.whole-spaced-title {
+    width: auto;
+}
+
+.whole-spaced-description {
+    clear: left;
+    width:auto;
+}
+
 table, tbody, tfoot, thead, tr, th, td {
     background: none;
     margin: 0;
