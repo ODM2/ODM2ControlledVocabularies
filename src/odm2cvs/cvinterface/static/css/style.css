@@ -200,6 +200,12 @@ footer.fix-width hr {
     width:auto;
 }
 
+.no-results-message {
+    font-size: .95em;
+    color: #555;
+    padding: 5px;
+}
+
 table, tbody, tfoot, thead, tr, th, td {
     background: none;
     margin: 0;

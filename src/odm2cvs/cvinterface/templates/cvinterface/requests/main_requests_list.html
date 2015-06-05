@@ -16,30 +16,35 @@
             <header>
                 <h3>Pending Requests</h3>
             </header>
-            {% block pending %}
-                <table class="table table-striped table-hover">
-                    <thead>
-                    <tr>
-                        <th>Term</th>
-                        <th>Definition</th>
-                        <th>Request Date</th>
-                        <th>Your Name</th>
-                        <th>Request Type</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for request, request_type, update_url in pending_requests %}
+            {% if not pending_requests %}
+                <p class="no-results-message">There are no pending requests.</p>
+            {% else %}
+                {% block pending %}
+                    <table class="table table-striped table-hover">
+                        <thead>
                         <tr>
-                            <td><a href="{% url update_url request.request_id %}">{{ request.term }}</a></td>
-                            <td>{{ request.definition }}</td>
-                            <td>{{ request.date_submitted }}</td>
-                            <td>{{ request.submitter_name }}</td>
-                            <td>{{ request_type }}</td>
+                            <th>Term</th>
+                            <th>Definition</th>
+                            <th>Request Date</th>
+                            <th>Your Name</th>
+                            <th>Request Type</th>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% endblock %}
+                        </thead>
+                        <tbody>
+                        {% for request, request_type, update_url in pending_requests %}
+                            <tr>
+                                <td><a href="{% url update_url request.request_id %}">{{ request.term }}</a></td>
+                                <td>{{ request.definition }}</td>
+                                <td>{{ request.date_submitted }}</td>
+                                <td>{{ request.submitter_name }}</td>
+                                <td>{{ request_type }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endblock %}
+            {% endif %}
+
             <div class="clear"></div>
         </section>
 

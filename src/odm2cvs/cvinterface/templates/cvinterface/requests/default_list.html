@@ -11,30 +11,34 @@
             </h2>
         </header>
         <div class="column three-columns">
-            {% block data_table %}
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Term</th>
-                        <th>Definition</th>
-                        <th>Request Date</th>
-                        <th>Status</th>
-                        <th>Submitter</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for request in object_list %}
+            {% if not object_list %}
+                <p class="no-results-message">There are no requests for this vocabulary.</p>
+            {% else %}
+                {% block data_table %}
+                    <table>
+                        <thead>
                         <tr>
-                            <td><a href="{% url update_url request.request_id %}">{{ request.term }}</a></td>
-                            <td>{{ request.definition }}</td>
-                            <td>{{ request.date_submitted }}</td>
-                            <td>{{ request.status }}</td>
-                            <td>{{ request.submitter_name }}</td>
+                            <th>Term</th>
+                            <th>Definition</th>
+                            <th>Request Date</th>
+                            <th>Status</th>
+                            <th>Submitter</th>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% endblock %}
+                        </thead>
+                        <tbody>
+                        {% for request in object_list %}
+                            <tr>
+                                <td><a href="{% url update_url request.request_id %}">{{ request.term }}</a></td>
+                                <td>{{ request.definition }}</td>
+                                <td>{{ request.date_submitted }}</td>
+                                <td>{{ request.status }}</td>
+                                <td>{{ request.submitter_name }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endblock %}
+            {% endif %}
         </div>
         <div class="clear"></div>
     </section>
