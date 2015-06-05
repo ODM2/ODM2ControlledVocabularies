@@ -9,6 +9,7 @@
                     <a href="{% url 'requests_list' %}" class="tooltip" data-tip="Navigate to the requests page.">⤴</a>
                 </span>
             </h2>
+            <h4>Users' requests for adding or modifying {{ request_verbose|cut:" Request" }} Controlled Vocabularies.</h4>
         </header>
         <div class="column three-columns">
             {% if not object_list %}
