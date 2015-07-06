@@ -77,20 +77,10 @@ vocabularies = {
         'definition': 'A vocabulary for describing the quality of the observation.',
         'model': QualityCode,
     },
-    'referencematerialmedium': {
-        'name': ReferenceMaterialMedium._meta.verbose_name,
-        'definition': 'A vocabulary for describing the physical medium of a reference material.',
-        'model': ReferenceMaterialMedium,
-    },
     'resulttype': {
         'name': ResultType._meta.verbose_name,
         'definition': 'A vocabulary for describing the type of the Result. In ODM2 Results are separated from, but related to their data values. Each ResultType has a set of related tables for storing the data values for any result of that type.',
         'model': ResultType,
-    },
-    'sampledmedium': {
-        'name': SampledMedium._meta.verbose_name,
-        'definition': 'A vocabulary for describing the physical medium within which an observation was made. For sensors this will be the physical medium in which the sensor is emplaced to make measurements. For Specimens, this will be the physical medium that was sampled.',
-        'model': SampledMedium,
     },
     'samplingfeaturegeotype': {
         'name': SamplingFeatureGeotype._meta.verbose_name,
@@ -116,11 +106,6 @@ vocabularies = {
         'name': Speciation._meta.verbose_name,
         'definition': 'A vocabulary for describing the speciation in which a measured variable is expressed.',
         'model': Speciation,
-    },
-    'specimenmedium': {
-        'name': SpecimenMedium._meta.verbose_name,
-        'definition': 'A vocabulary for describing the physical medium of a physical Specimen.',
-        'model': SpecimenMedium,
     },
     'specimentype': {
         'name': SpecimenType._meta.verbose_name,
@@ -156,6 +141,16 @@ vocabularies = {
         'name': RelationshipType._meta.verbose_name,
         'definition': 'A vocabulary for describing the type of relationship between two entities in an ODM2 database. Examples include related Actions, Results, datasets, etc. The RelationshipType describes the nature of the relationship between the two entity instances (e.g., a Specimen SamplingFeature "was collected at" a Site SamplingFeature).',
         'model': RelationshipType,
+    },
+    'medium': {
+        'name': Medium._meta.verbose_name,
+        'definition': 'A vocabulary for describing the physical medium of a specimen, reference material, or sampled environment.',
+        'model': Medium,
+    },
+    'unitstype': {
+        'name': UnitsType._meta.verbose_name,
+        'definition': 'A vocabulary for describing the type of the Unit or the more general quantity that the Unit represents.',
+        'model': UnitsType,
     },
 }
 
@@ -241,23 +236,11 @@ requests = {
         'name': QualityCodeRequest._meta.verbose_name,
         'model': QualityCodeRequest,
     },
-    'referencematerialmediumrequest': {
-        'vocabulary': 'referencematerialmedium',
-        'vocabulary_model': ReferenceMaterialMedium,
-        'name': ReferenceMaterialMediumRequest._meta.verbose_name,
-        'model': ReferenceMaterialMediumRequest,
-    },
     'resulttyperequest': {
         'vocabulary': 'resulttype',
         'vocabulary_model': ResultType,
         'name': ResultTypeRequest._meta.verbose_name,
         'model': ResultTypeRequest,
-    },
-    'sampledmediumrequest': {
-        'vocabulary': 'sampledmedium',
-        'vocabulary_model': SampledMedium,
-        'name': SampledMediumRequest._meta.verbose_name,
-        'model': SampledMediumRequest,
     },
     'samplingfeaturegeotyperequest': {
         'vocabulary': 'samplingfeaturegeotype',
@@ -288,12 +271,6 @@ requests = {
         'vocabulary_model': Speciation,
         'name': SpeciationRequest._meta.verbose_name,
         'model': SpeciationRequest,
-    },
-    'specimenmediumrequest': {
-        'vocabulary': 'specimenmedium',
-        'vocabulary_model': SpecimenMedium,
-        'name': SpecimenMediumRequest._meta.verbose_name,
-        'model': SpecimenMediumRequest,
     },
     'specimentyperequest': {
         'vocabulary': 'specimentype',
@@ -336,5 +313,17 @@ requests = {
         'vocabulary_model': RelationshipType,
         'name': RelationshipTypeRequest._meta.verbose_name,
         'model': RelationshipTypeRequest,
+    },
+    'mediumrequest': {
+        'vocabulary': 'medium',
+        'vocabulary_model': Medium,
+        'name': MediumRequest._meta.verbose_name,
+        'model': MediumRequest,
+    },
+    'unitstyperequest': {
+        'vocabulary': 'unitstype',
+        'vocabulary_model': UnitsType,
+        'name': UnitsTypeRequest._meta.verbose_name,
+        'model': UnitsTypeRequest,
     },
 }

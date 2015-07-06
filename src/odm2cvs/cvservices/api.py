@@ -8,12 +8,27 @@ from models import ActionType, ActionTypeRequest, MethodType, MethodTypeRequest,
     AggregationStatisticRequest, AnnotationType, AnnotationTypeRequest, CensorCode, \
     CensorCodeRequest, DatasetType, DatasetTypeRequest, DirectiveType, DirectiveTypeRequest, \
     ElevationDatum, ElevationDatumRequest, EquipmentType, EquipmentTypeRequest, PropertyDataType, PropertyDataTypeRequest, \
-    QualityCode, QualityCodeRequest, ReferenceMaterialMedium, ReferenceMaterialMediumRequest, \
-    ResultType, ResultTypeRequest, SampledMedium, SampledMediumRequest, SpatialOffsetType, \
+    QualityCode, QualityCodeRequest, Medium, MediumRequest,\
+    ResultType, ResultTypeRequest, SpatialOffsetType, UnitsType, UnitsTypeRequest, \
     SpatialOffsetTypeRequest, Speciation, SpeciationRequest, Status, StatusRequest, \
     TaxonomicClassifierType, TaxonomicClassifierTypeRequest, VariableName, VariableNameRequest, \
-    VariableType, VariableTypeRequest, SpecimenMedium, SpecimenMediumRequest, SpecimenType, \
+    VariableType, VariableTypeRequest, SpecimenType, \
     SpecimenTypeRequest, DataQualityType, DataQualityTypeRequest, RelationshipType, RelationshipTypeRequest
+
+class UnitsTypeResource(ModelRdfResource):
+    scheme = 'unitsType'
+
+    class Meta:
+        queryset = UnitsType.objects.using('control_vocabularies').all()
+        resource_name = 'unitstype'
+        max_limit = 0
+        serializer = RdfSerializer()
+
+class UnitsTypeRequestResource(ModelResource):
+    class Meta:
+        queryset = UnitsTypeRequest.objects.using('control_vocabularies').all()
+        resource_name = 'unitstyperequest'
+        max_limit = 0
 
 
 class ActionTypeResource(ModelRdfResource):
@@ -269,23 +284,6 @@ class QualityCodeRequestResource(ModelResource):
         max_limit = 0
 
 
-class ReferenceMaterialMediumResource(ModelRdfResource):
-    scheme = 'referenceMaterialMedium'
-
-    class Meta:
-        queryset = ReferenceMaterialMedium.objects.using('control_vocabularies').all()
-        resource_name = 'referencematerialmedium'
-        max_limit = 0
-        serializer = RdfSerializer()
-
-
-class ReferenceMaterialMediumRequestResource(ModelResource):
-    class Meta:
-        queryset = ReferenceMaterialMediumRequest.objects.using('control_vocabularies').all()
-        resource_name = 'referencematerialmediumrequest'
-        max_limit = 0
-
-
 class ResultTypeResource(ModelRdfResource):
     scheme = 'resultType'
 
@@ -300,23 +298,6 @@ class ResultTypeRequestResource(ModelResource):
     class Meta:
         queryset = ResultTypeRequest.objects.using('control_vocabularies').all()
         resource_name = 'resulttyperequest'
-        max_limit = 0
-
-
-class SampledMediumResource(ModelRdfResource):
-    scheme = 'sampledMedium'
-
-    class Meta:
-        queryset = SampledMedium.objects.using('control_vocabularies').all()
-        resource_name = 'sampledmedium'
-        max_limit = 0
-        serializer = RdfSerializer()
-
-
-class SampledMediumRequestResource(ModelResource):
-    class Meta:
-        queryset = SampledMediumRequest.objects.using('control_vocabularies').all()
-        resource_name = 'sampledmediumrequest'
         max_limit = 0
 
 
@@ -351,23 +332,6 @@ class SpeciationRequestResource(ModelResource):
     class Meta:
         queryset = SpeciationRequest.objects.using('control_vocabularies').all()
         resource_name = 'speciationrequest'
-        max_limit = 0
-
-
-class SpecimenMediumResource(ModelRdfResource):
-    scheme = 'specimenMedium'
-
-    class Meta:
-        queryset = SpecimenMedium.objects.using('control_vocabularies').all()
-        resource_name = 'specimenmedium'
-        max_limit = 0
-        serializer = RdfSerializer()
-
-
-class SpecimenMediumRequestResource(ModelResource):
-    class Meta:
-        queryset = SpecimenMediumRequest.objects.using('control_vocabularies').all()
-        resource_name = 'specimenmediumrequest'
         max_limit = 0
 
 
@@ -487,8 +451,20 @@ class RelationshipTypeRequestResource(ModelResource):
         resource_name = 'relationshiptyperequest'
         max_limit = 0
 
+class MediumResource(ModelRdfResource):
+    scheme = 'medium'
 
+    class Meta:
+        queryset = Medium.objects.using('control_vocabularies').all()
+        resource_name = 'medium'
+        max_limit = 0
+        serializer = RdfSerializer()
 
+class MediumRequestResource(ModelResource):
+    class Meta:
+        queryset = MediumRequest.objects.using('control_vocabularies').all()
+        resource_name = 'mediumrequest'
+        max_limit = 0
 
 v1_api = Api(api_name='v1')
 v1_api.register(ActionTypeResource())
@@ -503,7 +479,6 @@ v1_api.register(SamplingFeatureTypeResource())
 v1_api.register(SamplingFeatureTypeRequestResource())
 v1_api.register(SiteTypeResource())
 v1_api.register(SiteTypeRequestResource())
-# Denver
 v1_api.register(AggregationStatisticResource())
 v1_api.register(AggregationStatisticRequestResource())
 v1_api.register(AnnotationTypeResource())
@@ -522,18 +497,12 @@ v1_api.register(PropertyDataTypeResource())
 v1_api.register(PropertyDataTypeRequestResource())
 v1_api.register(QualityCodeResource())
 v1_api.register(QualityCodeRequestResource())
-v1_api.register(ReferenceMaterialMediumResource())
-v1_api.register(ReferenceMaterialMediumRequestResource())
 v1_api.register(ResultTypeResource())
 v1_api.register(ResultTypeRequestResource())
-v1_api.register(SampledMediumResource())
-v1_api.register(SampledMediumRequestResource())
 v1_api.register(SpatialOffsetTypeResource())
 v1_api.register(SpatialOffsetTypeRequestResource())
 v1_api.register(SpeciationResource())
 v1_api.register(SpeciationRequestResource())
-v1_api.register(SpecimenMediumResource())
-v1_api.register(SpecimenMediumRequestResource())
 v1_api.register(SpecimenTypeResource())
 v1_api.register(SpecimenTypeRequestResource())
 v1_api.register(StatusResource())
@@ -548,3 +517,7 @@ v1_api.register(DataQualityTypeResource())
 v1_api.register(DataQualityTypeRequestResource())
 v1_api.register(RelationshipTypeResource())
 v1_api.register(RelationshipTypeRequestResource())
+v1_api.register(MediumResource())
+v1_api.register(MediumRequestResource())
+v1_api.register(UnitsTypeResource())
+v1_api.register(UnitsTypeRequestResource())

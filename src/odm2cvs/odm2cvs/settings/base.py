@@ -28,6 +28,7 @@ except IOError:
     print("You need to setup the settings data file (see instructions in base.py file.)")
 
 
+#SECRET_KEY = 'thisistheamazingsecretkey!'
 SECRET_KEY = data["secret_key"]
 
 ALLOWED_HOSTS = []

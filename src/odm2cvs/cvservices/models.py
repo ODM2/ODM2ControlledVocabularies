@@ -70,6 +70,33 @@ class AbstractSpatialOffsetType(models.Model):
     class Meta:
         abstract = True
 
+class AbstractUnitsType(models.Model):
+    default_unit = models.CharField(db_column='defaultUnit', max_length=100, blank=True)
+    dimension_symbol = models.CharField(db_column='dimensionSymbol', max_length=50, blank=True)
+    dimension_length = models.IntegerField(db_column='dimensionLength', blank=True)
+    dimension_mass = models.IntegerField(db_column='dimensionMass', blank=True)
+    dimension_time = models.IntegerField(db_column='dimensionTime', blank=True)
+    dimension_current = models.IntegerField(db_column='dimensionCurrent', blank=True)
+    dimension_temperature = models.IntegerField(db_column='dimensionTemperature', blank=True)
+    dimension_amount = models.IntegerField(db_column='dimensionAmount', blank=True)
+    dimension_light = models.IntegerField(db_column='dimensionLight', blank=True)
+    
+    class Meta:
+        abstract = True
+
+class UnitsType(ControlVocabulary, AbstractUnitsType):
+    class Meta:
+        managed = False
+        db_table = 'unitstypecv'
+        verbose_name = 'Units Type'
+        ordering = ["name"]
+
+class UnitsTypeRequest(ControlVocabularyRequest, AbstractUnitsType):
+    class Meta:
+        managed = False
+        db_table = 'unitstypecvrequests'
+        verbose_name = 'Units Type Request'
+        ordering = ["name"]
 
 class ActionType(ControlVocabulary, AbstractActionType):
     class Meta:
@@ -284,13 +311,13 @@ class QualityCodeRequest(ControlVocabularyRequest):
         db_table = 'qualitycodecvrequests'
         verbose_name = 'Quality Code Request'
 
-
+'''
 class ReferenceMaterialMedium(ControlVocabulary):
     class Meta:
         managed = False
         db_table = 'referencematerialmediumcv'
         verbose_name = 'Reference Material Medium'
-
+'''
 
 class ReferenceMaterialMediumRequest(ControlVocabularyRequest):
     class Meta:
@@ -312,13 +339,13 @@ class ResultTypeRequest(ControlVocabularyRequest):
         db_table = 'resulttypecvrequests'
         verbose_name = 'Result Type Request'
 
-
+'''
 class SampledMedium(ControlVocabulary):
     class Meta:
         managed = False
         db_table = 'sampledmediumcv'
         verbose_name = 'Sampled Medium'
-
+'''
 
 class SampledMediumRequest(ControlVocabularyRequest):
     class Meta:
@@ -354,13 +381,13 @@ class SpeciationRequest(ControlVocabularyRequest):
         db_table = 'speciationcvrequests'
         verbose_name = 'Speciation Request'
 
-
+'''
 class SpecimenMedium(ControlVocabulary):
     class Meta:
         managed = False
         db_table = 'specimenmediumcv'
         verbose_name = 'Specimen Medium'
-
+'''
 
 class SpecimenMediumRequest(ControlVocabularyRequest):
     class Meta:
@@ -464,4 +491,16 @@ class RelationshipTypeRequest(ControlVocabularyRequest):
         managed = False
         db_table = 'relationshiptypecvrequests'
         verbose_name = 'Relationship Type Request'
+
+class Medium(ControlVocabulary):
+    class Meta:
+        managed = False
+        db_table = 'mediumcv'
+        verbose_name = 'Medium'
+
+class MediumRequest(ControlVocabularyRequest):
+    class Meta:
+        managed = False
+        db_table = 'mediumcvrequests'
+        verbose_name = 'Medium Request'
 
