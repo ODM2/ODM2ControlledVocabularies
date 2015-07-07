@@ -87,7 +87,8 @@ class RdfSerializer(Serializer):
                     writer.writerow(odict)
                     first = False
                 else:
-                    writer.writerow(odict)
+                    writer.writerow({k:(v.encode('utf-8') if isinstance(v, int) is not True else v) for k,v in odict.items()})
+                    #writer.writerow(odict)
         # Single Term
         else:
             test = {}
@@ -114,7 +115,8 @@ class RdfSerializer(Serializer):
             if first:
                 writer = csv.DictWriter(raw_data, odict.keys())
                 writer.writeheader()
-                writer.writerow(odict)
+                #writer.writerow(odict)
+                writer.writerow({k:(v.encode('utf-8') if isinstance(v, int) is not True else v) for k,v in odict.items()})
                 first = False
             else:
                 writer.writerow(odict)
@@ -173,12 +175,15 @@ class RdfSerializer(Serializer):
 
                 # Add labels to each concept class.
                 for x in concept.data:
+                    label = concept.data[x]
+                    if isinstance(label, int):
+                        label = str(label)
                     # Skip resource_uri and term elements.
                     # TODO: remove these elements entirely?
                     if x == u'resource_uri' or x == 'term':
                         continue
                     # Skip empty elements.
-                    elif str(concept.data[x]).rstrip('\r\n') == '':
+                    elif label.rstrip('\r\n') == '':
                         continue
                     else:
                         alias = str(FieldRelation.objects.get(
@@ -189,14 +194,13 @@ class RdfSerializer(Serializer):
                                         odm2[FieldRelation.objects
                                         .get(field_name=x).node.name],
                                         Literal(
-                                        str(concept.data[x]).rstrip('\r\n')))))
+                                        label.rstrip('\r\n')))))
                         else:
                             (graph.add((URIRef(scheme.uri + '/' +
                                         concept.obj.term),
                                         SKOS[FieldRelation.objects
                                         .get(field_name=x).node.name],
-                                        Literal(str(concept.data[x])
-                                        .rstrip('\r\n')))))
+                                        Literal(label.rstrip('\r\n')))))
 
         # If requesting a single Concept
         # TODO: Return the Concept Scheme as well.
@@ -219,10 +223,13 @@ class RdfSerializer(Serializer):
 
             # Add labels within concept class.
             for field in data.data.keys():
-		logging.info(field)
+                label = data.data[field]
+                if isinstance(label, int):
+                    label = str(label)
+
                 if field == 'term' or field == u'resource_uri':
                     continue
-                elif str(data.data[field]).rstrip('\r\n') == '':
+                elif label.rstrip('\r\n') == '':
                     continue
                 else:
                     print "$$$$ field", field
@@ -232,13 +239,12 @@ class RdfSerializer(Serializer):
                         (graph.add((URIRef(scheme.uri + '/' + data.obj.term),
                                     odm2[FieldRelation.objects
                                     .get(field_name=field).node.name],
-                                    Literal(str(data.data[field])
-                                                .rstrip('\r\n')))))
+                                    Literal(label.rstrip('\r\n')))))
                     else:
                         (graph.add((URIRef(scheme.uri + '/' + data.obj.term),
                                     SKOS[FieldRelation.objects
                                     .get(field_name=field).node.name],
-                                    Literal(str(data.data[field]).rstrip('\r\n')))))
+                                    Literal(label.rstrip('\r\n')))))
         else:
             pass
         # Returning the graph serialized into 'xml' format rather than
