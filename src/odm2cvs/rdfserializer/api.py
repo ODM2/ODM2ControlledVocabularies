@@ -178,7 +178,7 @@ class RdfSerializer(Serializer):
                     if x == u'resource_uri' or x == 'term':
                         continue
                     # Skip empty elements.
-                    elif concept.data[x].rstrip('\r\n') == '':
+                    elif str(concept.data[x]).rstrip('\r\n') == '':
                         continue
                     else:
                         alias = str(FieldRelation.objects.get(
@@ -189,13 +189,13 @@ class RdfSerializer(Serializer):
                                         odm2[FieldRelation.objects
                                         .get(field_name=x).node.name],
                                         Literal(
-                                        concept.data[x].rstrip('\r\n')))))
+                                        str(concept.data[x]).rstrip('\r\n')))))
                         else:
                             (graph.add((URIRef(scheme.uri + '/' +
                                         concept.obj.term),
                                         SKOS[FieldRelation.objects
                                         .get(field_name=x).node.name],
-                                        Literal(concept.data[x]
+                                        Literal(str(concept.data[x])
                                         .rstrip('\r\n')))))
 
         # If requesting a single Concept
@@ -222,22 +222,23 @@ class RdfSerializer(Serializer):
 		logging.info(field)
                 if field == 'term' or field == u'resource_uri':
                     continue
-                elif data.data[field].rstrip('\r\n') == '':
+                elif str(data.data[field]).rstrip('\r\n') == '':
                     continue
                 else:
+                    print "$$$$ field", field
                     relation = FieldRelation.objects.get(field_name=field)
                     alias = relation.node.namespace.alias
                     if alias == u'odm2':
                         (graph.add((URIRef(scheme.uri + '/' + data.obj.term),
                                     odm2[FieldRelation.objects
                                     .get(field_name=field).node.name],
-                                    Literal(str(data.data[field]
-                                                .rstrip('\r\n'))))))
+                                    Literal(str(data.data[field])
+                                                .rstrip('\r\n')))))
                     else:
                         (graph.add((URIRef(scheme.uri + '/' + data.obj.term),
                                     SKOS[FieldRelation.objects
                                     .get(field_name=field).node.name],
-                                    Literal(data.data[field].rstrip('\r\n')))))
+                                    Literal(str(data.data[field]).rstrip('\r\n')))))
         else:
             pass
         # Returning the graph serialized into 'xml' format rather than
