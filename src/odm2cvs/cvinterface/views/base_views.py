@@ -48,7 +48,7 @@ class DefaultVocabularyDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DefaultVocabularyDetailView, self).get_context_data(**kwargs)
-        context['fields'] = dict((capwords(field.verbose_name), field.value_to_string(self.get_object())) for field in self.model._meta.fields if field.name not in self.exclude)
+        context['fields'] = tuple((capwords(field.verbose_name), field.value_to_string(self.get_object())) for field in self.model._meta.fields if field.name not in self.exclude)
         context['vocabulary_verbose'] = self.vocabulary_verbose
         context['vocabulary'] = self.vocabulary
         context['create_url'] = self.vocabulary + '_form'

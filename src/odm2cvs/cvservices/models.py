@@ -70,6 +70,7 @@ class AbstractSpatialOffsetType(models.Model):
     class Meta:
         abstract = True
 
+
 class AbstractUnitsType(models.Model):
     default_unit = models.CharField(db_column='defaultUnit', max_length=100, blank=True)
     dimension_symbol = models.CharField(db_column='dimensionSymbol', max_length=50, blank=True)
@@ -84,12 +85,14 @@ class AbstractUnitsType(models.Model):
     class Meta:
         abstract = True
 
+
 class UnitsType(ControlVocabulary, AbstractUnitsType):
     class Meta:
         managed = False
         db_table = 'unitstypecv'
         verbose_name = 'Units Type'
         ordering = ["name"]
+
 
 class UnitsTypeRequest(ControlVocabularyRequest, AbstractUnitsType):
     class Meta:
@@ -98,12 +101,14 @@ class UnitsTypeRequest(ControlVocabularyRequest, AbstractUnitsType):
         verbose_name = 'Units Type Request'
         ordering = ["name"]
 
+
 class ActionType(ControlVocabulary, AbstractActionType):
     class Meta:
         managed = False
         db_table = 'actiontypecv'
         verbose_name = 'Action Type'
         ordering = ["name"]
+
 
 class ActionTypeRequest(ControlVocabularyRequest, AbstractActionType):
     class Meta:
@@ -208,6 +213,7 @@ class AnnotationType(ControlVocabulary):
         db_table = 'annotationtypecv'
         verbose_name = 'Annotation Type'
 
+
 class AnnotationTypeRequest(ControlVocabularyRequest):
     class Meta:
         managed = False
@@ -241,6 +247,7 @@ class DatasetTypeRequest(ControlVocabularyRequest):
         managed = False
         db_table = 'datasettypecvrequests'
         verbose_name = 'Dataset Type Request'
+
 
 class DirectiveType(ControlVocabulary):
     class Meta:
@@ -319,6 +326,7 @@ class ReferenceMaterialMedium(ControlVocabulary):
         verbose_name = 'Reference Material Medium'
 '''
 
+
 class ReferenceMaterialMediumRequest(ControlVocabularyRequest):
     class Meta:
         managed = False
@@ -346,6 +354,7 @@ class SampledMedium(ControlVocabulary):
         db_table = 'sampledmediumcv'
         verbose_name = 'Sampled Medium'
 '''
+
 
 class SampledMediumRequest(ControlVocabularyRequest):
     class Meta:
@@ -388,6 +397,7 @@ class SpecimenMedium(ControlVocabulary):
         db_table = 'specimenmediumcv'
         verbose_name = 'Specimen Medium'
 '''
+
 
 class SpecimenMediumRequest(ControlVocabularyRequest):
     class Meta:
@@ -465,6 +475,7 @@ class VariableTypeRequest(ControlVocabularyRequest):
         db_table = 'variabletypecvrequests'
         verbose_name = 'Variable Type Request'
 
+
 class DataQualityType(ControlVocabulary):
     class Meta:
         managed = False
@@ -492,15 +503,16 @@ class RelationshipTypeRequest(ControlVocabularyRequest):
         db_table = 'relationshiptypecvrequests'
         verbose_name = 'Relationship Type Request'
 
+
 class Medium(ControlVocabulary):
     class Meta:
         managed = False
         db_table = 'mediumcv'
         verbose_name = 'Medium'
 
+
 class MediumRequest(ControlVocabularyRequest):
     class Meta:
         managed = False
         db_table = 'mediumcvrequests'
         verbose_name = 'Medium Request'
-

@@ -19,7 +19,7 @@
         </header>
 
         <div class="column two-columns data-view">
-            {% for field, value in fields.iteritems %}
+            {% for field, value in fields %}
                 <div class="list-item column two-columns {% if forloop.last %} last-list-item {% endif %}">
                     <div class="list-title"><h3>{{ field }}</h3></div>
                     <div class="list-description"><p>{{ value|default:"-" }}</p></div>
