@@ -77,8 +77,11 @@ class RdfSerializer(Serializer):
                 del test['provenance_uri']
                 odict['note'] = test['note']
                 del test['note']
+                
+                del test['resource_uri']
+                
                 odict.update(test)
-                odict['resource_uri'] = scheme.uri
+                #odict['resource_uri'] = scheme.uri
                 
                 if first:
 
@@ -109,8 +112,11 @@ class RdfSerializer(Serializer):
             del test['provenance_uri']
             odict['note'] = test['note']
             del test['note']
+            
+            del test['resource_uri']
+
             odict.update(test)
-            odict['resource_uri'] = scheme.uri + "/" + odict['term']
+            #odict['resource_uri'] = scheme.uri + "/" + odict['term']
             
             if first:
                 writer = csv.DictWriter(raw_data, odict.keys())
