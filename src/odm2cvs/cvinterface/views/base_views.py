@@ -1,5 +1,8 @@
+from os import linesep
 from uuid import uuid4
 from string import capwords
+from django.conf import settings
+from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 
@@ -124,9 +127,20 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
         return super(DefaultRequestUpdateView, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
+        email_subject = 'ODM2 Controlled Vocabularies - Submission Update'
+
         if self.accept_button in self.request.POST:
+            email_message = ''.join([form.cleaned_data['submitter_name'], ', your submission "',
+                                     form.cleaned_data['name'], '" for the ', self.vocabulary,
+                                     ' vocabulary was accepted.', linesep, linesep,
+                                     "To see an updated list of terms go to ", self.request.build_absolute_uri(reverse(self.vocabulary))])
+            send_mail(email_subject, email_message, settings.EMAIL_SENDER, [form.cleaned_data['submitter_email']])
             return self.accept_request(form)
         elif self.reject_button in self.request.POST:
+            email_message = ''.join([form.cleaned_data['submitter_name'], ', your submission "',
+                                     form.cleaned_data['name'], '" for the ', self.vocabulary,
+                                     ' vocabulary was rejected.'])
+            send_mail(email_subject, email_message, settings.EMAIL_SENDER, [form.cleaned_data['submitter_email']])
             return self.reject_request(form)
 
     def accept_request(self, form):
@@ -210,3 +224,29 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
             initial_data[field] = concept.__getattribute__(field)
 
         return initial_data
+
+    def form_valid(self, form):
+        action = 'creation of a new ' if 'term' not in self.kwargs else 'update of a '
+
+        submitter_email_subject = 'ODM2 Controlled Vocabularies Submission'
+        submitter_email_message = ''.join(['Thank you for your submission to ODM2 Controlled Vocabularies.', linesep, linesep,
+                                           'Vocabulary: ', self.vocabulary_verbose, linesep,
+                                           'Term: ', form.cleaned_data['term'], linesep,
+                                           'Definition: ', form.cleaned_data['definition'], linesep,
+                                           'Notes: ', form.cleaned_data['note'],  linesep,
+                                           'Reason given for request: ', form.cleaned_data['request_reason'],
+                                           ])
+
+        admins_email_subject = 'New request for an ODM2 Controlled Vocabulary Term'
+        admins_email_message = ''.join(['User ', form.cleaned_data['submitter_name'], ' (', form.cleaned_data['submitter_email'], ')',
+                                        ' made a request for the ', action, self.vocabulary_verbose, ' vocabulary term.', linesep, linesep,
+                                        'Term: ', form.cleaned_data['term'], linesep,
+                                        'Definition: ', form.cleaned_data['definition'], linesep,
+                                        'Reason given for request: ', form.cleaned_data['request_reason'], linesep, linesep,
+                                        'To review this submission go to ', self.request.build_absolute_uri(reverse('requests_list'))])
+
+        send_mail(admins_email_subject, admins_email_message, settings.EMAIL_SENDER, settings.EMAIL_RECIPIENTS)
+        send_mail(submitter_email_subject, submitter_email_message, settings.EMAIL_SENDER, [form.cleaned_data['submitter_email']])
+
+        return super(DefaultRequestCreateView, self).form_valid(form)
+

@@ -98,4 +98,13 @@ TASTYPIE_DEFAULT_FORMATS = ['json']
 
 API_LIMIT_PER_PAGE = 0
 
+
+EMAIL_HOST = 'mail.usu.edu'
+
+EMAIL_SENDER = data['email_sender']
+
+EMAIL_RECIPIENTS = data['email_recipients']
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 DATABASE_ROUTERS = ['odm2cvs.db_routers.ControlVocabularyRouter']
