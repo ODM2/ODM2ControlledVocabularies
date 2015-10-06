@@ -43,12 +43,6 @@ p {
     border-right: 1px solid #d4d4d4;
 }
 
-@media screen and (max-width: 1100px) {
-    .fix-width {
-        width: 764px;
-    }
-}
-
 #top-bar {
     padding: 30px 30px;
     background-color: #333333;
@@ -472,4 +466,31 @@ a.tooltip:hover:after {
     margin-bottom: -20px;
     font-size: 14px;
     width: 248px;
+}
+
+@media screen and (max-width: 1100px) {
+    .fix-width {
+        width: 764px;
+    }
+
+    .one-column {
+        width: 245px;
+    }
+
+    .two-columns {
+        width: 510px;
+    }
+
+    .three-columns {
+        width: 764px;
+    }
+
+    .concepts-table h2 {
+        float: left;
+    }
+
+    .vocabulary-links {
+        margin-bottom: 15px;
+        float: left;
+    }
 }
