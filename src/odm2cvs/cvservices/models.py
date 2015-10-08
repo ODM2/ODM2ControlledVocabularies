@@ -32,7 +32,7 @@ class ControlVocabularyRequest(models.Model):
 
     term = models.CharField(max_length=255, help_text="Please enter a URI-friendly version of your term with no spaces, special characters, etc.")
     name = models.CharField(max_length=255, help_text="Please enter the term as you would expect it to appear in a sentence.")
-    definition = models.TextField(help_text="Please enter a detailed definition of the term.")
+    definition = models.TextField(help_text="Please enter a detailed definition of the term.", blank=True)
     category = models.CharField(max_length=255, blank=True, help_text="You may suggest a category for the term. Refer to the vocabulary to see which categories have been used. You may also suggest a new category.")
     provenance = models.TextField(blank=True, help_text="Enter a note about where the term came from. If you retrieved the definition of the term from a website or other source, note that here.")
     provenance_uri = models.URLField(db_column='provenanceUri', blank=True, help_text="If you retrieved the term from another formal vocabulary system, enter the URI of the term from the other system here.")
