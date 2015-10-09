@@ -13,7 +13,7 @@ class ControlVocabulary(models.Model):
     category = models.CharField(max_length=255, blank=True)
     provenance = models.TextField(blank=True)
     provenance_uri = models.URLField(db_column='provenanceUri', blank=True)
-    note = models.TextField(blank=True)
+    note = models.TextField(blank=True, null=True)
 
     class Meta:
         abstract = True
@@ -36,7 +36,7 @@ class ControlVocabularyRequest(models.Model):
     category = models.CharField(max_length=255, blank=True, help_text="You may suggest a category for the term. Refer to the vocabulary to see which categories have been used. You may also suggest a new category.")
     provenance = models.TextField(blank=True, help_text="Enter a note about where the term came from. If you retrieved the definition of the term from a website or other source, note that here.")
     provenance_uri = models.URLField(db_column='provenanceUri', blank=True, help_text="If you retrieved the term from another formal vocabulary system, enter the URI of the term from the other system here.")
-    note = models.TextField(blank=True, help_text="Please enter any additional notes you may have about the term.")
+    note = models.TextField(blank=True, null=True, help_text="Please enter any additional notes you may have about the term.")
     request_id = models.CharField(max_length=255, db_column='requestId', primary_key=True, default=uuid4)
     status = models.CharField(max_length=255, db_column='status', choices=STATUS_CHOICES, default=STATUS_CHOICES[0][0])
     date_submitted = models.DateField(db_column='dateSubmitted', default=timezone.now)
@@ -74,13 +74,13 @@ class AbstractSpatialOffsetType(models.Model):
 class AbstractUnitsType(models.Model):
     default_unit = models.CharField(db_column='defaultUnit', max_length=100, blank=True)
     dimension_symbol = models.CharField(db_column='dimensionSymbol', max_length=50, blank=True)
-    dimension_length = models.IntegerField(db_column='dimensionLength', blank=True)
-    dimension_mass = models.IntegerField(db_column='dimensionMass', blank=True)
-    dimension_time = models.IntegerField(db_column='dimensionTime', blank=True)
-    dimension_current = models.IntegerField(db_column='dimensionCurrent', blank=True)
-    dimension_temperature = models.IntegerField(db_column='dimensionTemperature', blank=True)
-    dimension_amount = models.IntegerField(db_column='dimensionAmount', blank=True)
-    dimension_light = models.IntegerField(db_column='dimensionLight', blank=True)
+    dimension_length = models.IntegerField(db_column='dimensionLength', blank=True, null=True)
+    dimension_mass = models.IntegerField(db_column='dimensionMass', blank=True, null=True)
+    dimension_time = models.IntegerField(db_column='dimensionTime', blank=True, null=True)
+    dimension_current = models.IntegerField(db_column='dimensionCurrent', blank=True, null=True)
+    dimension_temperature = models.IntegerField(db_column='dimensionTemperature', blank=True, null=True)
+    dimension_amount = models.IntegerField(db_column='dimensionAmount', blank=True, null=True)
+    dimension_light = models.IntegerField(db_column='dimensionLight', blank=True, null=True)
     
     class Meta:
         abstract = True

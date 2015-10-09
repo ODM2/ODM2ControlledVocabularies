@@ -57,7 +57,7 @@ class RdfSerializer(Serializer):
         # Entire CV
         if "meta" in data.keys():
             objects = data.get("objects")
-            
+            print objects 
             for value in objects:
                 test = {}
                 self.flatten(value, test)
@@ -90,7 +90,7 @@ class RdfSerializer(Serializer):
                     writer.writerow(odict)
                     first = False
                 else:
-                    writer.writerow({k:(v.encode('utf-8') if isinstance(v, int) is not True else v) for k,v in odict.items()})
+                    writer.writerow({k:(v.encode('utf-8') if isinstance(v, int) is not True and isinstance(v, type(None)) is not True else v) for k,v in odict.items()})
                     #writer.writerow(odict)
         # Single Term
         else:
@@ -114,15 +114,14 @@ class RdfSerializer(Serializer):
             del test['note']
             
             del test['resource_uri']
-
+            
             odict.update(test)
             #odict['resource_uri'] = scheme.uri + "/" + odict['term']
-            
             if first:
                 writer = csv.DictWriter(raw_data, odict.keys())
                 writer.writeheader()
                 #writer.writerow(odict)
-                writer.writerow({k:(v.encode('utf-8') if isinstance(v, int) is not True else v) for k,v in odict.items()})
+                writer.writerow({k:(v.encode('utf-8') if isinstance(v, int) is not True and isinstance(v, type(None)) is not True else v) for k,v in odict.items()})
                 first = False
             else:
                 writer.writerow(odict)
@@ -161,7 +160,7 @@ class RdfSerializer(Serializer):
 
         # If requesting an entire CV.
         if isinstance(data, dict):
-	    print data
+	        #print data
             # Add a SKOS ConceptScheme class to the graph.
             (graph.add((URIRef(scheme.uri), RDF['type'],
                         SKOS['ConceptScheme'])))
@@ -182,6 +181,8 @@ class RdfSerializer(Serializer):
                 # Add labels to each concept class.
                 for x in concept.data:
                     label = concept.data[x]
+                    if isinstance(label, type(None)):
+                        label = ''
                     if isinstance(label, int):
                         label = str(label)
                     # Skip resource_uri and term elements.
@@ -230,6 +231,8 @@ class RdfSerializer(Serializer):
             # Add labels within concept class.
             for field in data.data.keys():
                 label = data.data[field]
+                if isinstance(label, type(None)):
+                    label = ''
                 if isinstance(label, int):
                     label = str(label)
 
@@ -238,7 +241,7 @@ class RdfSerializer(Serializer):
                 elif label.rstrip('\r\n') == '':
                     continue
                 else:
-                    print "$$$$ field", field
+                    #print "$$$$ field", field
                     relation = FieldRelation.objects.get(field_name=field)
                     alias = relation.node.namespace.alias
                     if alias == u'odm2':
