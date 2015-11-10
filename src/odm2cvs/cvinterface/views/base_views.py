@@ -41,7 +41,7 @@ class DefaultVocabularyListView(ListView):
 class DefaultVocabularyDetailView(DetailView):
     vocabulary = None
     vocabulary_verbose = None
-    exclude = ['term', 'name', 'definition']
+    exclude = ['name', 'definition']
 
     def __init__(self, **kwargs):
         super(DefaultVocabularyDetailView, self).__init__(**kwargs)
