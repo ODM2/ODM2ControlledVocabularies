@@ -381,6 +381,12 @@ textarea.form-input {
 
 a.tooltip {
     position: relative;
+    border: 1px solid #dedede;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 2px 14px;
 }
 
 a.tooltip::before {
@@ -388,19 +394,19 @@ a.tooltip::before {
     visibility: hidden;
     width: 0;
     height: 0;
-    left: 1px;
+    left: 14px;
     bottom: 0;
     opacity: 0;
     content: "";
     border-style: solid;
-    border-width: 6px 5px 0 5px;
+    border-width: 10px 8px 0 5px;
     border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
 }
 
 a.tooltip:hover:before {
     visibility: visible;
     opacity: 1;
-    bottom: 1em;
+    bottom: 1.5em;
 }
 
 a.tooltip:after {
@@ -430,7 +436,7 @@ a.tooltip:after {
 a.tooltip:hover:after {
     visibility: visible;
     opacity: 1;
-    bottom: 1.95em;
+    bottom: 3em;
 }
 
 .messages-container {
