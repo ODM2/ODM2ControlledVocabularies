@@ -77,6 +77,33 @@ class RdfSerializer(Serializer):
                 del test['provenance_uri']
                 odict['note'] = test['note']
                 del test['note']
+                if 'default_unit' in test:
+                    odict['default_unit'] = test['default_unit']
+                    del test['default_unit']
+                if 'dimension_symbol' in test:
+                    odict['dimension_symbol'] = test['dimension_symbol']
+                    del test['dimension_symbol']
+                if 'dimension_length' in test:
+                    odict['dimension_length'] = test['dimension_length']
+                    del test['dimension_length']
+                if 'dimension_mass' in test:
+                    odict['dimension_mass'] = test['dimension_mass']
+                    del test['dimension_mass']
+                if 'dimension_time' in test:
+                    odict['dimension_time'] = test['dimension_time']
+                    del test['dimension_time']
+                if 'dimension_current' in test:
+                    odict['dimension_current'] = test['dimension_current']
+                    del test['dimension_current']
+                if 'dimension_temperature' in test:
+                    odict['dimension_temperature'] = test['dimension_temperature']
+                    del test['dimension_temperature']
+                if 'dimension_amount' in test:
+                    odict['dimension_amount'] = test['dimension_amount']
+                    del test['dimension_amount']
+                if 'dimension_light' in test:
+                    odict['dimension_light'] = test['dimension_light']
+                    del test['dimension_light']
                 
                 del test['resource_uri']
                 
@@ -112,9 +139,35 @@ class RdfSerializer(Serializer):
             del test['provenance_uri']
             odict['note'] = test['note']
             del test['note']
-            
+           
+            if 'default_unit' in test:
+                odict['default_unit'] = test['default_unit']
+                del test['default_unit']
+            if 'dimension_symbol' in test:
+                odict['dimension_symbol'] = test['dimension_symbol']
+                del test['dimension_symbol']
+            if 'dimension_length' in test:
+                odict['dimension_length'] = test['dimension_length']
+                del test['dimension_length']
+            if 'dimension_mass' in test:
+                odict['dimension_mass'] = test['dimension_mass']
+                del test['dimension_mass']
+            if 'dimension_time' in test:
+                odict['dimension_time'] = test['dimension_time']
+                del test['dimension_time']
+            if 'dimension_current' in test:
+                odict['dimension_current'] = test['dimension_current']
+                del test['dimension_current']
+            if 'dimension_temperature' in test:
+                odict['dimension_temperature'] = test['dimension_temperature']
+                del test['dimension_temperature']
+            if 'dimension_amount' in test:
+                odict['dimension_amount'] = test['dimension_amount']
+                del test['dimension_amount']
+            if 'dimension_light' in test:
+                odict['dimension_light'] = test['dimension_light']
+                del test['dimension_light']
             del test['resource_uri']
-            
             odict.update(test)
             #odict['resource_uri'] = scheme.uri + "/" + odict['term']
             if first:
