@@ -223,10 +223,10 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
         return context
 
     def get_initial(self):
-        if 'term' not in self.kwargs:
+        if 'vocabulary_id' not in self.kwargs:
             return {}
 
-        concept_query = self.vocabulary_model.objects.filter(pk=self.kwargs['term'])
+        concept_query = self.vocabulary_model.objects.filter(pk=self.kwargs['vocabulary_id'])
         if concept_query.count() is not 1:
             return {}
 
