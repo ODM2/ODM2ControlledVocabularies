@@ -47,7 +47,7 @@ class DefaultVocabularyListView(ListView):
 class DefaultVocabularyDetailView(DetailView):
     vocabulary = None
     vocabulary_verbose = None
-    exclude = ['name', 'definition']
+    exclude = ['name', 'definition', 'vocabulary_id', 'controlledvocabulary_ptr', 'vocabulary_status']
     slug_field = 'term'
 
     def __init__(self, **kwargs):
