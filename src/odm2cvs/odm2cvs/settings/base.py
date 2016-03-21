@@ -107,4 +107,4 @@ EMAIL_RECIPIENTS = data['email_recipients']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-DATABASE_ROUTERS = ['odm2cvs.db_routers.ControlVocabularyRouter']
+DATABASE_ROUTERS = ['odm2cvs.db_routers.ControlledVocabularyRouter']

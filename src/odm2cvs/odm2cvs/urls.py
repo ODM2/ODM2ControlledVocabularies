@@ -42,7 +42,7 @@ for cv_name in detail_views:
     view = detail_views[cv_name]
 
     urlpatterns += patterns('',
-        url(r'^' + settings.SITE_URL + cv_name + '/(?P<pk>[-\w]+)/$', view, name=cv_name + '_detail'),
+        url(r'^' + settings.SITE_URL + cv_name + '/(?P<slug>[-\w]+)/$', view, name=cv_name + '_detail'),
     )
 
 # request list views

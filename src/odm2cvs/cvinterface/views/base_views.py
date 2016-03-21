@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models.query_utils import Q
 
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -14,7 +15,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 
 
 # Vocabulary Basic Views
-from cvservices.models import ControlVocabularyRequest
+from cvservices.models import ControlledVocabularyRequest
 
 
 class DefaultVocabularyListView(ListView):
@@ -37,17 +38,23 @@ class DefaultVocabularyListView(ListView):
         context['vocabulary'] = self.vocabulary
         return context
 
+    def get_queryset(self):
+        queryset = super(DefaultVocabularyListView, self).get_queryset()
+        queryset = queryset.filter(vocabulary_status=self.model.CURRENT)
+        return queryset
+
 
 class DefaultVocabularyDetailView(DetailView):
     vocabulary = None
     vocabulary_verbose = None
     exclude = ['name', 'definition']
+    slug_field = 'term'
 
     def __init__(self, **kwargs):
         super(DefaultVocabularyDetailView, self).__init__(**kwargs)
+        # self.object = kwargs[]
         self.vocabulary = kwargs['vocabulary']
         self.vocabulary_verbose = kwargs['vocabulary_verbose']
-
 
     def get_context_data(self, **kwargs):
         context = super(DefaultVocabularyDetailView, self).get_context_data(**kwargs)
@@ -56,6 +63,13 @@ class DefaultVocabularyDetailView(DetailView):
         context['vocabulary'] = self.vocabulary
         context['create_url'] = self.vocabulary + '_form'
         return context
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+        queryset = queryset.filter(vocabulary_status=self.model.CURRENT)
+
+        return super(DefaultVocabularyDetailView, self).get_object(queryset)
 
 
 # Request Basic Views
@@ -73,8 +87,7 @@ class DefaultRequestListView(ListView):
         self.request_verbose = kwargs['request_verbose']
         self.vocabulary = kwargs['vocabulary']
         self.request = kwargs['request']
-        self.queryset = self.model.objects.filter(status=self.model.PENDING) \
-                        | self.model.objects.filter(original_request__isnull=False)
+        self.queryset = self.model.objects.filter(status=self.model.PENDING)
 
     def get_context_data(self, **kwargs):
         context = super(DefaultRequestListView, self).get_context_data(**kwargs)
@@ -92,7 +105,7 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
     accept_button = 'request_accept'
     reject_button = 'request_reject'
     success_message = 'The request has been updated.'
-    exclude = ['request_id', 'term', 'status', 'date_submitted', 'date_status_changed', 'original_request']
+    exclude = ['request_id', 'term', 'status', 'date_submitted', 'date_status_changed', 'request_for']
     read_only = []
 
     @method_decorator(login_required(login_url=reverse_lazy('login')))
@@ -110,7 +123,7 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(DefaultRequestUpdateView, self).get_context_data(**kwargs)
-        context['all_disabled'] = False if self.object.status == ControlVocabularyRequest.PENDING else True
+        context['all_disabled'] = False if self.object.status == ControlledVocabularyRequest.PENDING else True
         context['read_only'] = self.read_only
         context['request_name'] = self.request_name
         context['request_verbose'] = self.request_verbose
@@ -156,12 +169,12 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
                 concept.__setattr__(field, form.instance.__getattribute__(field))
 
         concept.save()
-        self.save_and_duplicate_request(form, ControlVocabularyRequest.ACCEPTED)
+        self.save_and_duplicate_request(form, ControlledVocabularyRequest.ACCEPTED)
 
         return super(DefaultRequestUpdateView, self).form_valid(form)
 
     def reject_request(self, form):
-        self.save_and_duplicate_request(form, ControlVocabularyRequest.REJECTED)
+        self.save_and_duplicate_request(form, ControlledVocabularyRequest.REJECTED)
         return super(DefaultRequestUpdateView, self).form_valid(form)
 
     def save_and_duplicate_request(self, form, status):
@@ -188,7 +201,7 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
     vocabulary_model = None
     vocabulary_verbose = None
     success_message = 'Your request has been made successfully.'
-    exclude = ['request_id', 'status', 'date_submitted', 'date_status_changed', 'original_request', 'request_notes']
+    exclude = ['request_id', 'status', 'date_submitted', 'date_status_changed', 'request_for', 'request_notes']
 
     def __init__(self, **kwargs):
         super(DefaultRequestCreateView, self).__init__(**kwargs)
