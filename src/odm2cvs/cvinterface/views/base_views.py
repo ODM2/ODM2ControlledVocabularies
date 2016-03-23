@@ -15,7 +15,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 
 
 # Vocabulary Basic Views
-from cvservices.models import ControlledVocabularyRequest
+from cvservices.models import ControlledVocabularyRequest, VocabularyRevision
 
 
 class DefaultVocabularyListView(ListView):
@@ -87,7 +87,8 @@ class DefaultRequestListView(ListView):
         self.request_verbose = kwargs['request_verbose']
         self.vocabulary = kwargs['vocabulary']
         self.request = kwargs['request']
-        self.queryset = self.model.objects.filter(status=self.model.PENDING)
+        self.queryset = self.model.objects.filter(status=self.model.PENDING)  \
+                        | self.model.objects.filter(original_request__isnull=False)
 
     def get_context_data(self, **kwargs):
         context = super(DefaultRequestListView, self).get_context_data(**kwargs)
@@ -105,7 +106,7 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
     accept_button = 'request_accept'
     reject_button = 'request_reject'
     success_message = 'The request has been updated.'
-    exclude = ['request_id', 'term', 'status', 'date_submitted', 'date_status_changed', 'request_for']
+    exclude = ['request_id', 'term', 'status', 'date_submitted', 'date_status_changed', 'request_for', 'original_request']
     read_only = []
 
     @method_decorator(login_required(login_url=reverse_lazy('login')))
@@ -157,41 +158,48 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
             return self.reject_request(form)
 
     def accept_request(self, form):
-        vocabulary_filter = self.vocabulary_model.objects.filter(pk=form.instance.pk)
-        exists = vocabulary_filter.count() is 1
-        concept = vocabulary_filter.get() if exists else self.vocabulary_model()
-
-        concept_fields = [concept_field.name for concept_field in concept._meta.fields]
+        vocabulary = self.vocabulary_model()
+        is_editing_term = form.instance.request_for is not None
+        vocabulary_fields = [term_field.name for term_field in vocabulary._meta.fields]
         request_fields = [request_field.name for request_field in form.instance._meta.fields]
 
-        for field in concept_fields:
+        for field in vocabulary_fields:
             if field in request_fields:
-                concept.__setattr__(field, form.instance.__getattribute__(field))
+                vocabulary.__setattr__(field, form.instance.__getattribute__(field))
 
-        concept.save()
-        self.save_and_duplicate_request(form, ControlledVocabularyRequest.ACCEPTED)
+        vocabulary.vocabulary_status = self.vocabulary_model.CURRENT
+        vocabulary.save()
+
+        if is_editing_term:
+            VocabularyRevision.objects.create(vocabulary=vocabulary, revised_vocabulary=form.instance.request_for)
+            form.instance.request_for.vocabulary_status = self.vocabulary_model.ARCHIVED
+            form.instance.request_for.save()
+
+        revised_request = self.save_revised_request(form, ControlledVocabularyRequest.ACCEPTED)
+        revised_request.request_for = vocabulary
 
         return super(DefaultRequestUpdateView, self).form_valid(form)
 
     def reject_request(self, form):
-        self.save_and_duplicate_request(form, ControlledVocabularyRequest.REJECTED)
+        self.save_revised_request(form, ControlledVocabularyRequest.REJECTED)
         return super(DefaultRequestUpdateView, self).form_valid(form)
 
-    def save_and_duplicate_request(self, form, status):
-        new_request_id = uuid4()
+    def save_revised_request(self, form, status):
         current_time = timezone.now()
 
         old_instance = self.model.objects.get(pk=form.instance.pk)
-        old_instance.status = status
+        old_instance.status = ControlledVocabularyRequest.ARCHIVED
         old_instance.date_status_changed = current_time
         old_instance.save()
 
-        form.instance.pk = new_request_id
-        form.instance.id = new_request_id
-        form.instance.status = status
+        form.instance.pk = None
+        form.instance.request_id = None
         form.instance.date_status_changed = current_time
-        form.instance.original_request = self.model.objects.get(pk=old_instance.pk)
+        form.instance.original_request = old_instance
+        form.instance.status = status
         form.instance.save()
+
+        return form.instance
 
 
 class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
@@ -201,7 +209,7 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
     vocabulary_model = None
     vocabulary_verbose = None
     success_message = 'Your request has been made successfully.'
-    exclude = ['request_id', 'status', 'date_submitted', 'date_status_changed', 'request_for', 'request_notes']
+    exclude = ['request_id', 'status', 'date_submitted', 'date_status_changed', 'request_for', 'request_notes', 'original_request']
 
     def __init__(self, **kwargs):
         super(DefaultRequestCreateView, self).__init__(**kwargs)
