@@ -59,19 +59,15 @@ class ControlledVocabularyRequest(models.Model):
     submitter_name = models.CharField(max_length=255, db_column='submitterName', help_text="Enter your name.")
     submitter_email = models.CharField(max_length=255, db_column='submitterEmail', help_text="Enter your email address.")
     request_reason = models.CharField(max_length=255, db_column='requestReason', help_text="Please enter a brief description of the reason for your submission (e.g., Term does not exist yet, Term is needed for my data use case, etc.)")
+
     request_for = models.ForeignKey('ControlledVocabulary', db_column='requestFor', blank=True, null=True)
+    original_request = models.ForeignKey('self', db_column='originalRequestId', null=True)
 
 
 class VocabularyRevision(models.Model):
     revision_id = models.AutoField(primary_key=True)
     vocabulary = models.ForeignKey('ControlledVocabulary', related_name='previous_versions')
     revised_vocabulary = models.ForeignKey('ControlledVocabulary', related_name='revisions')
-
-
-class RequestRevision(models.Model):
-    revision_id = models.AutoField(primary_key=True)
-    request = models.ForeignKey('ControlledVocabularyRequest', related_name='previous_requests')
-    revised_request = models.ForeignKey('ControlledVocabularyRequest', related_name='revisions')
 
 
 class AbstractActionType(models.Model):
