@@ -226,19 +226,22 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
         if 'vocabulary_id' not in self.kwargs:
             return {}
 
-        concept_query = self.vocabulary_model.objects.filter(pk=self.kwargs['vocabulary_id'])
-        if concept_query.count() is not 1:
-            return {}
-
         initial_data = {}
-        concept = concept_query.get()
-        fields = [concept_field.name for concept_field in concept._meta.fields]
+        term = self.vocabulary_model.objects.get(pk=self.kwargs['vocabulary_id'])
+        fields = [concept_field.name for concept_field in term._meta.fields]
         for field in fields:
-            initial_data[field] = concept.__getattribute__(field)
+            initial_data[field] = term.__getattribute__(field)
 
         return initial_data
 
     def form_valid(self, form):
+        if 'vocabulary_id' in self.kwargs:
+            form.instance.request_for_id = self.kwargs['vocabulary_id']
+
+        self.send_confirmation_email(form)
+        return super(DefaultRequestCreateView, self).form_valid(form)
+
+    def send_confirmation_email(self, form):
         action = 'creation of a new ' if 'term' not in self.kwargs else 'update of a '
 
         submitter_email_subject = 'ODM2 Controlled Vocabularies Submission'
@@ -260,6 +263,3 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
 
         send_mail(admins_email_subject, admins_email_message, settings.EMAIL_SENDER, settings.EMAIL_RECIPIENTS)
         send_mail(submitter_email_subject, submitter_email_message, settings.EMAIL_SENDER, [form.cleaned_data['submitter_email']])
-
-        return super(DefaultRequestCreateView, self).form_valid(form)
-
