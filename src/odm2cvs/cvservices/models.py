@@ -49,7 +49,7 @@ class ControlledVocabularyRequest(models.Model):
     definition = models.TextField(help_text="Please enter a detailed definition of the term.", blank=True)
     category = models.CharField(max_length=255, blank=True, help_text="You may suggest a category for the term. Refer to the vocabulary to see which categories have been used. You may also suggest a new category.")
     provenance = models.TextField(blank=True, help_text="Enter a note about where the term came from. If you retrieved the definition of the term from a website or other source, note that here.")
-    provenance_uri = models.URLField(db_column='provenanceUri', blank=True, help_text="If you retrieved the term from another formal vocabulary system, enter the URI of the term from the other system here.")
+    provenance_uri = models.URLField(db_column='provenanceUri', blank=True, max_length=300, help_text="If you retrieved the term from another formal vocabulary system, enter the URI of the term from the other system here.")
     note = models.TextField(blank=True, null=True, help_text="Please enter any additional notes you may have about the term.")
 
     status = models.CharField(max_length=255, db_column='status', choices=STATUS_CHOICES, default=STATUS_CHOICES[0][0])

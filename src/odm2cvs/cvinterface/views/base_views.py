@@ -67,7 +67,10 @@ class DefaultVocabularyDetailView(DetailView):
     def get_object(self, queryset=None):
         if queryset is None:
             queryset = self.get_queryset()
-        queryset = queryset.filter(vocabulary_status=self.model.CURRENT)
+        if u'pk' in self.kwargs:
+            queryset = queryset.filter(pk=self.kwargs['pk'])
+        else:
+            queryset = queryset.filter(vocabulary_status=self.model.CURRENT)
 
         return super(DefaultVocabularyDetailView, self).get_object(queryset)
 
