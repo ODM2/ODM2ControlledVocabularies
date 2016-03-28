@@ -200,6 +200,10 @@ footer.fix-width hr {
     padding: 5px;
 }
 
+section.previous-versions {
+    margin-top: 4em;
+}
+
 table, tbody, tfoot, thead, tr, th, td {
     background: none;
     margin: 0;

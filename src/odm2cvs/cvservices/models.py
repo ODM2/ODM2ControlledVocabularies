@@ -25,6 +25,9 @@ class ControlledVocabulary(models.Model):
     note = models.TextField(blank=True, null=True)
     vocabulary_status = models.CharField(max_length=255, db_column='status', choices=STATUS_CHOICES, default=STATUS_CHOICES[0][0])
 
+    def get_archived_versions(self):
+        pass
+
     class Meta:
         ordering = ["-name"]
 

@@ -52,7 +52,6 @@ class DefaultVocabularyDetailView(DetailView):
 
     def __init__(self, **kwargs):
         super(DefaultVocabularyDetailView, self).__init__(**kwargs)
-        # self.object = kwargs[]
         self.vocabulary = kwargs['vocabulary']
         self.vocabulary_verbose = kwargs['vocabulary_verbose']
 
@@ -62,6 +61,7 @@ class DefaultVocabularyDetailView(DetailView):
         context['vocabulary_verbose'] = self.vocabulary_verbose
         context['vocabulary'] = self.vocabulary
         context['create_url'] = self.vocabulary + '_form'
+        context['detail_url'] = self.vocabulary + '_detail'
         return context
 
     def get_object(self, queryset=None):

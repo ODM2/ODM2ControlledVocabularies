@@ -20,6 +20,9 @@
                 </span>
             </h2>
             <h4>{{ object.definition }}</h4>
+            {% if object.vocabulary_status == 'Archived' %}
+                <h4>WARNING: This is an archived version of <a href="{% url detail_url object.term %}">this term</a>.</h4>
+            {% endif %}
         </header>
 
         <div class="column two-columns data-view">
@@ -32,4 +35,20 @@
         </div>
         <div class="clear"></div>
     </section>
+
+    {% if user.is_staff %}
+        <section class="previous-versions">
+            <h3>Previous Version(s) of this term:</h3>
+            <table>
+                <tbody>
+                    {% for revision in object.previous_versions.all %}
+                        <tr><td><a href="{% url detail_url revision.revised_vocabulary.term revision.revised_vocabulary.pk %}">{{ revision.revised_vocabulary.term }}</a>: {{ revision.revised_vocabulary.definition }}</td></tr>
+                    {% empty %}
+                        <tr>This term has not been under revision.</tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </section>
+    {% endif %}
 {% endblock %}
