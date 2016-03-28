@@ -1,67 +1,47 @@
-from django.http import HttpResponse
-
+from django.db.models.query_utils import Q
+from django.http.response import HttpResponse
 from tastypie.bundle import Bundle
-from tastypie.serializers import Serializer
 from tastypie.resources import ModelResource
+from tastypie.serializers import Serializer
 from tastypie.utils.mime import build_content_type
+from cvservices.models import ControlledVocabulary
 
-from .models import Scheme, Namespace, Node, FieldRelation
+from .models import Scheme, FieldRelation
 
 from rdflib import Graph, URIRef, Literal
-from rdflib import Namespace as ns
+from rdflib import Namespace
 from rdflib.namespace import SKOS, RDF
 
 from collections import OrderedDict
-import logging
 import csv
 import StringIO
-
-class ModelRdfResource(ModelResource):
-    scheme = None
-
-    def create_response(self, request, data, response_class=HttpResponse,
-                        **response_kwargs):
-        """
-        Extracts the common "which-format/serialize/return-response" cycle.
-        Mostly a useful shortcut/hook.
-        """
-        desired_format = self.determine_format(request)
-        serialized = (
-            self.serialize(request, data, desired_format,
-                           options={'scheme': self.scheme}))
-
-        return (response_class(content=serialized,
-                content_type=build_content_type(desired_format),
-                **response_kwargs))
-
 
 
 class RdfSerializer(Serializer):
     formats = ['json', 'skos', 'csv']
     content_types = {
         'json': 'application/json',
-        #'skos': 'application/rdf+xml'
         'skos': 'text/plain',
         'csv': 'text/csv'
     }
 
     def to_csv(self, data, options=None):
-        options = options or {}
-        data = self.to_simple(data, options)
-        raw_data = StringIO.StringIO()
-        
         first = True
+        options = options or {}
+        excluded_fields = [u'vocabulary_id', u'vocabulary_status', u'resource_uri']
+        raw_data = StringIO.StringIO()
+        data = self.to_simple(data, options)
 
-        scheme = Scheme.objects.get(name=options['scheme'])
-        
         # Entire CV
         if "meta" in data.keys():
             objects = data.get("objects")
-            print objects 
+
             for value in objects:
                 test = {}
+                for excluded_field in excluded_fields:
+                    del value[excluded_field]
                 self.flatten(value, test)
-                
+
                 odict = OrderedDict()
                 odict['term'] = test['term']
                 del test['term']
@@ -104,26 +84,26 @@ class RdfSerializer(Serializer):
                 if 'dimension_light' in test:
                     odict['dimension_light'] = test['dimension_light']
                     del test['dimension_light']
-                
-                del test['resource_uri']
-                
-                odict.update(test)
-                #odict['resource_uri'] = scheme.uri
-                
-                if first:
 
+                odict.update(test)
+                writer = csv.DictWriter(raw_data, odict.keys())
+
+                if first:
                     writer = csv.DictWriter(raw_data, odict.keys())
                     writer.writeheader()
                     writer.writerow(odict)
                     first = False
                 else:
-                    writer.writerow({k:(v.encode('utf-8') if isinstance(v, int) is not True and isinstance(v, type(None)) is not True else v) for k,v in odict.items()})
-                    #writer.writerow(odict)
+                    writer.writerow({k: (v.encode('utf-8') if isinstance(v, int) is not True and isinstance(v, type(
+                        None)) is not True else v) for k, v in odict.items()})
+
         # Single Term
         else:
             test = {}
+            for excluded_field in excluded_fields:
+                del data[excluded_field]
+
             self.flatten(data, test)
-            
             odict = OrderedDict()
             odict['term'] = test['term']
             del test['term']
@@ -139,7 +119,7 @@ class RdfSerializer(Serializer):
             del test['provenance_uri']
             odict['note'] = test['note']
             del test['note']
-           
+
             if 'default_unit' in test:
                 odict['default_unit'] = test['default_unit']
                 del test['default_unit']
@@ -167,22 +147,23 @@ class RdfSerializer(Serializer):
             if 'dimension_light' in test:
                 odict['dimension_light'] = test['dimension_light']
                 del test['dimension_light']
-            del test['resource_uri']
+
             odict.update(test)
-            #odict['resource_uri'] = scheme.uri + "/" + odict['term']
+
+            writer = csv.DictWriter(raw_data, odict.keys())
             if first:
-                writer = csv.DictWriter(raw_data, odict.keys())
                 writer.writeheader()
-                #writer.writerow(odict)
-                writer.writerow({k:(v.encode('utf-8') if isinstance(v, int) is not True and isinstance(v, type(None)) is not True else v) for k,v in odict.items()})
+                writer.writerow({k: (
+                    v.encode('utf-8') if isinstance(v, int) is not True and isinstance(v, type(
+                        None)) is not True else v) for k, v in odict.items()})
                 first = False
             else:
                 writer.writerow(odict)
-        
+
         csv_content = raw_data.getvalue()
         return csv_content
 
-    def flatten(self, data, odict = {}):
+    def flatten(self, data, odict={}):
         if isinstance(data, list):
             for value in data:
                 self.flatten(value, odict)
@@ -193,19 +174,20 @@ class RdfSerializer(Serializer):
                 else:
                     self.flatten(value, odict)
 
-
     def to_skos(self, data, options=None):
         """
         Given some data, converts that data to an rdf skos format in xml.
         """
         # element = {}
         # get scheme: resource being requested. actionTypeCV, methodTypeCV, etc.
+
         scheme = Scheme.objects.get(name=options['scheme'])
+        excluded_fields = [u'term', u'resource_uri', u'vocabulary_id', u'vocabulary_status']
 
         baseURI = 'http://vocabulary.odm2.org/ODM2/ODM2Terms/'
         graph = Graph()
-        odm2 = ns(baseURI)
-        dc = ns('http://purl.org/dc/elements/1.1/')
+        odm2 = Namespace(baseURI)
+        dc = Namespace('http://purl.org/dc/elements/1.1/')
 
         graph.bind('odm2', odm2)
         graph.bind('skos', SKOS)
@@ -213,7 +195,7 @@ class RdfSerializer(Serializer):
 
         # If requesting an entire CV.
         if isinstance(data, dict):
-	        #print data
+            # print data
             # Add a SKOS ConceptScheme class to the graph.
             (graph.add((URIRef(scheme.uri), RDF['type'],
                         SKOS['ConceptScheme'])))
@@ -238,39 +220,37 @@ class RdfSerializer(Serializer):
                         label = ''
                     if isinstance(label, int):
                         label = str(label)
-                    # Skip resource_uri and term elements.
-                    # TODO: remove these elements entirely?
-                    if x == u'resource_uri' or x == 'term':
+                    # Skip excluded field elements.
+                    if x in excluded_fields:
                         continue
                     # Skip empty elements.
                     elif label.rstrip('\r\n') == '':
                         continue
                     else:
                         alias = str(FieldRelation.objects.get(
-                                    field_name=x).node.namespace)
+                            field_name=x).node.namespace)
                         if alias == 'odm2':
                             (graph.add((URIRef(scheme.uri + '/' +
-                                        concept.obj.term),
+                                               concept.obj.term),
                                         odm2[FieldRelation.objects
                                         .get(field_name=x).node.name],
                                         Literal(
-                                        label.rstrip('\r\n')))))
+                                            label.rstrip('\r\n')))))
                         else:
                             (graph.add((URIRef(scheme.uri + '/' +
-                                        concept.obj.term),
+                                               concept.obj.term),
                                         SKOS[FieldRelation.objects
                                         .get(field_name=x).node.name],
                                         Literal(label.rstrip('\r\n')))))
 
         # If requesting a single Concept
-        # TODO: Return the Concept Scheme as well.
         elif isinstance(data, Bundle):
             # Add a SKOS ConceptScheme class to the graph.
             (graph.add((URIRef(scheme.uri), RDF['type'],
                         SKOS['ConceptScheme'])))
             (graph.add((URIRef(scheme.uri), dc['title'],
                         Literal(scheme.title))))
-	    (graph.add((URIRef(scheme.uri), dc['creator'],
+            (graph.add((URIRef(scheme.uri), dc['creator'],
                         Literal(scheme.creator))))
             (graph.add((URIRef(scheme.uri), dc['description'],
                         Literal(scheme.description))))
@@ -289,12 +269,11 @@ class RdfSerializer(Serializer):
                 if isinstance(label, int):
                     label = str(label)
 
-                if field == 'term' or field == u'resource_uri':
+                if field in excluded_fields:
                     continue
                 elif label.rstrip('\r\n') == '':
                     continue
                 else:
-                    #print "$$$$ field", field
                     relation = FieldRelation.objects.get(field_name=field)
                     alias = relation.node.namespace.alias
                     if alias == u'odm2':
@@ -313,3 +292,26 @@ class RdfSerializer(Serializer):
         # 'pretty-xml' so that the Concept Scheme remains on its own level,
         # rather than inside one of the concepts.
         return graph.serialize(format='xml')
+
+
+class ModelRdfResource(ModelResource):
+    scheme = None
+    vocabulary_filter = Q(vocabulary_status=ControlledVocabulary.CURRENT)
+
+    class Meta:
+        max_limit = 0
+        serializer = RdfSerializer()
+
+    def create_response(self, request, data, response_class=HttpResponse, **response_kwargs):
+        """
+        Extracts the common "which-format/serialize/return-response" cycle.
+        Mostly a useful shortcut/hook.
+        """
+        desired_format = self.determine_format(request)
+        serialized = (
+            self.serialize(request, data, desired_format,
+                           options={'scheme': self.scheme}))
+
+        return (response_class(content=serialized,
+                               content_type=build_content_type(desired_format),
+                               **response_kwargs))
