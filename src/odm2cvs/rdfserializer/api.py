@@ -1,3 +1,4 @@
+from django.conf.urls import url
 from django.db.models.query_utils import Q
 from django.http.response import HttpResponse
 from tastypie.bundle import Bundle
@@ -300,7 +301,14 @@ class ModelRdfResource(ModelResource):
 
     class Meta:
         max_limit = 0
+        detail_uri_name = 'term'
         serializer = RdfSerializer()
+
+    def prepend_urls(self):
+        return [
+            url(r'^(?P<resource_name>%s)/(?P<term>[\w\.-]+)/$' % self._meta.resource_name,
+                self.wrap_view('dispatch_detail'), name='api_dispatch_detail'),
+        ]
 
     def create_response(self, request, data, response_class=HttpResponse, **response_kwargs):
         """
