@@ -31,6 +31,15 @@ def forwards(apps, schema_editor):
         node(name='offset1', namespace_id='odm2'),
         node(name='offset2', namespace_id='odm2'),
         node(name='offset3', namespace_id='odm2'),
+        node(name='defaultUnit', namespace_id='odm2'),
+        node(name='dimensionSymbol', namespace_id='odm2'),
+        node(name='dimensionLength', namespace_id='odm2'),
+        node(name='dimensionMass', namespace_id='odm2'),
+        node(name='dimensionTime', namespace_id='odm2'),
+        node(name='dimensionCurrent', namespace_id='odm2'),
+        node(name='dimensionTemperature', namespace_id='odm2'),
+        node(name='dimensionAmount', namespace_id='odm2'),
+        node(name='dimensionLight', namespace_id='odm2'),
     ])
 
     field_relation.objects.using(db_alias).bulk_create([
@@ -56,6 +65,24 @@ def forwards(apps, schema_editor):
                        node=node.objects.using(db_alias).get(name='offset2', namespace_id='odm2')),
         field_relation(field_name='offset3',
                        node=node.objects.using(db_alias).get(name='offset3', namespace_id='odm2')),
+        field_relation(field_name='default_unit',
+                       node=node.objects.using(db_alias).get(name='defaultUnit', namespace_id='odm2')),
+        field_relation(field_name='dimension_symbol',
+                       node=node.objects.using(db_alias).get(name='dimensionSymbol', namespace_id='odm2')),
+        field_relation(field_name='dimension_length',
+                       node=node.objects.using(db_alias).get(name='dimensionLength', namespace_id='odm2')),
+        field_relation(field_name='dimension_mass',
+                       node=node.objects.using(db_alias).get(name='dimensionMass', namespace_id='odm2')),
+        field_relation(field_name='dimension_time',
+                       node=node.objects.using(db_alias).get(name='dimensionTime', namespace_id='odm2')),
+        field_relation(field_name='dimension_current',
+                       node=node.objects.using(db_alias).get(name='dimensionCurrent', namespace_id='odm2')),
+        field_relation(field_name='dimension_temperature',
+                       node=node.objects.using(db_alias).get(name='dimensionTemperature', namespace_id='odm2')),
+        field_relation(field_name='dimension_amount',
+                       node=node.objects.using(db_alias).get(name='dimensionAmount', namespace_id='odm2')),
+        field_relation(field_name='dimension_light',
+                       node=node.objects.using(db_alias).get(name='dimensionLight', namespace_id='odm2')),
     ])
 
     scheme.objects.using(db_alias).bulk_create([
@@ -110,6 +137,12 @@ def forwards(apps, schema_editor):
                            'Examples include sensors, batteries, radios, dataloggers, samplers, etc.',
                uri='http://vocabulary.odm2.org/equipmenttype'
                ),
+
+        scheme(name='medium', title='ODM2 Medium Type Controlled Vocabulary', creator='ODM2 Group',
+               description='A vocabulary for describing the physical medium of a specimen, '
+                           'reference material, or sampled environment.',
+               uri='http://vocabulary.odm2.org/medium'
+               ),
         scheme(name='methodType', title='ODM2 MethodType Controlled Vocabulary', creator='ODM2 Working Group',
                description='A vocabulary for describing types of Methods associated with creating observations. '
                            'MethodTypes correspond with ActionTypes in ODM2. An Action must be performed using '
@@ -136,11 +169,6 @@ def forwards(apps, schema_editor):
                description='A vocabulary for describing the quality of the observation.',
                uri='http://vocabulary.odm2.org/qualitycode'
                ),
-        scheme(name='referenceMaterialMedium', title='ODM2 Reference Material Medium Controlled Vocabulary',
-               creator='ODM2 Working Group',
-               description='A vocabulary for describing the physical medium of a reference material.',
-               uri='http://vocabulary.odm2.org/referencematerialmedium'
-               ),
         scheme(name='relationshipType', title='ODM2 Controlled Vocabulary Relationship Type CV Relationship Type CV',
                creator='ODM2 Working Group',
                description='A vocabulary for describing the type of relationship between two entities in an'
@@ -155,12 +183,6 @@ def forwards(apps, schema_editor):
                            'Each ResultType has a set of related tables for storing the data values '
                            'for any result of that type.',
                uri='http://vocabulary.odm2.org/resulttype'
-               ),
-        scheme(name='sampledMedium', title='ODM2 Sampled Medium Controlled Vocabulary', creator='ODM2 Working Group',
-               description='A vocabulary for describing the physical medium within which an observation was made. '
-                           'For sensors this will be the physical medium in which the sensor is placed to '
-                           'make measurements. For Specimens, this will be the physical medium that was sampled.',
-               uri='http://vocabulary.odm2.org/sampledmedium'
                ),
         scheme(name='samplingFeatureGeotype', title='ODM2 Sampling Feature Geo-type Controlled Vocabulary',
                creator='ODM2 Working Group',
@@ -195,10 +217,6 @@ def forwards(apps, schema_editor):
                description='A vocabulary for describing the speciation in which a measured variable is expressed.',
                uri='http://vocabulary.odm2.org/speciation'
                ),
-        scheme(name='specimenMedium', title='ODM2 Specimen Medium Controlled Vocabulary', creator='ODM2 Working Group',
-               description='A vocabulary for describing the physical medium of a physical Specimen.',
-               uri='http://vocabulary.odm2.org/specimenmedium'
-               ),
         scheme(name='specimenType', title='ODM2 Specimen Type Controlled Vocabulary', creator='ODM2 Working Group',
                description='A vocabulary for describing the type of a physical Specimen.',
                uri='http://vocabulary.odm2.org/specimentype'
@@ -215,6 +233,10 @@ def forwards(apps, schema_editor):
                            'in an ODM2 database have been drawn. Taxonomic classifiers provide a way to classify '
                            'Results and Specimens according to terms from a formal taxonomy.',
                uri='http://vocabulary.odm2.org/taxonomicclassifiertype'
+               ),
+        scheme(name='unitsType', title='ODM2 Units Type Controlled Vocabulary', creator='ODM2 Working Group',
+               description='A vocabulary for describing the type of units in which a Result is expressed.',
+               uri='http://vocabulary.odm2.org/unitstype'
                ),
         scheme(name='variableName', title='ODM2 Variable Name Controlled Vocabulary', creator='ODM2 Working Group',
                description='A vocabulary for describing the name of Variables.',
