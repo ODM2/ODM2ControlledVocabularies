@@ -47,7 +47,7 @@ class DefaultVocabularyListView(ListView):
 class DefaultVocabularyDetailView(DetailView):
     vocabulary = None
     vocabulary_verbose = None
-    exclude = ['name', 'definition', 'vocabulary_id', 'controlledvocabulary_ptr', 'vocabulary_status']
+    exclude = ['name', 'definition', 'vocabulary_id', 'controlledvocabulary_ptr', 'vocabulary_status', 'previous_version']
     slug_field = 'term'
 
     def __init__(self, **kwargs):
@@ -109,7 +109,7 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
     accept_button = 'request_accept'
     reject_button = 'request_reject'
     success_message = 'The request has been updated.'
-    exclude = ['request_id', 'term', 'status', 'date_submitted', 'date_status_changed',
+    exclude = ['request_id', 'status', 'date_submitted', 'date_status_changed',
                'request_for', 'original_request', 'submitter_name', 'submitter_email']
     read_only = []
 
@@ -232,7 +232,6 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
         context['request_verbose'] = self.request_verbose
         context['vocabulary_verbose'] = self.vocabulary_verbose
         context['vocabulary'] = self.vocabulary
-        context['term'] = self.kwargs['term'] if 'term' in self.kwargs else ''
         return context
 
     def get_initial(self):
