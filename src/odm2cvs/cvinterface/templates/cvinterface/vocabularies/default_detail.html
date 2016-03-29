@@ -40,22 +40,13 @@
 
     {% if user.is_staff %}
         <section class="previous-versions">
-            <h3>Previous Version of this term:</h3>
-            <table>
-                <tbody>
+            <div class="column two-columns data-view">
+                <h4>
                     {% if object.previous_version %}
-                        <tr><td><a href="{% url detail_url object.previous_version.term object.previous_version.pk %}">{{ object.previous_version.term }}</a>: {{ object.previous_version.definition }}</td></tr>
-                    {% else %}
-                        <tr>This term has not been under revision.</tr>
+                        Previous version of this term: <br><a href="{% url detail_url object.previous_version.term object.previous_version.pk %}">{{ object.previous_version.term }}</a> {{ object.previous_version.definition }}
                     {% endif %}
-{#                    {% for revision in object.previous_versions.all %}#}
-{#                        <tr><td><a href="{% url detail_url revision.revised_vocabulary.term revision.revised_vocabulary.pk %}">{{ revision.revised_vocabulary.term }}</a>: {{ revision.revised_vocabulary.definition }}</td></tr>#}
-{#                    {% empty %}#}
-{#                        <tr>This term has not been under revision.</tr>#}
-{#                    {% endfor %}#}
-                </tbody>
-            </table>
-
+                </h4>
+            </div>
         </section>
     {% endif %}
 {% endblock %}
