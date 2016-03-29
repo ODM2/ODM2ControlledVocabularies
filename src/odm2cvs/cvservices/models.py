@@ -80,6 +80,8 @@ class ControlledVocabularyRequest(models.Model):
 
     class Meta:
         db_table = 'requests'
+        ordering = ["date_submitted", "-request_id"]
+
 
 
 class AbstractActionType(models.Model):
@@ -128,7 +130,6 @@ class UnitsTypeRequest(ControlledVocabularyRequest, AbstractUnitsType):
     class Meta:
         db_table = 'unitstypecvrequests'
         verbose_name = 'Units Type Request'
-        ordering = ["name"]
 
 
 class ActionType(ControlledVocabulary, AbstractActionType):
@@ -142,7 +143,6 @@ class ActionTypeRequest(ControlledVocabularyRequest, AbstractActionType):
     class Meta:
         db_table = 'actiontypecvrequests'
         verbose_name = 'Action Type Request'
-        ordering = ["name"]
 
 
 class MethodType(ControlledVocabulary):
@@ -156,7 +156,6 @@ class MethodTypeRequest(ControlledVocabularyRequest):
     class Meta:
         db_table = 'methodtypecvrequests'
         verbose_name = 'Method Type Request'
-        ordering = ["name"]
 
 
 class OrganizationType(ControlledVocabulary):
@@ -170,7 +169,6 @@ class OrganizationTypeRequest(ControlledVocabularyRequest):
     class Meta:
         db_table = 'organizationtypecvrequests'
         verbose_name = 'Organization Type Request'
-        ordering = ["name"]
 
 
 class SamplingFeatureGeotype(ControlledVocabulary):

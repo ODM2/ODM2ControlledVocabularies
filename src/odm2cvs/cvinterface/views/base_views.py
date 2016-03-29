@@ -92,8 +92,7 @@ class DefaultRequestListView(ListView):
         self.vocabulary = kwargs['vocabulary']
         self.vocabulary_verbose = kwargs['vocabulary_verbose']
         self.request = kwargs['request']
-        self.queryset = self.model.objects.filter(status=self.model.PENDING)  \
-                        | self.model.objects.filter(original_request__isnull=False)
+        self.queryset = self.get_queryset().exclude(status=self.model.ARCHIVED)
 
     def get_context_data(self, **kwargs):
         context = super(DefaultRequestListView, self).get_context_data(**kwargs)
