@@ -109,7 +109,8 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
     accept_button = 'request_accept'
     reject_button = 'request_reject'
     success_message = 'The request has been updated.'
-    exclude = ['request_id', 'term', 'status', 'date_submitted', 'date_status_changed', 'request_for', 'original_request']
+    exclude = ['request_id', 'term', 'status', 'date_submitted', 'date_status_changed',
+               'request_for', 'original_request', 'submitter_name', 'submitter_email']
     read_only = []
 
     @method_decorator(login_required(login_url=reverse_lazy('login')))

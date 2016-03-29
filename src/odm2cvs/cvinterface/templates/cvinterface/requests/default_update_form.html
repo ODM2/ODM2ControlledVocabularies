@@ -11,7 +11,9 @@
                 </span>
             </h2>
             <h4 class="request-info-box">
-                <span class="request-info">Requested on {{ object.date_submitted }}</span>
+                <span class="request-info">Requested on {{ object.date_submitted }} by {{ object.submitter_name }}
+                    &lt;<a href="mailto:{{ object.submitter_email }}">{{ object.submitter_email }}</a>&gt;
+                </span>
                 <span class="request-info">{{ object.status }} since {{ object.date_status_changed }}</span>
                 {% if object.original_request_id %}
                     <span class="request-info">
