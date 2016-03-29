@@ -3,6 +3,9 @@
 {% block body %}
     <section class="requests-table">
         <header>
+            <div class="vocabulary-links">
+                <a id="btnSeeVocabulary" href="{% url vocabulary %}" class="button white">See {{ vocabulary_verbose }} Terms</a>
+            </div>
             <h2>
                 {{ request_verbose }}s
                 <span class="parent-link">

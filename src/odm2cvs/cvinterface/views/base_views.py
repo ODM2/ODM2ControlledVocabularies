@@ -80,6 +80,7 @@ class DefaultRequestListView(ListView):
     request = None
     vocabulary = None
     request_verbose = None
+    vocabulary_verbose = None
 
     @method_decorator(login_required(login_url=reverse_lazy('login')))
     def dispatch(self, *args, **kwargs):
@@ -89,6 +90,7 @@ class DefaultRequestListView(ListView):
         super(DefaultRequestListView, self).__init__(**kwargs)
         self.request_verbose = kwargs['request_verbose']
         self.vocabulary = kwargs['vocabulary']
+        self.vocabulary_verbose = kwargs['vocabulary_verbose']
         self.request = kwargs['request']
         self.queryset = self.model.objects.filter(status=self.model.PENDING)  \
                         | self.model.objects.filter(original_request__isnull=False)
@@ -97,6 +99,8 @@ class DefaultRequestListView(ListView):
         context = super(DefaultRequestListView, self).get_context_data(**kwargs)
         context['request'] = self.request
         context['request_verbose'] = self.request_verbose
+        context['vocabulary'] = self.vocabulary
+        context['vocabulary_verbose'] = self.vocabulary_verbose
         context['update_url'] = self.vocabulary + '_update_form'
         return context
 

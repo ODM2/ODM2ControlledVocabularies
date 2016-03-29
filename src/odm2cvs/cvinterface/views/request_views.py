@@ -12,11 +12,13 @@ from cvinterface.control_vocabularies import requests, vocabularies, request_lis
 request_list_views = {}
 for request_name in requests:
     request = requests[request_name]
+    vocabulary_name = vocabularies[request['vocabulary']]['name']
     view = request['list_view'] if 'list_view' in request else request_list_view
     template = request['list_template'] if 'list_template' in request else request_list_template
 
     request_list_views[request_name] = view.as_view(request=request_name, model=request['model'],
-        vocabulary=request['vocabulary'], request_verbose=request['name'], template_name=template,
+        vocabulary=request['vocabulary'], request_verbose=request['name'],
+        template_name=template, vocabulary_verbose=vocabulary_name,
     )
 
 request_create_views = {}
