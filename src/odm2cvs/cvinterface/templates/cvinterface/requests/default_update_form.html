@@ -9,7 +9,7 @@
                 {% if object.request_for %}
                     (<a href="{% url vocabulary_detail_url object.request_for.term object.request_for.vocabulary_id %}">{{ object.status }}</a>)
                 {% else %}
-                    {{ object.status }}
+                    ({{ object.status }})
                 {% endif %}
                 <span class="vocabulary-type">{{ request_verbose }}</span>
                 <span class="parent-link">
