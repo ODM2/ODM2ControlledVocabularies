@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
-import datetime
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
-from uuid import uuid4
 
 from django.db import models
 
@@ -24,11 +23,21 @@ class ControlledVocabulary(models.Model):
     provenance_uri = models.URLField(db_column='provenanceUri', blank=True)
     note = models.TextField(blank=True, null=True)
     vocabulary_status = models.CharField(max_length=255, db_column='status', choices=STATUS_CHOICES, default=STATUS_CHOICES[0][0])
+    previous_version = models.OneToOneField('self', null=True, related_name='revised_version')
 
-    def get_archived_versions(self):
+    def has_revision(self):
+        revision = None
+        try:
+            revision = self.revised_version
+        except ObjectDoesNotExist:
+            pass
+        return revision is not None
+
+    def get_all_previous_versions(self):
         pass
 
     class Meta:
+        db_table = 'controlledvocabularies'
         ordering = ["-name"]
 
 
@@ -66,11 +75,8 @@ class ControlledVocabularyRequest(models.Model):
     request_for = models.ForeignKey('ControlledVocabulary', db_column='requestFor', blank=True, null=True)
     original_request = models.ForeignKey('self', db_column='originalRequestId', null=True)
 
-
-class VocabularyRevision(models.Model):
-    revision_id = models.AutoField(primary_key=True)
-    vocabulary = models.ForeignKey('ControlledVocabulary', related_name='previous_versions')
-    revised_vocabulary = models.ForeignKey('ControlledVocabulary', related_name='revisions')
+    class Meta:
+        db_table = 'requests'
 
 
 class AbstractActionType(models.Model):
@@ -110,7 +116,6 @@ class AbstractUnitsType(models.Model):
 
 class UnitsType(ControlledVocabulary, AbstractUnitsType):
     class Meta:
-        
         db_table = 'unitstypecv'
         verbose_name = 'Units Type'
         ordering = ["name"]
@@ -118,7 +123,6 @@ class UnitsType(ControlledVocabulary, AbstractUnitsType):
 
 class UnitsTypeRequest(ControlledVocabularyRequest, AbstractUnitsType):
     class Meta:
-        
         db_table = 'unitstypecvrequests'
         verbose_name = 'Units Type Request'
         ordering = ["name"]
@@ -126,7 +130,6 @@ class UnitsTypeRequest(ControlledVocabularyRequest, AbstractUnitsType):
 
 class ActionType(ControlledVocabulary, AbstractActionType):
     class Meta:
-        
         db_table = 'actiontypecv'
         verbose_name = 'Action Type'
         ordering = ["name"]
@@ -134,7 +137,6 @@ class ActionType(ControlledVocabulary, AbstractActionType):
 
 class ActionTypeRequest(ControlledVocabularyRequest, AbstractActionType):
     class Meta:
-        
         db_table = 'actiontypecvrequests'
         verbose_name = 'Action Type Request'
         ordering = ["name"]
@@ -142,7 +144,6 @@ class ActionTypeRequest(ControlledVocabularyRequest, AbstractActionType):
 
 class MethodType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'methodtypecv'
         verbose_name = 'Method Type'
         ordering = ["name"]
@@ -150,7 +151,6 @@ class MethodType(ControlledVocabulary):
 
 class MethodTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'methodtypecvrequests'
         verbose_name = 'Method Type Request'
         ordering = ["name"]
@@ -158,7 +158,6 @@ class MethodTypeRequest(ControlledVocabularyRequest):
 
 class OrganizationType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'organizationtypecv'
         verbose_name = 'Organization Type'
         ordering = ["name"]
@@ -166,7 +165,6 @@ class OrganizationType(ControlledVocabulary):
 
 class OrganizationTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'organizationtypecvrequests'
         verbose_name = 'Organization Type Request'
         ordering = ["name"]
@@ -174,7 +172,6 @@ class OrganizationTypeRequest(ControlledVocabularyRequest):
 
 class SamplingFeatureGeotype(ControlledVocabulary):
     class Meta:
-        
         db_table = 'samplingfeaturegeotypecv'
         verbose_name = 'Sampling Feature Geo-type'
         ordering = ["name"]
@@ -182,168 +179,144 @@ class SamplingFeatureGeotype(ControlledVocabulary):
 
 class SamplingFeatureGeotypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'samplingfeaturegeotypecvrequests'
         verbose_name = 'Sampling Feature Geo-type Request'
 
 
 class SamplingFeatureType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'samplingfeaturetypecv'
         verbose_name = 'Sampling Feature Type'
 
 
 class SamplingFeatureTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'samplingfeaturetypecvrequests'
         verbose_name = 'Sampling Feature Type Request'
 
 
 class SiteType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'sitetypecv'
         verbose_name = 'Site Type'
 
 
 class SiteTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'sitetypecvrequests'
         verbose_name = 'Site Type Request'
 
 
 class AggregationStatistic(ControlledVocabulary):
     class Meta:
-        
         db_table = 'aggregationstatisticcv'
         verbose_name = 'Aggregation Statistic'
 
 
 class AggregationStatisticRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'aggregationstatisticcvrequests'
         verbose_name = 'Aggregation Statistic Request'
 
 
 class AnnotationType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'annotationtypecv'
         verbose_name = 'Annotation Type'
 
 
 class AnnotationTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'annotationtypecvrequests'
         verbose_name = 'Annotation Type Request'
 
 
 class CensorCode(ControlledVocabulary):
     class Meta:
-        
         db_table = 'censorcodecv'
         verbose_name = 'Censor Code'
 
 
 class CensorCodeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'censorcodecvrequests'
         verbose_name = 'Censor Code Request'
 
 
 class DatasetType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'datasettypecv'
         verbose_name = 'Dataset Type'
 
 
 class DatasetTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'datasettypecvrequests'
         verbose_name = 'Dataset Type Request'
 
 
 class DirectiveType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'directivetypecv'
         verbose_name = 'Directive Type'
 
 
 class DirectiveTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'directivetypecvrequests'
         verbose_name = 'Directive Type Request'
 
 
 class ElevationDatum(ControlledVocabulary):
     class Meta:
-        
         db_table = 'elevationdatumcv'
         verbose_name = 'Elevation Datum'
 
 
 class ElevationDatumRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'elevationdatumcvrequests'
         verbose_name = 'Elevation Datum Request'
 
 
 class EquipmentType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'equipmenttypecv'
         verbose_name = 'Equipment Type'
 
 
 class EquipmentTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'equipmenttypecvrequests'
         verbose_name = 'Equipment Type Request'
 
 
 class PropertyDataType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'propertydatatypecv'
         verbose_name = 'Property Data Type'
 
 
 class PropertyDataTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'propertydatatypecvrequests'
         verbose_name = 'Property Data Type Request'
 
 
 class QualityCode(ControlledVocabulary):
     class Meta:
-        
         db_table = 'qualitycodecv'
         verbose_name = 'Quality Code'
 
 
 class QualityCodeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'qualitycodecvrequests'
         verbose_name = 'Quality Code Request'
 
 '''
 class ReferenceMaterialMedium(ControlledVocabulary):
     class Meta:
-        
         db_table = 'referencematerialmediumcv'
         verbose_name = 'Reference Material Medium'
 '''
@@ -351,28 +324,24 @@ class ReferenceMaterialMedium(ControlledVocabulary):
 
 class ReferenceMaterialMediumRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'referencematerialmediumcvrequests'
         verbose_name = 'Reference Material Medium Request'
 
 
 class ResultType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'resulttypecv'
         verbose_name = 'Result Type'
 
 
 class ResultTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'resulttypecvrequests'
         verbose_name = 'Result Type Request'
 
 '''
 class SampledMedium(ControlledVocabulary):
     class Meta:
-        
         db_table = 'sampledmediumcv'
         verbose_name = 'Sampled Medium'
 '''
@@ -380,42 +349,36 @@ class SampledMedium(ControlledVocabulary):
 
 class SampledMediumRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'sampledmediumcvrequests'
         verbose_name = 'Sampled Medium Request'
 
 
 class SpatialOffsetType(ControlledVocabulary, AbstractSpatialOffsetType):
     class Meta:
-        
         db_table = 'spatialoffsettypecv'
         verbose_name = 'Spatial Offset Type'
 
 
 class SpatialOffsetTypeRequest(ControlledVocabularyRequest, AbstractSpatialOffsetType):
     class Meta:
-        
         db_table = 'spatialoffsettypecvrequests'
         verbose_name = 'Spatial Offset Type Request'
 
 
 class Speciation(ControlledVocabulary):
     class Meta:
-        
         db_table = 'speciationcv'
         verbose_name = 'Speciation'
 
 
 class SpeciationRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'speciationcvrequests'
         verbose_name = 'Speciation Request'
 
 '''
 class SpecimenMedium(ControlledVocabulary):
     class Meta:
-        
         db_table = 'specimenmediumcv'
         verbose_name = 'Specimen Medium'
 '''
@@ -423,118 +386,101 @@ class SpecimenMedium(ControlledVocabulary):
 
 class SpecimenMediumRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'specimenmediumcvrequests'
         verbose_name = 'Specimen Medium Request'
 
 
 class SpecimenType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'specimentypecv'
         verbose_name = 'Specimen Type'
 
 
 class SpecimenTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'specimentypecvrequests'
         verbose_name = 'Specimen Type Request'
 
 
 class Status(ControlledVocabulary):
     class Meta:
-        
         db_table = 'statuscv'
         verbose_name = 'Status'
 
 
 class StatusRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'statuscvrequests'
         verbose_name = 'Status Request'
 
 
 class TaxonomicClassifierType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'taxonomicclassifiertypecv'
         verbose_name = 'Taxonomic Classifier Type'
 
 
 class TaxonomicClassifierTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'taxonomicclassifiertypecvrequests'
         verbose_name = 'Taxonomic Classifier Type Request'
 
 
 class VariableName(ControlledVocabulary):
     class Meta:
-        
         db_table = 'variablenamecv'
         verbose_name = 'Variable Name'
 
 
 class VariableNameRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'variablenamecvrequests'
         verbose_name = 'Variable Name Request'
 
 
 class VariableType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'variabletypecv'
         verbose_name = 'Variable Type'
 
 
 class VariableTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'variabletypecvrequests'
         verbose_name = 'Variable Type Request'
 
 
 class DataQualityType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'dataqualitytypecv'
         verbose_name = 'Data Quality Type'
 
 
 class DataQualityTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'dataqualitytypecvrequests'
         verbose_name = 'Data Quality Type Request'
 
 
 class RelationshipType(ControlledVocabulary):
     class Meta:
-        
         db_table = 'relationshiptypecv'
         verbose_name = 'Relationship Type'
 
 
 class RelationshipTypeRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'relationshiptypecvrequests'
         verbose_name = 'Relationship Type Request'
 
 
 class Medium(ControlledVocabulary):
     class Meta:
-        
         db_table = 'mediumcv'
         verbose_name = 'Medium'
 
 
 class MediumRequest(ControlledVocabularyRequest):
     class Meta:
-        
         db_table = 'mediumcvrequests'
         verbose_name = 'Medium Request'
