@@ -134,6 +134,7 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
         context['request_verbose'] = self.request_verbose
         context['update_url'] = self.vocabulary + '_update_form'
         context['vocabulary'] = self.vocabulary
+        context['vocabulary_detail_url'] = self.vocabulary + '_detail'
         context['success_view'] = 'request_success'
         return context
 

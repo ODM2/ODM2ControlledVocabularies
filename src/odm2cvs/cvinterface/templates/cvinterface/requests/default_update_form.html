@@ -5,7 +5,13 @@
     <section class="request-update">
         <header>
             <h2>
-                {{ object.term }} ({{ object.status }})<span class="vocabulary-type">{{ request_verbose }}</span>
+                {{ object.term }}
+                {% if object.request_for %}
+                    (<a href="{% url vocabulary_detail_url object.request_for.term object.request_for.vocabulary_id %}">{{ object.status }}</a>)
+                {% else %}
+                    {{ object.status }}
+                {% endif %}
+                <span class="vocabulary-type">{{ request_verbose }}</span>
                 <span class="parent-link">
                     <a href="{% url request_name %}" class="tooltip" data-tip="Navigate to the {{ request_verbose }}s list.">⤴</a>
                 </span>
