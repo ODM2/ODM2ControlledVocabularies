@@ -15,7 +15,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 
 
 # Vocabulary Basic Views
-from cvservices.models import ControlledVocabularyRequest, VocabularyRevision
+from cvservices.models import ControlledVocabularyRequest
 
 
 class DefaultVocabularyListView(ListView):
@@ -170,13 +170,13 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
             if field in request_fields:
                 vocabulary.__setattr__(field, form.instance.__getattribute__(field))
 
-        vocabulary.vocabulary_status = self.vocabulary_model.CURRENT
-        vocabulary.save()
-
         if is_editing_term:
-            VocabularyRevision.objects.create(vocabulary=vocabulary, revised_vocabulary=form.instance.request_for)
+            vocabulary.previous_version = form.instance.request_for
             form.instance.request_for.vocabulary_status = self.vocabulary_model.ARCHIVED
             form.instance.request_for.save()
+
+        vocabulary.vocabulary_status = self.vocabulary_model.CURRENT
+        vocabulary.save()
 
         revised_request = self.save_revised_request(form, ControlledVocabularyRequest.ACCEPTED)
         revised_request.request_for = vocabulary

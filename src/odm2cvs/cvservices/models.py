@@ -33,8 +33,11 @@ class ControlledVocabulary(models.Model):
             pass
         return revision is not None
 
-    def get_all_previous_versions(self):
-        pass
+    def get_latest_version(self):
+        term = self
+        while term.has_revision():
+            term = term.revised_version
+        return term
 
     class Meta:
         db_table = 'controlledvocabularies'
