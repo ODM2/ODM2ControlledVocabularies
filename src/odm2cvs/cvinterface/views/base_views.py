@@ -218,6 +218,7 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
     vocabulary_verbose = None
     success_message = 'Your request has been made successfully.'
     exclude = ['request_id', 'status', 'date_submitted', 'date_status_changed', 'request_for', 'request_notes', 'original_request']
+    submitter_fields = ['submitter_name', 'submitter_email', 'request_reason']
 
     def __init__(self, **kwargs):
         super(DefaultRequestCreateView, self).__init__(**kwargs)
@@ -235,6 +236,7 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
         context['request_verbose'] = self.request_verbose
         context['vocabulary_verbose'] = self.vocabulary_verbose
         context['vocabulary'] = self.vocabulary
+        context['submitter_fields'] = self.submitter_fields
         return context
 
     def get_initial(self):
