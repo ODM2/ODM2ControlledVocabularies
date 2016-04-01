@@ -73,7 +73,7 @@ class ControlledVocabularyRequest(models.Model):
     request_notes = models.TextField(db_column='requestNotes', blank=True)
     submitter_name = models.CharField(max_length=255, db_column='submitterName', help_text="Enter your name.")
     submitter_email = models.CharField(max_length=255, db_column='submitterEmail', help_text="Enter your email address.")
-    request_reason = models.CharField(max_length=255, db_column='requestReason', help_text="Please enter a brief description of the reason for your submission (e.g., Term does not exist yet, Term is needed for my data use case, etc.)")
+    request_reason = models.TextField(db_column='requestReason', help_text="Please enter a brief description of the reason for your submission (e.g., Term does not exist yet, Term is needed for my data use case, etc.)")
 
     request_for = models.ForeignKey('ControlledVocabulary', db_column='requestFor', blank=True, null=True)
     original_request = models.ForeignKey('self', db_column='originalRequestId', null=True)
