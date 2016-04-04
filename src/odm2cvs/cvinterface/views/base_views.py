@@ -16,7 +16,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 
 
 # Vocabulary Basic Views
-from cvservices.models import ControlledVocabularyRequest
+from cvservices.models import ControlledVocabularyRequest, Unit
 
 
 class DefaultVocabularyListView(ListView):
@@ -310,3 +310,16 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
 
         send_mail(admins_email_subject, admins_email_message, settings.EMAIL_SENDER, settings.EMAIL_RECIPIENTS)
         send_mail(submitter_email_subject, submitter_email_message, settings.EMAIL_SENDER, [form.instance.submitter_email])
+
+
+class UnitsListView(ListView):
+    model = Unit
+    template_name = 'cvinterface/units/list.html'
+
+
+class UnitsDetailView(DetailView):
+    model = Unit
+    template_name = ''
+    exclude = ['unit_id']
+    slug_field = 'term'
+

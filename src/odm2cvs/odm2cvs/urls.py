@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
+from cvinterface.views.base_views import UnitsListView
 
 from cvservices.api import v1_api
 
@@ -23,6 +24,7 @@ urlpatterns = patterns('',
     url(r'^' + settings.SITE_URL + '$', VocabulariesView.as_view(), name='home'),
     url(r'^' + settings.SITE_URL + 'api/', include(v1_api.urls)),
     url(r'^' + settings.SITE_URL + 'admin/', include(admin.site.urls)),
+    url(r'^' + settings.SITE_URL + 'units/', UnitsListView.as_view(), name='units'),
     url(r'^' + settings.SITE_URL + 'requests/$', RequestsView.as_view(), name='requests_list'),
     url(r'^' + settings.SITE_URL + 'login/$', 'django.contrib.auth.views.login', login_configuration, name='login'),
     url(r'^' + settings.SITE_URL + 'logout/$', 'django.contrib.auth.views.logout', logout_configuration, name='logout'),
