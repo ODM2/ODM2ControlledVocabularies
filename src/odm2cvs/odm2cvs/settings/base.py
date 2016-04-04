@@ -28,8 +28,10 @@ except IOError:
     print("You need to setup the settings data file (see instructions in base.py file.)")
 
 
-#SECRET_KEY = 'thisistheamazingsecretkey!'
 SECRET_KEY = data["secret_key"]
+RECAPTCHA_KEY = data["recaptcha_secret_key"] if "recaptcha_secret_key" in data else ""
+RECAPTCHA_USER_KEY = data["recaptcha_user_key"] if "recaptcha_user_key" in data else ""
+RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify"
 
 ALLOWED_HOSTS = []
 

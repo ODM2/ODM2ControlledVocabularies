@@ -40,7 +40,7 @@
                             {% else %}
                                 {{ field|add_class:"form-input" }}
                             {% endif %}
-                    </div>
+                    </div> {% if field.field.required %} <span class="required-symbol">*</span> {% endif %}
                     <div class="form-errors-item">{{ field.errors }}</div>
                 </div>
             {% endfor %}

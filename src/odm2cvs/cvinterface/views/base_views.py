@@ -1,14 +1,15 @@
+import json
 from os import linesep
-from uuid import uuid4
+from urllib2 import Request, urlopen
 from string import capwords
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models.query_utils import Q
 
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.http import urlencode
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -216,6 +217,7 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
     request_verbose = None
     vocabulary_model = None
     vocabulary_verbose = None
+    recaptcha_key = settings.RECAPTCHA_KEY
     success_message = 'Your request has been made successfully.'
     exclude = ['request_id', 'status', 'date_submitted', 'date_status_changed', 'request_for', 'request_notes', 'original_request']
     submitter_fields = ['submitter_name', 'submitter_email', 'request_reason']
@@ -237,6 +239,7 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
         context['vocabulary_verbose'] = self.vocabulary_verbose
         context['vocabulary'] = self.vocabulary
         context['submitter_fields'] = self.submitter_fields
+        context['recaptcha_user_key'] = settings.RECAPTCHA_USER_KEY
         return context
 
     def get_initial(self):
@@ -251,9 +254,36 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
 
         return initial_data
 
+    def is_captcha_valid(self, form):
+        url = settings.RECAPTCHA_VERIFY_URL
+        captcha_response = form.data.get('g-recaptcha-response')
+
+        if not captcha_response:
+            form.add_error(None, 'You are not human!!')
+            return False
+
+        params = urlencode({
+            'secret': self.recaptcha_key,
+            'response': captcha_response,
+        })
+
+        request = Request(url=url, data=params, headers={
+            'Content-type': 'application/x-www-form-urlencoded',
+            'User-agent': 'reCAPTCHA Python'
+        })
+
+        response = urlopen(request)
+        return_values = json.loads(response.read())
+        return return_values["success"]
+
     def form_valid(self, form):
+        if not self.is_captcha_valid(form):
+            return super(DefaultRequestCreateView, self).form_invalid(form)
+
         if 'vocabulary_id' in self.kwargs:
             form.instance.request_for_id = self.kwargs['vocabulary_id']
+
+
 
         self.send_confirmation_email(form)
         return super(DefaultRequestCreateView, self).form_valid(form)

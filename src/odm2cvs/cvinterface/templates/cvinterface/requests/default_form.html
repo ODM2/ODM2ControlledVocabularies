@@ -33,10 +33,16 @@
                     {% endwith %}
                 {% endfor %}
 
+                <div class="list-item no-robots">
+                    <div class="g-recaptcha" data-sitekey="{{ recaptcha_user_key }}"></div>
+                    <div class="form-errors-item not-human-error">{% if '__all__' in form.errors %}{{ form.errors|get:'__all__' }}{% endif %}</div>
+                </div>
+
                 <div class="clear"></div>
                 <div class="form-buttons">
                     <input class="button white" type="submit" value="Submit Request">
                 </div>
+
             </form>
         </div>
         <div class="clear"></div>

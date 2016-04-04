@@ -164,12 +164,12 @@ footer.fix-width hr {
     padding: 15px 0;
 }
 
-.list-item.required:after {
-    content: '*';
+span.required-symbol {
     font-size: 1.2em;
     position: relative;
     top: .5em;
     left: .5em;
+    float: left;
 }
 
 .last-list-item {
@@ -345,6 +345,9 @@ form .list-item {
     color: rgba(255, 0, 0, .7);
     font-weight: 600;
     margin-left: 15px;
+    position: relative;
+    top: .35em;
+    left: 0.3em;
 }
 
 .errorlist {
@@ -359,8 +362,22 @@ form .list-item {
     font-size: 12px;
 }
 
+.g-recaptcha {
+    float: left;
+}
+
+.no-robots {
+    padding-top: 35px;
+    clear: left;
+}
+
 .form-buttons {
-    margin-top: 25px;
+    margin-top: 10px;
+}
+
+div.not-human-error {
+    display: inline-block;
+    float: left;
 }
 
 .form-input {
