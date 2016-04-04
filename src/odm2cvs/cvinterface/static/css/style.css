@@ -164,6 +164,14 @@ footer.fix-width hr {
     padding: 15px 0;
 }
 
+.list-item.required:after {
+    content: '*';
+    font-size: 1.2em;
+    position: relative;
+    top: .5em;
+    left: .5em;
+}
+
 .last-list-item {
     border-bottom: none;
     padding-bottom: 0;

@@ -32,7 +32,7 @@
         <form class="column three-columns data-view" action="" method="post">{% csrf_token %}
             {% for field in form %}
 
-                <div class="list-item column three-columns">
+                <div class="list-item column three-columns {% if field.field.required %}required{% endif %}">
                     <div class="form-label-item"><h3><label for="{{ field.id_for_label }}">{{ field.label }}</label></h3></div>
                     <div class="form-input-item">
                         {% if field.name in read_only or all_disabled %}
