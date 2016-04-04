@@ -329,6 +329,10 @@ form .list-item {
     margin-right: 10px;
 }
 
+.form-label-item label {
+    vertical-align: sub;
+}
+
 .form-input-item {
     float: left;
     width: 510px;
@@ -362,6 +366,7 @@ form .list-item {
 .form-input {
     width: 100%;
     padding: 5px;
+    font-size: 13.3px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -489,6 +494,7 @@ a.tooltip:hover:after {
     margin-bottom: -20px;
     font-size: 14px;
     width: 510px;
+    clear: both;
 }
 
 @media screen and (max-width: 1100px) {
