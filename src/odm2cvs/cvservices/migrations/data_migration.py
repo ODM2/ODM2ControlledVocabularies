@@ -45,7 +45,10 @@ def forwards(apps, schema_editor):
         data = get_data(os.path.join(data_path, 'data', vocabulary_name))
         map_data(vocabulary['model'], data, db_alias)
 
+
 class Migration(migrations.Migration):
+    initial = False
+
     dependencies = [
         ('cvservices', 'schema_migration'),
     ]
@@ -53,5 +56,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(
             forwards,
+            hints={'target_db': 'vocabularies'}
         ),
     ]

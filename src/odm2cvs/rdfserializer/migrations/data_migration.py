@@ -252,6 +252,7 @@ def forwards(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
+    initial = False
 
     dependencies = [
         ('rdfserializer', 'schema_migration'),
@@ -260,5 +261,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(
             forwards,
+            hints={'target_db': 'default'}
         ),
     ]

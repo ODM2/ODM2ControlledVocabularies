@@ -21,6 +21,7 @@ import json
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+data = {}
 try:
     with open(os.path.join(BASE_DIR, 'settings', 'settings.json')) as data_file:
         data = json.load(data_file)
@@ -28,7 +29,12 @@ except IOError:
     print("You need to setup the settings data file (see instructions in base.py file.)")
 
 
-SECRET_KEY = data["secret_key"]
+try:
+    SECRET_KEY = data["secret_key"]
+except KeyError:
+    print("The secret key is required in the settings.json file.")
+    exit(1)
+
 RECAPTCHA_KEY = data["recaptcha_secret_key"] if "recaptcha_secret_key" in data else ""
 RECAPTCHA_USER_KEY = data["recaptcha_user_key"] if "recaptcha_user_key" in data else ""
 RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify"
@@ -38,7 +44,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,9 +56,10 @@ INSTALLED_APPS = (
     'cvinterface',
     'rdfserializer',
     'widget_tweaks',
-)
+]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -60,9 +67,27 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
 
 ROOT_URLCONF = 'odm2cvs.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        ,
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
 WSGI_APPLICATION = 'odm2cvs.wsgi.application'
 
 
@@ -72,12 +97,30 @@ for database in data['databases']:
     DATABASES[database['name']] = {
         'ENGINE': database['engine'],
         'NAME': database['schema'],
-        'USER': database['user'],
-        'PASSWORD': database['password'],
-        'HOST': database['host'],
-        'PORT': database['port']
+        'USER': database['user'] if 'user' in database else '',
+        'PASSWORD': database['password'] if 'password' in database else '',
+        'HOST': database['host'] if 'host' in database else '',
+        'PORT': database['port'] if 'port' in database else '',
+        'OPTIONS': database['options'] if 'options' in database else ''
     }
 
+# Password validation
+# https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
 # Internationalization
 
@@ -92,10 +135,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, '../../templates'),
-)
-
 TASTYPIE_DEFAULT_FORMATS = ['json']
 
 API_LIMIT_PER_PAGE = 0
@@ -103,9 +142,9 @@ API_LIMIT_PER_PAGE = 0
 
 EMAIL_HOST = 'mail.usu.edu'
 
-EMAIL_SENDER = data['email_sender']
+EMAIL_SENDER = data['email_sender'] if 'email_sender' in data else '',
 
-EMAIL_RECIPIENTS = data['email_recipients']
+EMAIL_RECIPIENTS = data['email_recipients'] if 'email_recipients' in data else '',
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
