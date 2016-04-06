@@ -263,7 +263,9 @@ tr:nth-child(odd) td {
 /* Hover cell effect! */
 
 .vocabulary-links {
-    float: right;
+    padding-top: .5em;
+    margin-top: 1em;
+    border-top: 1px solid rgba(0,0,0,0.2);
 }
 
 .vocabulary-links .button {
@@ -537,6 +539,5 @@ a.tooltip:hover:after {
 
     .vocabulary-links {
         margin-bottom: 15px;
-        float: left;
     }
 }

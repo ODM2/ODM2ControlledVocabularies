@@ -3,9 +3,6 @@
 {% block body %}
     <section class="requests-table">
         <header>
-            <div class="vocabulary-links">
-                <a id="btnSeeVocabulary" href="{% url vocabulary %}" class="button white">See {{ vocabulary_verbose }} Terms</a>
-            </div>
             <h2>
                 {{ request_verbose }}s
                 <span class="parent-link">
@@ -13,6 +10,9 @@
                 </span>
             </h2>
             <h4>Users' requests for adding or modifying {{ request_verbose|cut:" Request" }} Controlled Vocabularies.</h4>
+            <div class="vocabulary-links">
+                <a id="btnSeeVocabulary" href="{% url vocabulary %}" class="button white">See {{ vocabulary_verbose }} Terms</a>
+            </div>
         </header>
         <div class="column three-columns">
             {% if not object_list %}
