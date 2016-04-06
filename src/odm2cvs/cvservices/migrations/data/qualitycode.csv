@@ -1,0 +1,6 @@
+term,name,definition,category,provenance,provenanceUri,note
+bad,Bad,"A quality assessment has been made and enough of the data quality objectives have not been met that the observation has been assessed to be of bad quality.",,,,
+good,Good,"A quality assessment has been made and all data quality objectives have been met.",,,,
+marginal,Marginal,"A quality assessment has been made and one or more data quality objectives has not been met. The observation may be suspect and has been assessed to be of marginal quality.",,,,
+none,None,"No data quality assessment has been made.",,,,
+unknown,Unknown,"The quality of the observation is unknown.",,,,

@@ -1,0 +1,6 @@
+term,name,definition,category,provenance,provenanceUri,note
+EGM96,EGM96,"EGM96 (Earth Gravitational Model 1996) is a geopotential model of the Earth consisting of spherical harmonic coefficients complete to degree and order 360.",,"See https://en.wikipedia.org/wiki/EGM96",,
+MSL,MSL,"Mean Sea Level",,"Originally from CUAHSI HIS ODM CV. See http://his.cuahsi.org/mastercvreg/edit_cv11.aspx?tbl=VerticalDatumCV.",,
+NAVD88,NAVD88,"North American Vertical Datum of 1988",,"Originally from CUAHSI HIS ODM CV. See http://his.cuahsi.org/mastercvreg/edit_cv11.aspx?tbl=VerticalDatumCV.",,
+NGVD29,NGVD29,"National Geodetic Vertical Datum of 1929",,"Originally from CUAHSI HIS ODM CV. See http://his.cuahsi.org/mastercvreg/edit_cv11.aspx?tbl=VerticalDatumCV.",,
+Unknown,Unknown,"The vertical datum is unknown",,"Originally from CUAHSI HIS ODM CV. See http://his.cuahsi.org/mastercvreg/edit_cv11.aspx?tbl=VerticalDatumCV.",,

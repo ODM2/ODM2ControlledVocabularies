@@ -1,0 +1,5 @@
+term,name,definition,category,provenance,provenanceUri,note
+complete,Complete,"Data collection is complete. No new data values will be added.",,,,
+ongoing,Ongoing,"Data collection is ongoing.  New data values will be added periodically.",,,,
+planned,Planned,"Data collection is planned. Resulting data values do not yet exist, but will eventually.",,,,
+unknown,Unknown,"The status of data collection is unknown.",,,,

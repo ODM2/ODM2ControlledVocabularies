@@ -212,12 +212,6 @@ requests = {
         'name': EquipmentTypeRequest._meta.verbose_name,
         'model': EquipmentTypeRequest,
     },
-    'methodtyperequest': {
-        'vocabulary': 'methodtype',
-        'vocabulary_model': MethodType,
-        'name': MethodTypeRequest._meta.verbose_name,
-        'model': MethodTypeRequest,
-    },
     'organizationtyperequest': {
         'vocabulary': 'organizationtype',
         'vocabulary_model': OrganizationType,

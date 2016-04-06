@@ -1,0 +1,6 @@
+term,name,definition,category,provenance,provenanceUri,note
+multiTimeSeries,"Multi-time series","A Dataset that contains multiple time series Results. This corresponds to the YAML Observations Data Archive (YODA) multi-time series profile.",,,,
+multiVariableSpecimenMeasurements,"Multi-variable specimen measurements","A dataset that contains multiple measurement Results derived from Specimens. This corresponds to the YAML Observations Data Archive (YODA) specimen time series profile.",,,,
+other,Other,"A set of Results that has been grouped into a Dataset because they are logically related. The group does not conform to any particular profile.",,,,
+singleTimeSeries,"Single time series","A Dataset that contains a single time series Result. This corresponds to the YAML Observations Data Archive (YODA) singe time series profile.",,,,
+specimenTimeSeries,"Specimen time series","A dataset that contains multiple measurement Results derived from Specimens. This corresponds to the YAML Observations Data Archive (YODA) specimen time series profile.",,,,

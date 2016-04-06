@@ -1,0 +1,7 @@
+term,name,definition,category,provenance,provenanceUri,note
+accuracy,Accuracy,"The degree of closeness of a measurement of a quantity to that quantity's true value.",,"Definition adapted from Wikipedia. See http://en.wikipedia.org/wiki/Accuracy_and_precision",,
+methodDetectionLimit,"Method detection limit","The minimum concentration of a substance that can be distinguished from the absence of that substance within a stated confidence limit (generally 1%) given a particular analytical method.",,"Definition adapted from Wikipedia. See http://en.wikipedia.org/wiki/Detection_limit.",,
+physicalLimitLowerBound,"Physical limit lower bound","This describes a numeric value below which measured values should be considered suspect. This numeric value should be empirically derived.",,,,
+physicalLimitUpperBound,"Physical limit upper bound","This describes a numeric value above which measured values should be considered suspect. This numeric value should be empirically derived.",,,,
+precision,Precision,"The degree to which repeated measurements under unchanged conditions show the same results.",,"Definition adapted from Wikipedia. See http://en.wikipedia.org/wiki/Accuracy_and_precision",,
+reportingLevel,"Reporting level","The smallest concentration of analyte that can be reported by laboratory.",,,,
