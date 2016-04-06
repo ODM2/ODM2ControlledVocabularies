@@ -10,7 +10,7 @@
                 <a id="btnAddNew" href="{% url create_url %}" class="button white">New</a>
                 <a id="btnSKOSVocab" target="_blank" href="{% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %}?format=skos" class="button white">View in SKOS</a>
                 <a id="btnSKOS" download="{{ vocabulary }}.rdf" href="{% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %}?format=skos" class="button white">Download Vocabulary (SKOS)</a>
-                <a id="btnSKOS" download="{{ vocabulary }}.csv" href="{% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %}?format=csv" class="button white">Download Vocabulary (CSV)</a>
+                <a id="btnCSV" download="{{ vocabulary }}.csv" href="{% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %}?format=csv" class="button white">Download Vocabulary (CSV)</a>
             </div>
             <h2>
                 {{ vocabulary_verbose }} Vocabulary

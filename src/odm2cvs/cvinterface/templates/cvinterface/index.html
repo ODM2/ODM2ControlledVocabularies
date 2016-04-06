@@ -36,12 +36,15 @@
             <h2>Controlled Vocabularies</h2>
         </header>
         {% for vocabulary in vocabulary_views %}
-            <div class="list-item column three-columns {% if forloop.last %} last-list-item {% endif %}">
+            <div class="list-item column three-columns">
                 <div class="list-title whole-spaced-title"><a href="{{ vocabulary.url }}"><h3>{{ vocabulary.name }}</h3></a></div>
                 <div class="list-description whole-spaced-description"><p>{{ vocabulary.definition }}</p></div>
             </div>
         {% endfor %}
+        <div class="list-item column three-columns last-list-item">
+            <div class="list-title whole-spaced-title"><a href="{% url 'units' %}"><h3>ODM2 Units</h3></a></div>
+            <div class="list-description whole-spaced-description"><p>Units are not treated as a CV in ODM2. However, we have provided this list of Units for those who may want to adopt and use them.</p></div>
+        </div>
         <div class="clear"></div>
     </section>
-
 {% endblock %}

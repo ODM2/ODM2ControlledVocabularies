@@ -7,15 +7,12 @@
 {% block body %}
     <section class="concepts-table">
         <header>
-{#            <div class="vocabulary-links">#}
-{#                <a id="btnAddNew" href="{% url create_url %}" class="button white">New</a>#}
-{#                <a id="btnSKOSVocab" target="_blank" href="{% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %}?format=skos" class="button white">View in SKOS</a>#}
-{#                <a id="btnSKOS" download="{{ vocabulary }}.rdf" href="{% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %}?format=skos" class="button white">Download Vocabulary (SKOS)</a>#}
-{#                <a id="btnSKOS" download="{{ vocabulary }}.csv" href="{% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %}?format=csv" class="button white">Download Vocabulary (CSV)</a>#}
-{#            </div>#}
+            <div class="vocabulary-links">
+                <a id="btnCSV" download="units.csv" href="{% url 'api_dispatch_list' resource_name='units' api_name='v1' %}?format=csv" class="button white">Download Units (CSV)</a>
+            </div>
             <h2>Units</h2>
             <div class="clear"></div>
-            <h4>Some introduction or text describing what units are and why they are important. or something.</h4>
+            <h4>Units are not treated as a CV in ODM2. However, we have provided this list of Units for those who may want to adopt and use them.</h4>
         </header>
 
         <div class="column three-columns">
@@ -25,15 +22,15 @@
                         <tr>
                             <th>Name</th>
                             <th>Abbreviation</th>
-                            <th>Type</th>
-                            <th>Link</th>
+                            <th>Unit Type</th>
+                            <th>Unit Links</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         {% for unit in object_list %}
                             <tr>
-                                <td><a>{{ unit.name }}</a></td>
+                                <td>{{ unit.name }}</td>
                                 <td>{{ unit.abbreviation }}</td>
                                 <td>{{ unit.type }}</td>
                                 <td>{{ unit.link }}</td>

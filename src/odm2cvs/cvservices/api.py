@@ -1,10 +1,109 @@
+import StringIO
+from collections import OrderedDict
+import csv
+from django.http.response import HttpResponse
 from tastypie.api import Api
+from tastypie.resources import ModelResource
+from tastypie.serializers import Serializer
+from tastypie.utils.mime import build_content_type
+from cvservices.models import Unit
 
 from rdfserializer.api import ModelRdfResource
 from models import ActionType, MethodType, OrganizationType, SamplingFeatureGeotype, SamplingFeatureType, SiteType, \
     AggregationStatistic, AnnotationType, CensorCode, DatasetType, DirectiveType, ElevationDatum, EquipmentType, \
     PropertyDataType, QualityCode, Medium, ResultType, SpatialOffsetType, UnitsType, Speciation, Status, \
     TaxonomicClassifierType, VariableName, VariableType, SpecimenType, DataQualityType, RelationshipType
+
+
+class CSVSerializer(Serializer):
+    formats = ['csv']
+    content_types = {
+        'csv': 'text/plain'
+    }
+
+    def to_csv(self, data, options=None, writer=None):
+        options = options or {}
+        data = self.to_simple(data, options)
+        excluded_fields = [u'resource_uri']
+
+        raw_data = StringIO.StringIO()
+        first = True
+
+        if "meta" in data.keys():
+            objects = data.get("objects")
+
+            for value in objects:
+                test = {}
+                for excluded_field in excluded_fields:
+                    del value[excluded_field]
+                self.flatten(value, test)
+
+                odict = OrderedDict()
+                odict['Term'] = test['term']
+                del test['term']
+                odict['UnitsName'] = test['name']
+                del test['name']
+                odict['UnitsTypeCV'] = test['type']
+                del test['type']
+                odict['UnitsAbbreviation'] = test['abbreviation']
+                del test['abbreviation']
+                odict['UnitsLink'] = test['link']
+                del test['link']
+
+                if first:
+                    writer = csv.DictWriter(raw_data, odict.keys())
+                    writer.writeheader()
+                    writer.writerow(odict)
+                    first = False
+                else:
+                    writer.writerow({k: (v.encode('utf-8') if isinstance(v, int) is not True and isinstance(v, type(
+                        None)) is not True else v) for k, v in odict.items()})
+        else:
+            test = {}
+            for excluded_field in excluded_fields:
+                del data[excluded_field]
+            self.flatten(data, test)
+            odict = OrderedDict()
+            odict['Term'] = test['term']
+            del test['term']
+            odict['UnitsName'] = test['name']
+            del test['name']
+            odict['UnitsTypeCV'] = test['type']
+            del test['type']
+            odict['UnitsAbbreviation'] = test['abbreviation']
+            del test['abbreviation']
+            odict['UnitsLink'] = test['link']
+            del test['link']
+
+            if first:
+                writer = csv.DictWriter(raw_data, odict.keys())
+                writer.writeheader()
+                writer.writerow(odict)
+                first = False
+            else:
+                writer.writerow(odict)
+        CSVContent = raw_data.getvalue()
+        return CSVContent
+
+    def flatten(self, data, odict={}):
+        if isinstance(data, list):
+            for value in data:
+                self.flatten(value, odict)
+        elif isinstance(data, dict):
+            for (key, value) in data.items():
+                if not isinstance(value, (dict, list)):
+                    odict[key] = value
+                else:
+                    self.flatten(value, odict)
+
+
+class UnitsResource(ModelResource):
+    class Meta:
+        queryset = Unit.objects.all()
+        serializer = CSVSerializer()
+        allowed_methods = ['get']
+        resource_name = 'units'
+        excludes = ['unit_id']
 
 
 class UnitsTypeResource(ModelRdfResource):
@@ -251,3 +350,4 @@ v1_api.register(DataQualityTypeResource())
 v1_api.register(RelationshipTypeResource())
 v1_api.register(MediumResource())
 v1_api.register(UnitsTypeResource())
+v1_api.register(UnitsResource())
