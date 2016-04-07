@@ -143,8 +143,10 @@ API_LIMIT_PER_PAGE = 0
 EMAIL_HOST = 'mail.usu.edu'
 
 EMAIL_SENDER = data['email_sender'] if 'email_sender' in data else '',
+EMAIL_SENDER = EMAIL_SENDER[0] if isinstance(EMAIL_SENDER, tuple) else EMAIL_SENDER
 
-EMAIL_RECIPIENTS = data['email_recipients'] if 'email_recipients' in data else '',
+EMAIL_RECIPIENTS = list(data['email_recipients']) if 'email_recipients' in data else [],
+EMAIL_RECIPIENTS = EMAIL_RECIPIENTS[0] if isinstance(EMAIL_RECIPIENTS, tuple) else EMAIL_RECIPIENTS
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
