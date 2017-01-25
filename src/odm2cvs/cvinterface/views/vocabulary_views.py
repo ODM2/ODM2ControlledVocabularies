@@ -1,7 +1,7 @@
 from operator import itemgetter
 
 from cvinterface.views.base_views import *
-from cvinterface.control_vocabularies import vocabularies, vocabulary_list_view, vocabulary_list_template, \
+from cvinterface.controlled_vocabularies import vocabularies, vocabulary_list_view, vocabulary_list_template, \
     vocabulary_detail_view, vocabulary_detail_template
 
 

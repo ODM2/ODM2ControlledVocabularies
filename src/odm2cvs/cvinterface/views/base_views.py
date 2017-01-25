@@ -283,8 +283,6 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
         if 'vocabulary_id' in self.kwargs:
             form.instance.request_for_id = self.kwargs['vocabulary_id']
 
-
-
         self.send_confirmation_email(form)
         return super(DefaultRequestCreateView, self).form_valid(form)
 

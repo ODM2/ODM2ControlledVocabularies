@@ -6,7 +6,7 @@ from django.views.generic import RedirectView
 from django.core.urlresolvers import reverse, reverse_lazy
 
 from cvinterface.views.base_views import *
-from cvinterface.control_vocabularies import requests, vocabularies, request_list_view, request_list_template, \
+from cvinterface.controlled_vocabularies import requests, vocabularies, request_list_view, request_list_template, \
     request_create_view, request_create_template, request_update_view, request_update_template
 
 request_list_views = {}

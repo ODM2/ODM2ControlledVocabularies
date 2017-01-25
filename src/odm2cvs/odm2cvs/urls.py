@@ -7,7 +7,7 @@ from cvinterface.views.base_views import UnitsListView
 
 from cvservices.api import v1_api
 
-from cvinterface.control_vocabularies import requests
+from cvinterface.controlled_vocabularies import requests
 from cvinterface.views.vocabulary_views import VocabulariesView, list_views, detail_views
 from cvinterface.views.request_views import RequestsView, \
     request_list_views, request_create_views, request_update_views

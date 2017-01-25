@@ -1,7 +1,0 @@
-term,name,definition,category,provenance,provenanceUri,note
-greaterThan,"Greater than","The value is known to be greater than the recorded value.",,"Adapted from CUAHSI HIS CensorCodeCV.  See: http://his.cuahsi.org/mastercvreg/edit_cv11.aspx?tbl=Cen",,
-lessThan,"Less than","The value is known to be less than the recorded value.",,"Adapted from CUAHSI HIS CensorCodeCV.  See: http://his.cuahsi.org/mastercvreg/edit_cv11.aspx?tbl=Cen",,
-nonDetect,Non-detect,"The value was reported as a non-detect. The recorded value represents the level at which the anlalyte can be detected.",,"Adapted from CUAHSI HIS CensorCodeCV.  See: http://his.cuahsi.org/mastercvreg/edit_cv11.aspx?tbl=Cen",,
-notCensored,"Not censored","The reported value is not censored.",,"Adapted from CUAHSI HIS CensorCodeCV.  See: http://his.cuahsi.org/mastercvreg/edit_cv11.aspx?tbl=Cen",,
-presentButNotQuantified,"Present but not quantified","The anlayte is known to be present, but was not quantified. The recorded value represents the level below which the analyte can no longer be quantified.",,"Adapted from CUAHSI HIS CensorCodeCV.  See: http://his.cuahsi.org/mastercvreg/edit_cv11.aspx?tbl=Cen",,
-unknown,Unknown,"It is unknown whether the data value as reported is censored.",,,,
