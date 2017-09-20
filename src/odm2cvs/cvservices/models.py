@@ -41,7 +41,7 @@ class ControlledVocabulary(models.Model):
 
     class Meta:
         db_table = 'controlledvocabularies'
-        ordering = ["-name"]
+        ordering = ["name"]
 
 
 class ControlledVocabularyRequest(models.Model):
