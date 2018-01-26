@@ -1,7 +1,9 @@
 # ODM2ControlledVocabularies
-A Python/Django web application and REST API for managing the ODM2 Controlled Vocabularies.
+A Python/Django web application and REST API for managing the ODM2 Controlled Vocabularies. This system provides the benefits of both:
+1. Community moderation features, for anyone to suggest edits to exisiting terms or propose new terms; and
+2. SKOS RESTful web services API, for automated machine-to-machine fetching and updating of vocabulary terms.
 
-This repository contains the source code for the master controlled vocabulary registry for the Observations Data Model 2 (ODM2).
+This repository contains the source code for the master controlled vocabulary registry web application for the Observations Data Model 2 (ODM2).
 
 The production Controlled Vocabulary website for ODM2 (which uses this code) can be accessed at:
 
