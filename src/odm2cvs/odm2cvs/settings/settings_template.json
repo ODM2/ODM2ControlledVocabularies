@@ -1,19 +1,31 @@
 {
-  "secret_key": "[secret key goes here]",
-  "static_root": "[static root goes here]",
-  "email_sender": "[email that will appear as the sender when CVs are added and accepted]",
-  "email_recipients": ["list of emails that will receive a notification when a CV has been added and need approval"],
-  "recaptcha_secret_key": "[secret key given by the google captcha service]",
-  "recaptcha_user_key": "[user key given by the google captcha service]",
+  "secret_key": "{string: secret key goes here}",
+  "debug_mode": "{boolean: flag to activate debug mode}",
+  "host": "{string: server main domain name}",
+  "host_alias": "{list: list of extra domain names to serve the application at}",
+  "static_root": "{string: static root path}",
+  "email_sender": "{string: email that will appear as the sender when CVs are added and accepted}",
+  "email_recipients": "{list: list of admin emails that will receive a notification whenever a CV has been added and needs approval}",
+  "recaptcha_secret_key": "{string: secret key given by the google captcha service}",
+  "recaptcha_user_key": "{string: user key given by the google captcha service}",
   "databases": [
     {
       "name": "default",
-      "schema": "[database name goes here]",
-      "engine": "[database engine goes here. (e.g. django.db.backends.mysql)]",
-      "user": "[database username goes here]",
-      "password": "[database password goes here]",
-      "host": "[database host goes here] (e.g. localhost)",
-      "port": "[database connection port goes here] (e.g. 3306)"
+      "schema": "{string: default database name}",
+      "engine": "{string: default database engine} (e.g. django.db.backends.mysql)",
+      "user": "{string: default database username}",
+      "password": "{string: default database password}",
+      "host": "{string: default database server name or ip} (e.g. localhost)",
+      "port": "{int: default database connection port} (e.g. 3306)"
+    },
+    {
+      "name": "vocabularies",
+      "schema": "{string: vocabularies database name}",
+      "engine": "{string: vocabularies database engine} (e.g. django.db.backends.mysql)",
+      "user": "{string: vocabularies database username}",
+      "password": "{string: vocabularies database password}",
+      "host": "{string: vocabularies database server name or ip} (e.g. localhost)",
+      "port": "{int: vocabularies database connection port} (e.g. 3306)"
     }
   ]
 }

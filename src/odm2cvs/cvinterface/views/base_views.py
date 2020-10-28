@@ -256,7 +256,7 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
 
     def is_captcha_valid(self, form):
         url = settings.RECAPTCHA_VERIFY_URL
-        captcha_response = form.data.get('g-recaptcha-response')
+        captcha_response = form.config.get('g-recaptcha-response')
 
         if not captcha_response:
             form.add_error(None, 'You are not human!!')

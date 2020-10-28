@@ -215,8 +215,8 @@ class RdfSerializer(Serializer):
                             SKOS['inScheme'], URIRef(scheme.uri))))
 
                 # Add labels to each concept class.
-                for x in concept.data:
-                    label = concept.data[x]
+                for x in concept.config:
+                    label = concept.config[x]
                     if isinstance(label, type(None)):
                         label = ''
                     if isinstance(label, int):
@@ -263,8 +263,8 @@ class RdfSerializer(Serializer):
                         SKOS['inScheme'], URIRef(scheme.uri))))
 
             # Add labels within concept class.
-            for field in data.data.keys():
-                label = data.data[field]
+            for field in data.config.keys():
+                label = data.config[field]
                 if isinstance(label, type(None)):
                     label = ''
                 if isinstance(label, int):
