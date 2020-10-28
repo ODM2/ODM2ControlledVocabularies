@@ -1,17 +1,15 @@
-class ControlledVocabularyRouter(object):
+class ControlledVocabularyRouter:
+    """
+    A router to control all database operations on models and web services.
+    """
+    route_app_labels = {'cvservices', 'rdfserializer'}
+
     def db_for_read(self, model, **hints):
-        if model._meta.app_label == 'cvservices':
+        if model._meta.app_label in self.route_app_labels:
             return 'vocabularies'
         return 'default'
 
     def db_for_write(self, model, **hints):
-        if model._meta.app_label == 'cvservices':
+        if model._meta.app_label in self.route_app_labels:
             return 'vocabularies'
         return 'default'
-
-    def allow_migrate(self, db, app_label, model_name=None, **hints):
-        if 'target_db' in hints:
-            return db == hints['target_db']
-        return True
-
-
