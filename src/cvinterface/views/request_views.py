@@ -1,11 +1,12 @@
 from operator import itemgetter
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.views.generic import RedirectView
-from django.core.urlresolvers import reverse, reverse_lazy
 
-from cvinterface.views.base_views import *
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse, reverse_lazy
+
+# from cvinterface.views.base_views import *
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView
+
 from cvinterface.controlled_vocabularies import requests, vocabularies, request_list_view, request_list_template, \
     request_create_view, request_create_template, request_update_view, request_update_template
 
@@ -58,7 +59,6 @@ class RequestsView(ListView):
         requests_list = [{'name': requests[request_name]['name'], 'url': reverse(request_name),
                           'vocabulary': vocabularies[requests[request_name]['vocabulary']]['name']}
                          for request_name in requests]
-
 
         pending_requests = [(pending_object, pending_object._meta.verbose_name, requests[request_name]['vocabulary'] + '_update_form')
                             for request_name in requests
