@@ -19,7 +19,7 @@
             {% endif %}
             <div class="vocabulary-links">
                 {% if object.vocabulary_status != 'Archived' %}
-                    <a id="btnEdit" href="{# {% url create_url object.pk %}#}" class="button white">Edit</a>
+                    <a id="btnEdit" href="{% url create_url object.pk %}" class="button white">Edit</a>
                     <a id="btnSKOSTerm" target="_blank" href="{# {% url 'api_dispatch_detail' resource_name=vocabulary api_name='v1' term=object.term %} #}?format=skos" class="button white">View in SKOS</a>
                     <a id="btnSKOS" download="{{vocabulary}}_{{object.term}}.rdf" href="{# {% url 'api_dispatch_detail' resource_name=vocabulary api_name='v1' term=object.term %} #}?format=skos" target="_blank" class="button white">Download Term (SKOS)</a>
                     <a id="btnSKOS" download="{{vocabulary}}_{{object.term}}.csv" href="{# {% url 'api_dispatch_detail' resource_name=vocabulary api_name='v1' term=object.term %} #}?format=csv" target="_blank" class="button white">Download Term (CSV)</a>
