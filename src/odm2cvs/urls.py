@@ -5,11 +5,14 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import ListView, DetailView
 
+from cvinterface.controlled_vocabularies import requests
 from cvinterface.views.base_views import UnitsListView
+from cvinterface.views.request_views import RequestsView, request_list_views
 from cvinterface.views.vocabulary_views import VocabulariesView, list_views, detail_views
 
 urlpatterns: List[path] = [
     path('', VocabulariesView.as_view(), name='home'),
+    path('requests/', RequestsView.as_view(), name='requests_list'),
     path('admin/', admin.site.urls),
     path('units/', UnitsListView.as_view(), name='units'),
     path('accounts/login/', auth_views.LoginView.as_view(
@@ -42,6 +45,13 @@ for cv_name in detail_views:
         path(f'{cv_name}/(?P<slug>[-\w]+)/$', view, name=cv_name + '_detail'),
     ]
 
+# request list views
+for request_name in request_list_views:
+    view = request_list_views[request_name]
+
+    urlpatterns += [
+        path(f'requests/{requests[request_name]["vocabulary"]}/', view, name=request_name),
+    ]
 
 # from cvservices.api import v1_api
 # from cvinterface.views import UnitsListView
