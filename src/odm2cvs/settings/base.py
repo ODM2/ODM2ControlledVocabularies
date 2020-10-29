@@ -54,8 +54,8 @@ INSTALLED_APPS: List[str] = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'cvservices',
-    # 'cvinterface',
+    'cvservices',
+    'cvinterface',
 ]
 
 MIDDLEWARE: List[str] = [
@@ -73,7 +73,7 @@ ROOT_URLCONF = 'odm2cvs.urls'
 TEMPLATES: List[Dict[str, Any]] = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'cvinterface' / 'templates']
+        'DIRS': [BASE_DIR.parent / 'cvinterface' / 'templates']
         ,
         'APP_DIRS': True,
         'OPTIONS': {

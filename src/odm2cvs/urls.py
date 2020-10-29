@@ -5,9 +5,30 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import ListView, DetailView
 
-urlpatterns = [
+from cvinterface.views.base_views import UnitsListView
+from cvinterface.views.vocabulary_views import VocabulariesView, list_views
+
+urlpatterns: List[path] = [
+    path('', VocabulariesView.as_view(), name='home'),
     path('admin/', admin.site.urls),
+    path('units/', UnitsListView.as_view(), name='units'),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/login/', auth_views.LoginView.as_view(
+        template_name='cvinterface/account/login.html',
+        redirect_field_name='next'),
+         name='login'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(next_page=reverse_lazy('home')), name='logout'),
 ]
+
+# cv list views
+cv_name: str
+
+for cv_name in list_views:
+    view: ListView = list_views[cv_name]
+
+    urlpatterns += [
+        path(f'{cv_name}/', view, name=cv_name),
+    ]
 
 # from cvservices.api import v1_api
 # from cvinterface.views import UnitsListView
