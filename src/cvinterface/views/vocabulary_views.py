@@ -1,6 +1,11 @@
 from operator import itemgetter
 
-from cvinterface.views.base_views import *
+# from cvinterface.views.base_views import DefaultVocabularyListView, DefaultVocabularyDetailView, \
+#     DefaultRequestListView, DefaultRequestCreateView, DefaultRequestUpdateView, UnitsListView, UnitsDetailView, \
+#     ListView
+from django.urls import reverse
+from django.views.generic import ListView
+
 from cvinterface.controlled_vocabularies import vocabularies, vocabulary_list_view, vocabulary_list_template, \
     vocabulary_detail_view, vocabulary_detail_template
 
@@ -10,10 +15,11 @@ for cv_name in vocabularies:
     vocabulary = vocabularies[cv_name]
     view = vocabulary['list_view'] if 'list_view' in vocabulary else vocabulary_list_view
     template = vocabulary['list_template'] if 'list_template' in vocabulary else vocabulary_list_template
-    list_views[cv_name] = view.as_view(vocabulary=cv_name, vocabulary_def=vocabulary['definition'], vocabulary_verbose=vocabulary['name'],
-        model=vocabulary['model'], template_name=template,
-    )
-
+    list_views[cv_name] = view.as_view(vocabulary=cv_name,
+                                       vocabulary_def=vocabulary['definition'],
+                                       vocabulary_verbose=vocabulary['name'],
+                                       model=vocabulary['model'],
+                                       template_name=template)
 
 detail_views = {}
 for cv_name in vocabularies:
@@ -21,9 +27,10 @@ for cv_name in vocabularies:
     view = vocabulary['detail_view'] if 'detail_view' in vocabulary else vocabulary_detail_view
     template = vocabulary['detail_template'] if 'detail_template' in vocabulary else vocabulary_detail_template
 
-    detail_views[cv_name] = view.as_view(vocabulary=cv_name, vocabulary_verbose=vocabulary['name'],
-        model=vocabulary['model'], template_name=template,
-    )
+    detail_views[cv_name] = view.as_view(vocabulary=cv_name,
+                                         vocabulary_verbose=vocabulary['name'],
+                                         model=vocabulary['model'],
+                                         template_name=template)
 
 
 class VocabulariesView(ListView):
