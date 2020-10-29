@@ -3,11 +3,19 @@
   "debug_mode": "{boolean: flag to activate debug mode}",
   "host": "{string: server main domain name}",
   "host_alias": "{list: list of extra domain names to serve the application at}",
-  "static_root": "{string: static root path}",
-  "email_sender": "{string: email that will appear as the sender when CVs are added and accepted}",
-  "email_recipients": "{list: list of admin emails that will receive a notification whenever a CV has been added and needs approval}",
-  "recaptcha_secret_key": "{string: secret key given by the google captcha service}",
-  "recaptcha_user_key": "{string: user key given by the google captcha service}",
+  "static": {
+    "url": "{string: static files url}",
+    "root": "{string: static files root path}"
+  },
+  "email": {
+    "sender": "{string: email that will appear as the sender when CVs are added and accepted}",
+    "recipients": "{list: list of admin emails that will receive a notification whenever a CV has been added and needs approval}",
+    "host": "{string: email server host}"
+  },
+  "recaptcha": {
+    "secret_key": "{string: secret key given by the google captcha service}",
+    "user_key": "{string: user key given by the google captcha service}"
+  },
   "databases": [
     {
       "name": "default",

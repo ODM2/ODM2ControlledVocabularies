@@ -8,7 +8,5 @@ if "host" in config:
 if "host_alias" in config:
     ALLOWED_HOSTS.extend(config["host_alt"])
 
-STATIC_ROOT: str = config["static_root"]
 SITE_ROOT: str = config["site_root"]
-STATIC_URL: str = config["static_url"]
 SITE_URL: str = ''

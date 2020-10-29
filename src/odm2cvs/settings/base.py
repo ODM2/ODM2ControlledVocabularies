@@ -42,10 +42,6 @@ except KeyError:
     print()
     exit('The secret key is required in the settings.json file.')
 
-RECAPTCHA_KEY: str = config['recaptcha_secret_key'] if 'recaptcha_secret_key' in config else ''
-RECAPTCHA_USER_KEY: str = config['recaptcha_user_key'] if 'recaptcha_user_key' in config else ''
-RECAPTCHA_VERIFY_URL: str = 'https://www.google.com/recaptcha/api/siteverify'
-
 ALLOWED_HOSTS: List[str] = []
 
 
@@ -77,7 +73,7 @@ ROOT_URLCONF = 'odm2cvs.urls'
 TEMPLATES: List[Dict[str, Any]] = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [BASE_DIR / 'cvinterface' / 'templates']
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -104,7 +100,7 @@ for database in config['databases']:
         'PASSWORD': database['password'] if 'password' in database else '',
         'HOST': database['host'] if 'host' in database else '',
         'PORT': database['port'] if 'port' in database else '',
-        'OPTIONS': database['options'] if 'options' in database else ''
+        'OPTIONS': database['options'] if 'options' in database else {}
     }
 
 # Password validation
@@ -139,20 +135,19 @@ USE_TZ: bool = True
 
 SITE_ID: int = 1
 
+static_config: Dict = config['static'] if 'static' in config else {}
+STATIC_ROOT: str = static_config['root'] if 'root' in static_config else ''
+STATIC_URL: str = static_config['url'] if 'url' in static_config else ''
 
-TASTYPIE_DEFAULT_FORMATS: List[str] = ['json']
-
-API_LIMIT_PER_PAGE: int = 0
-
-
-EMAIL_HOST: str = 'mail.usu.edu'
-
-EMAIL_SENDER: Union[Tuple, str] = config['email_sender'] if 'email_sender' in config else '',
-EMAIL_SENDER: str = EMAIL_SENDER[0] if isinstance(EMAIL_SENDER, tuple) else EMAIL_SENDER
-
-EMAIL_RECIPIENTS: Union[Tuple, str] = list(config['email_recipients']) if 'email_recipients' in config else [],
-EMAIL_RECIPIENTS: str = EMAIL_RECIPIENTS[0] if isinstance(EMAIL_RECIPIENTS, tuple) else EMAIL_RECIPIENTS
-
+email_config: Dict = config['email'] if 'email' in config else {}
+EMAIL_HOST: str = email_config['host'] if 'host' in email_config else ''
+EMAIL_SENDER: str = email_config['sender'] if 'sender' in email_config else ''
+EMAIL_RECIPIENTS: List[str] = email_config['recipients'] if 'recipients' in email_config else ''
 EMAIL_BACKEND: str = 'django.core.mail.backends.smtp.EmailBackend'
+
+recaptcha_config: Dict = config['recaptcha'] if 'recaptcha' in config else {}
+RECAPTCHA_KEY: str = recaptcha_config['secret_key'] if 'secret_key' in recaptcha_config else ''
+RECAPTCHA_USER_KEY: str = recaptcha_config['user_key'] if 'user_key' in recaptcha_config else ''
+RECAPTCHA_VERIFY_URL: str = 'https://www.google.com/recaptcha/api/siteverify'
 
 DATABASE_ROUTERS: List[str] = ['odm2cvs.db_routers.ControlledVocabularyRouter']
