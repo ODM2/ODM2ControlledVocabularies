@@ -54,6 +54,7 @@ INSTALLED_APPS: List[str] = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'widget_tweaks',
     'cvservices',
     'cvinterface',
 ]
