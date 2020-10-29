@@ -6,7 +6,7 @@ from django.contrib.auth import views as auth_views
 from django.views.generic import ListView, DetailView
 
 from cvinterface.views.base_views import UnitsListView
-from cvinterface.views.vocabulary_views import VocabulariesView, list_views
+from cvinterface.views.vocabulary_views import VocabulariesView, list_views, detail_views
 
 urlpatterns: List[path] = [
     path('', VocabulariesView.as_view(), name='home'),
@@ -29,6 +29,19 @@ for cv_name in list_views:
     urlpatterns += [
         path(f'{cv_name}/', view, name=cv_name),
     ]
+
+# cv detail views
+for cv_name in detail_views:
+    view: DetailView = detail_views[cv_name]
+
+    # TODO: find a django 3.1 equivalent of this slug + pk mess.
+    urlpatterns += [
+        path(f'{cv_name}/(?P<slug>[-\w]+)/(?P<pk>[-\w]+)/$', view, name=cv_name + '_detail'),
+    ]
+    urlpatterns += [
+        path(f'{cv_name}/(?P<slug>[-\w]+)/$', view, name=cv_name + '_detail'),
+    ]
+
 
 # from cvservices.api import v1_api
 # from cvinterface.views import UnitsListView
