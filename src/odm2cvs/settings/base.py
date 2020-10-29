@@ -54,8 +54,8 @@ INSTALLED_APPS: List[str] = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cvservices',
-    'cvinterface',
+    # 'cvservices',
+    # 'cvinterface',
 ]
 
 MIDDLEWARE: List[str] = [
