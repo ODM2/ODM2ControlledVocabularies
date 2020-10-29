@@ -23,7 +23,7 @@ class ControlledVocabulary(models.Model):
     provenance_uri = models.URLField(db_column='provenanceUri', blank=True)
     note = models.TextField(blank=True, null=True)
     vocabulary_status = models.CharField(max_length=255, db_column='status', choices=STATUS_CHOICES, default=STATUS_CHOICES[0][0])
-    previous_version = models.OneToOneField('self', null=True, related_name='revised_version')
+    previous_version = models.OneToOneField('self', null=True, related_name='revised_version', on_delete=models.CASCADE)
 
     def has_revision(self):
         revision = None
@@ -75,8 +75,8 @@ class ControlledVocabularyRequest(models.Model):
     submitter_email = models.CharField(max_length=255, db_column='submitterEmail', help_text="Enter your email address.")
     request_reason = models.TextField(db_column='requestReason', help_text="Please enter a brief description of the reason for your submission (e.g., Term does not exist yet, Term is needed for my data use case, etc.)")
 
-    request_for = models.ForeignKey('ControlledVocabulary', db_column='requestFor', blank=True, null=True)
-    original_request = models.ForeignKey('self', db_column='originalRequestId', null=True)
+    request_for = models.ForeignKey('ControlledVocabulary', db_column='requestFor', blank=True, null=True, on_delete=models.CASCADE)
+    original_request = models.ForeignKey('self', db_column='originalRequestId', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'requests'
