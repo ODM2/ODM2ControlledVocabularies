@@ -35,4 +35,4 @@ nosetests.xml
 .idea
 
 # Settings data file
-src/odm2cvs/odm2cvs/settings/settings.json
+src/odm2cvs/settings/settings.json

@@ -3,15 +3,14 @@ from typing import List
 from django.urls import path, include, reverse_lazy
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.conf import settings
 from django.views.generic import ListView, DetailView
 
 from cvservices.api import v1_api
-from cvinterface.views.base_views import UnitsListView
+from cvinterface.views import UnitsListView
 
-from cvinterface.controlled_vocabularies import requests
-from cvinterface.views.vocabulary_views import VocabulariesView, list_views, detail_views
-from cvinterface.views.request_views import RequestsView, \
+from cvinterface import requests
+from cvinterface.views import VocabulariesView, list_views, detail_views
+from cvinterface.views import RequestsView, \
     request_list_views, request_create_views, request_update_views
 
 
