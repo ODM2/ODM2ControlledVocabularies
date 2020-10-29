@@ -95,7 +95,7 @@ WSGI_APPLICATION: str = 'odm2cvs.wsgi.application'
 
 
 # Databases
-DATABASES: Dict[str, Dict[str: Any]] = {}
+DATABASES: Dict[str, Dict[str, Any]] = {}
 for database in config['databases']:
     DATABASES[database['name']] = {
         'ENGINE': database['engine'],
