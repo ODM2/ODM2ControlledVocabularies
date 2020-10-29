@@ -12,12 +12,12 @@ urlpatterns: List[path] = [
     path('', VocabulariesView.as_view(), name='home'),
     path('admin/', admin.site.urls),
     path('units/', UnitsListView.as_view(), name='units'),
-    path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/login/', auth_views.LoginView.as_view(
         template_name='cvinterface/account/login.html',
         redirect_field_name='next'),
          name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(next_page=reverse_lazy('home')), name='logout'),
+    # path('accounts/', include('django.contrib.auth.urls')),
 ]
 
 # cv list views

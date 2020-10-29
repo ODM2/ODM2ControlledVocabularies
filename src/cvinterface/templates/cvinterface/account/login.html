@@ -10,7 +10,17 @@
         {% if form.errors %}
             <p>Your username and password didn't match. Please try again.</p>
         {% endif %}
-        <form method="post" action="{% url 'django.contrib.auth.views.login' %}">{% csrf_token %}
+
+        {% if next %}
+            {% if user.is_authenticated %}
+            <p>Your account doesn't have access to this page. To proceed,
+            please login with an account that has access.</p>
+            {% else %}
+            <p>Please login to see this page.</p>
+            {% endif %}
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">{% csrf_token %}
             {% for field in form %}
                 <div class="list-item column three-columns">
                     <div class="form-label-item"><h3><label for="{{ field.id_for_label }}">{{ field.label }}</label></h3></div>
@@ -21,7 +31,7 @@
             <div class="clear"></div>
             <div class="form-buttons">
                 <input class="button white" type="submit" value="Login">
-                <input type="hidden" name="next" value="{% url 'requests_list' %}"/>
+                <input type="hidden" name="next" value="{# {% url 'requests_list' %} #}"/>
             </div>
         </form>
     </section>
