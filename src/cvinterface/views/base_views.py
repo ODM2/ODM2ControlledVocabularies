@@ -256,7 +256,7 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
 
     def is_captcha_valid(self, form):
         url = settings.RECAPTCHA_VERIFY_URL
-        captcha_response = form.config.get('g-recaptcha-response')
+        captcha_response = form.data.get('g-recaptcha-response')
 
         if not captcha_response:
             form.add_error(None, 'You are not human!!')
@@ -283,6 +283,7 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
         if 'vocabulary_id' in self.kwargs:
             form.instance.request_for_id = self.kwargs['vocabulary_id']
 
+        # TODO: if there's no email setup, just skip...
         self.send_confirmation_email(form)
         return super(DefaultRequestCreateView, self).form_valid(form)
 
