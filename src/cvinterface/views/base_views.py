@@ -49,6 +49,8 @@ class DefaultVocabularyDetailView(DetailView):
     vocabulary = None
     vocabulary_verbose = None
     exclude = ['name', 'definition', 'vocabulary_id', 'controlledvocabulary_ptr', 'vocabulary_status', 'previous_version']
+    query_pk_and_slug = True
+    slug_url_kwarg = 'term'
     slug_field = 'term'
 
     def __init__(self, **kwargs):

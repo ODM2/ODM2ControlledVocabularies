@@ -34,12 +34,9 @@ for cv_name in list_views:
 for cv_name in detail_views:
     view: DetailView = detail_views[cv_name]
 
-    # TODO: find a django 3.1 equivalent of this slug + pk mess.
     urlpatterns += [
-        path(f'{cv_name}/(?P<slug>[-\w]+)/(?P<pk>[-\w]+)/$', view, name=cv_name + '_detail'),
-    ]
-    urlpatterns += [
-        path(f'{cv_name}/(?P<slug>[-\w]+)/$', view, name=cv_name + '_detail'),
+        path(f'{cv_name}/<slug:term>/', view, name=cv_name + '_detail'),
+        path(f'{cv_name}/<slug:term>/<int:pk>', view, name=cv_name + '_detail')
     ]
 
 # request list views
