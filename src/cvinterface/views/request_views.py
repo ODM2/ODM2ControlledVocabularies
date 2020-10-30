@@ -7,7 +7,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
-from cvinterface.controlled_vocabularies import requests, vocabularies, request_list_view, request_list_template, \
+from odm2cvs.controlled_vocabularies import requests, vocabularies, request_list_view, request_list_template, \
     request_create_view, request_create_template, request_update_view, request_update_template
 
 request_list_views = {}

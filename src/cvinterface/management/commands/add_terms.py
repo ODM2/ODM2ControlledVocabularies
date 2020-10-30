@@ -1,7 +1,7 @@
 import csv
 from django.core.management import BaseCommand
 
-from cvinterface.controlled_vocabularies import vocabularies
+from odm2cvs.controlled_vocabularies import vocabularies
 
 
 class Command(BaseCommand):

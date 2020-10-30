@@ -1,11 +1,11 @@
 from typing import List
 
-from django.urls import path, include, reverse_lazy
+from django.urls import path, reverse_lazy
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
-from cvinterface.controlled_vocabularies import requests
+from odm2cvs import controlled_vocabularies
 from cvinterface.views.base_views import UnitsListView
 from cvinterface.views.request_views import RequestsView, request_list_views, request_create_views, request_update_views
 from cvinterface.views.vocabulary_views import VocabulariesView, list_views, detail_views
@@ -41,8 +41,8 @@ for cv_name in detail_views:
 
 # request list views
 for request_name in request_list_views:
-    vocabulary: str = requests[request_name]["vocabulary"]
     view: ListView = request_list_views[request_name]
+    vocabulary: str = controlled_vocabularies.requests[request_name]["vocabulary"]
 
     urlpatterns += [
         path(f'requests/{vocabulary}/', view, name=request_name),
@@ -50,8 +50,9 @@ for request_name in request_list_views:
 
 # request create views
 for request_name in request_create_views:
-    vocabulary: str = requests[request_name]["vocabulary"]
     view: CreateView = request_create_views[request_name]
+    vocabulary: str = controlled_vocabularies.requests[request_name]["vocabulary"]
+
     urlpatterns += [
         path(f'requests/{vocabulary}/new/', view, name=f'{vocabulary}_form'),
         path(f'requests/{vocabulary}/new/<int:vocabulary_id>', view, name=f'{vocabulary}_form'),
@@ -59,8 +60,8 @@ for request_name in request_create_views:
 
 # request update views
 for request_name in request_update_views:
-    vocabulary: str = requests[request_name]["vocabulary"]
     view: UpdateView = request_update_views[request_name]
+    vocabulary: str = controlled_vocabularies.requests[request_name]["vocabulary"]
 
     urlpatterns += [
         path(f'requests/{vocabulary}/<int:vocabulary_id>/', view, name=f'{vocabulary}_update_form'),

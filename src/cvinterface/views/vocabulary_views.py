@@ -6,7 +6,7 @@ from operator import itemgetter
 from django.urls import reverse
 from django.views.generic import ListView
 
-from cvinterface.controlled_vocabularies import vocabularies, vocabulary_list_view, vocabulary_list_template, \
+from odm2cvs.controlled_vocabularies import vocabularies, vocabulary_list_view, vocabulary_list_template, \
     vocabulary_detail_view, vocabulary_detail_template
 
 
