@@ -7,7 +7,7 @@ from django.views.generic import ListView, DetailView
 
 from cvinterface.controlled_vocabularies import requests
 from cvinterface.views.base_views import UnitsListView
-from cvinterface.views.request_views import RequestsView, request_list_views, request_create_views
+from cvinterface.views.request_views import RequestsView, request_list_views, request_create_views, request_update_views
 from cvinterface.views.vocabulary_views import VocabulariesView, list_views, detail_views
 
 urlpatterns: List[path] = [
@@ -60,13 +60,13 @@ for request_name in request_create_views:
         path(f'requests/{requests[request_name]["vocabulary"]}/new/(?P<vocabulary_id>[\w]+)/$',
             view, name=requests[request_name]['vocabulary'] + '_form'),
     ]
-#
-# # request update views
-# for request_name in request_update_views:
-#     view = request_update_views[request_name]
-#
-#     urlpatterns += [
-#         # TODO: change pk here.
-#         path(f'requests/{requests[request_name]["vocabulary"]}/(?P<pk>[-\w]+)/$', view,
-#             name=requests[request_name]['vocabulary'] + '_update_form'),
-#     ]
+
+# request update views
+for request_name in request_update_views:
+    view = request_update_views[request_name]
+
+    urlpatterns += [
+        # TODO: change pk here.
+        path(f'requests/{requests[request_name]["vocabulary"]}/(?P<pk>[-\w]+)/$', view,
+            name=requests[request_name]['vocabulary'] + '_update_form'),
+    ]
