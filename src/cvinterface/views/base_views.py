@@ -48,6 +48,7 @@ class DefaultVocabularyListView(ListView):
 class DefaultVocabularyDetailView(DetailView):
     vocabulary = None
     vocabulary_verbose = None
+    pk_url_kwarg = 'vocabulary_id'
     exclude = ['name', 'definition', 'vocabulary_id', 'controlledvocabulary_ptr', 'vocabulary_status', 'previous_version']
     query_pk_and_slug = True
     slug_url_kwarg = 'term'
@@ -112,6 +113,7 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
     vocabulary = None
     vocabulary_model = None
     request_verbose = None
+    pk_url_kwarg = 'vocabulary_id'
     accept_button = 'request_accept'
     reject_button = 'request_reject'
     success_message = 'The request has been updated.'
@@ -145,7 +147,7 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        object = self.model.objects.get(pk=kwargs['pk'])
+        object = self.model.objects.get(pk=kwargs['vocabulary_id'])
         request.POST._mutable = True
         for field in self.read_only:
             request.POST[field] = object.__getattribute__(field)
@@ -219,6 +221,7 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
     request_verbose = None
     vocabulary_model = None
     vocabulary_verbose = None
+    pk_url_kwarg = 'vocabulary_id'
     recaptcha_key = settings.RECAPTCHA_KEY
     success_message = 'Your request has been made successfully.'
     exclude = ['request_id', 'status', 'date_submitted', 'date_status_changed', 'request_for', 'request_notes', 'original_request']
