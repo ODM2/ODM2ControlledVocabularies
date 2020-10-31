@@ -1,10 +1,16 @@
-from __future__ import unicode_literals
+import re
+from typing import List, Type, Tuple, Dict, Any
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
 from django.db import models
 
 from cvservices.cv_fields_abstractions import AbstractUnitsType, AbstractActionType, AbstractSpatialOffsetType
+from odm2cvs.controlled_vocabularies import vocabularies
+
+vocabulary_models = {}
+requests_models = {}
 
 
 class ControlledVocabularyAbstraction(models.Model):
@@ -95,369 +101,65 @@ class Unit(models.Model):
         ordering = ["type"]
 
 
-class UnitsType(ControlledVocabulary, AbstractUnitsType):
-    class Meta:
-        db_table = 'unitstypecv'
-        verbose_name = 'Units Type'
-        ordering = ["name"]
-
-
-class UnitsTypeRequest(ControlledVocabularyRequest, AbstractUnitsType):
-    class Meta:
-        db_table = 'unitstypecvrequests'
-        verbose_name = 'Units Type Request'
-
-
-class ActionType(ControlledVocabulary, AbstractActionType):
-    class Meta:
-        db_table = 'actiontypecv'
-        verbose_name = 'Action Type'
-        ordering = ["name"]
-
-
-class ActionTypeRequest(ControlledVocabularyRequest, AbstractActionType):
-    class Meta:
-        db_table = 'actiontypecvrequests'
-        verbose_name = 'Action Type Request'
-
-
-class MethodType(ControlledVocabulary):
-    class Meta:
-        db_table = 'methodtypecv'
-        verbose_name = 'Method Type'
-        ordering = ["name"]
-
-
-class MethodTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'methodtypecvrequests'
-        verbose_name = 'Method Type Request'
-
-
-class OrganizationType(ControlledVocabulary):
-    class Meta:
-        db_table = 'organizationtypecv'
-        verbose_name = 'Organization Type'
-        ordering = ["name"]
-
-
-class OrganizationTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'organizationtypecvrequests'
-        verbose_name = 'Organization Type Request'
-
-
-class SamplingFeatureGeotype(ControlledVocabulary):
-    class Meta:
-        db_table = 'samplingfeaturegeotypecv'
-        verbose_name = 'Sampling Feature Geo-type'
-        ordering = ["name"]
-
-
-class SamplingFeatureGeotypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'samplingfeaturegeotypecvrequests'
-        verbose_name = 'Sampling Feature Geo-type Request'
-
-
-class SamplingFeatureType(ControlledVocabulary):
-    class Meta:
-        db_table = 'samplingfeaturetypecv'
-        verbose_name = 'Sampling Feature Type'
-
-
-class SamplingFeatureTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'samplingfeaturetypecvrequests'
-        verbose_name = 'Sampling Feature Type Request'
-
-
-class SiteType(ControlledVocabulary):
-    class Meta:
-        db_table = 'sitetypecv'
-        verbose_name = 'Site Type'
-
-
-class SiteTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'sitetypecvrequests'
-        verbose_name = 'Site Type Request'
-
-
-class AggregationStatistic(ControlledVocabulary):
-    class Meta:
-        db_table = 'aggregationstatisticcv'
-        verbose_name = 'Aggregation Statistic'
-
-
-class AggregationStatisticRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'aggregationstatisticcvrequests'
-        verbose_name = 'Aggregation Statistic Request'
-
-
-class AnnotationType(ControlledVocabulary):
-    class Meta:
-        db_table = 'annotationtypecv'
-        verbose_name = 'Annotation Type'
-
-
-class AnnotationTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'annotationtypecvrequests'
-        verbose_name = 'Annotation Type Request'
-
-
-class CensorCode(ControlledVocabulary):
-    class Meta:
-        db_table = 'censorcodecv'
-        verbose_name = 'Censor Code'
-
-
-class CensorCodeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'censorcodecvrequests'
-        verbose_name = 'Censor Code Request'
-
-
-class DatasetType(ControlledVocabulary):
-    class Meta:
-        db_table = 'datasettypecv'
-        verbose_name = 'Dataset Type'
-
-
-class DatasetTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'datasettypecvrequests'
-        verbose_name = 'Dataset Type Request'
-
-
-class DirectiveType(ControlledVocabulary):
-    class Meta:
-        db_table = 'directivetypecv'
-        verbose_name = 'Directive Type'
-
-
-class DirectiveTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'directivetypecvrequests'
-        verbose_name = 'Directive Type Request'
-
-
-class ElevationDatum(ControlledVocabulary):
-    class Meta:
-        db_table = 'elevationdatumcv'
-        verbose_name = 'Elevation Datum'
-
-
-class ElevationDatumRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'elevationdatumcvrequests'
-        verbose_name = 'Elevation Datum Request'
-
-
-class EquipmentType(ControlledVocabulary):
-    class Meta:
-        db_table = 'equipmenttypecv'
-        verbose_name = 'Equipment Type'
-
-
-class EquipmentTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'equipmenttypecvrequests'
-        verbose_name = 'Equipment Type Request'
-
-
-class PropertyDataType(ControlledVocabulary):
-    class Meta:
-        db_table = 'propertydatatypecv'
-        verbose_name = 'Property Data Type'
-
-
-class PropertyDataTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'propertydatatypecvrequests'
-        verbose_name = 'Property Data Type Request'
-
-
-class QualityCode(ControlledVocabulary):
-    class Meta:
-        db_table = 'qualitycodecv'
-        verbose_name = 'Quality Code'
-
-
-class QualityCodeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'qualitycodecvrequests'
-        verbose_name = 'Quality Code Request'
-
-'''
-class ReferenceMaterialMedium(ControlledVocabulary):
-    class Meta:
-        db_table = 'referencematerialmediumcv'
-        verbose_name = 'Reference Material Medium'
-'''
-
-
-class ReferenceMaterialMediumRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'referencematerialmediumcvrequests'
-        verbose_name = 'Reference Material Medium Request'
-
-
-class ResultType(ControlledVocabulary):
-    class Meta:
-        db_table = 'resulttypecv'
-        verbose_name = 'Result Type'
-
-
-class ResultTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'resulttypecvrequests'
-        verbose_name = 'Result Type Request'
-
-'''
-class SampledMedium(ControlledVocabulary):
-    class Meta:
-        db_table = 'sampledmediumcv'
-        verbose_name = 'Sampled Medium'
-'''
-
-
-class SampledMediumRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'sampledmediumcvrequests'
-        verbose_name = 'Sampled Medium Request'
-
-
-class SpatialOffsetType(ControlledVocabulary, AbstractSpatialOffsetType):
-    class Meta:
-        db_table = 'spatialoffsettypecv'
-        verbose_name = 'Spatial Offset Type'
-
-
-class SpatialOffsetTypeRequest(ControlledVocabularyRequest, AbstractSpatialOffsetType):
-    class Meta:
-        db_table = 'spatialoffsettypecvrequests'
-        verbose_name = 'Spatial Offset Type Request'
-
-
-class Speciation(ControlledVocabulary):
-    class Meta:
-        db_table = 'speciationcv'
-        verbose_name = 'Speciation'
-
-
-class SpeciationRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'speciationcvrequests'
-        verbose_name = 'Speciation Request'
-
-'''
-class SpecimenMedium(ControlledVocabulary):
-    class Meta:
-        db_table = 'specimenmediumcv'
-        verbose_name = 'Specimen Medium'
-'''
-
-
-class SpecimenMediumRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'specimenmediumcvrequests'
-        verbose_name = 'Specimen Medium Request'
-
-
-class SpecimenType(ControlledVocabulary):
-    class Meta:
-        db_table = 'specimentypecv'
-        verbose_name = 'Specimen Type'
-
-
-class SpecimenTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'specimentypecvrequests'
-        verbose_name = 'Specimen Type Request'
-
-
-class Status(ControlledVocabulary):
-    class Meta:
-        db_table = 'statuscv'
-        verbose_name = 'Status'
-
-
-class StatusRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'statuscvrequests'
-        verbose_name = 'Status Request'
-
-
-class TaxonomicClassifierType(ControlledVocabulary):
-    class Meta:
-        db_table = 'taxonomicclassifiertypecv'
-        verbose_name = 'Taxonomic Classifier Type'
-
-
-class TaxonomicClassifierTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'taxonomicclassifiertypecvrequests'
-        verbose_name = 'Taxonomic Classifier Type Request'
-
-
-class VariableName(ControlledVocabulary):
-    class Meta:
-        db_table = 'variablenamecv'
-        verbose_name = 'Variable Name'
-
-
-class VariableNameRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'variablenamecvrequests'
-        verbose_name = 'Variable Name Request'
-
-
-class VariableType(ControlledVocabulary):
-    class Meta:
-        db_table = 'variabletypecv'
-        verbose_name = 'Variable Type'
-
-
-class VariableTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'variabletypecvrequests'
-        verbose_name = 'Variable Type Request'
-
-
-class DataQualityType(ControlledVocabulary):
-    class Meta:
-        db_table = 'dataqualitytypecv'
-        verbose_name = 'Data Quality Type'
-
-
-class DataQualityTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'dataqualitytypecvrequests'
-        verbose_name = 'Data Quality Type Request'
-
-
-class RelationshipType(ControlledVocabulary):
-    class Meta:
-        db_table = 'relationshiptypecv'
-        verbose_name = 'Relationship Type'
-
-
-class RelationshipTypeRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'relationshiptypecvrequests'
-        verbose_name = 'Relationship Type Request'
-
-
-class Medium(ControlledVocabulary):
-    class Meta:
-        db_table = 'mediumcv'
-        verbose_name = 'Medium'
-
-
-class MediumRequest(ControlledVocabularyRequest):
-    class Meta:
-        db_table = 'mediumcvrequests'
-        verbose_name = 'Medium Request'
+def generate_specific_models() -> None:
+    """
+    Generates all vocabulary and requests models from the vocabularies defines in odm2cvs.controlled_vocabularies.
+    :return:
+    """
+    def create_meta_class(name: str, table_name: str, ordering_fields: List[str]) -> Type:
+        """
+
+        :param name: Verbose vocabulary name.
+        :param table_name: Database table name.
+        :param ordering_fields: List of fields to order the vocabulary by.
+        :return:
+        """
+        class Meta:
+            verbose_name = name
+            db_table = table_name
+            ordering = ordering_fields
+
+        return Meta
+
+    vocabulary_parent: Tuple[Type] = (ControlledVocabulary, )
+    request_parent: Tuple[Type] = (ControlledVocabularyRequest, )
+
+    vocabulary_name: str
+    vocabulary: Dict[str, Any]
+    for vocabulary_name, vocabulary in vocabularies.items():
+        # vocabulary metadata
+        verbose_name: str = vocabulary.get('name')
+        classname: str = vocabulary.get('classname', re.sub('[^A-Za-z0-9]+', '', verbose_name))
+        table_name: str = vocabulary.get('table_name', f'{vocabulary_name}cv')
+        abstract_parents: Tuple[Type] = vocabulary.get('abstract_parents', ())
+        vocabulary_ordering: List[str] = vocabulary.get('ordering', ControlledVocabulary._meta.ordering)
+
+        # request metadata
+        request_name: str = f'{verbose_name} Request'
+        request_classname: str = f'{classname}Request'
+        request_ordering: List[str] = ControlledVocabularyRequest._meta.ordering
+
+        # create vocabulary and request models
+        vocabulary_model: Type = type(classname, vocabulary_parent + abstract_parents, {
+            'Meta': create_meta_class(verbose_name, table_name, vocabulary_ordering)
+        })
+
+        request_model: Type = type(request_classname, request_parent + abstract_parents, {
+            'Meta': create_meta_class(request_name, f'{table_name}request', request_ordering)
+        })
+
+        # update vocabulary dictionary with generated models and request
+        vocabulary['model'] = vocabulary_model
+        vocabulary['request'] = vocabulary.get('request', {})
+        vocabulary['request']['model'] = request_model
+        vocabulary['request']['name'] = request_name
+
+        vocabulary_models[vocabulary_name] = vocabulary_model
+        requests_models[vocabulary_name] = request_model
+
+        # Add models to module scope
+        globals()[classname] = vocabulary_model
+        globals()[request_classname] = request_model
+
+
+generate_specific_models()
