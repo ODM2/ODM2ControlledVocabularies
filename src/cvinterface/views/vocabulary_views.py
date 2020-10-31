@@ -1,20 +1,24 @@
 from operator import itemgetter
 
-# from cvinterface.views.base_views import DefaultVocabularyListView, DefaultVocabularyDetailView, \
-#     DefaultRequestListView, DefaultRequestCreateView, DefaultRequestUpdateView, UnitsListView, UnitsDetailView, \
-#     ListView
 from django.urls import reverse
 from django.views.generic import ListView
 
-from odm2cvs.controlled_vocabularies import vocabularies, vocabulary_list_view, vocabulary_list_template, \
-    vocabulary_detail_view, vocabulary_detail_template
+from cvinterface.views.base_views import DefaultVocabularyListView, DefaultVocabularyDetailView
+from odm2cvs.controlled_vocabularies import vocabularies
+
+defaults = {
+    'list_view': DefaultVocabularyListView,
+    'detail_view': DefaultVocabularyDetailView,
+    'list_template': 'cvinterface/vocabularies/default_list.html',
+    'detail_template': 'cvinterface/vocabularies/default_detail.html'
+}
 
 
 list_views = {}
 for cv_name in vocabularies:
     vocabulary = vocabularies[cv_name]
-    view = vocabulary['list_view'] if 'list_view' in vocabulary else vocabulary_list_view
-    template = vocabulary['list_template'] if 'list_template' in vocabulary else vocabulary_list_template
+    view = vocabulary['list_view'] if 'list_view' in vocabulary else defaults['list_view']
+    template = vocabulary['list_template'] if 'list_template' in vocabulary else defaults['list_template']
     list_views[cv_name] = view.as_view(vocabulary=cv_name,
                                        vocabulary_def=vocabulary['definition'],
                                        vocabulary_verbose=vocabulary['name'],
@@ -24,8 +28,8 @@ for cv_name in vocabularies:
 detail_views = {}
 for cv_name in vocabularies:
     vocabulary = vocabularies[cv_name]
-    view = vocabulary['detail_view'] if 'detail_view' in vocabulary else vocabulary_detail_view
-    template = vocabulary['detail_template'] if 'detail_template' in vocabulary else vocabulary_detail_template
+    view = vocabulary['detail_view'] if 'detail_view' in vocabulary else defaults['detail_view']
+    template = vocabulary['detail_template'] if 'detail_template' in vocabulary else defaults['detail_template']
 
     detail_views[cv_name] = view.as_view(vocabulary=cv_name,
                                          vocabulary_verbose=vocabulary['name'],

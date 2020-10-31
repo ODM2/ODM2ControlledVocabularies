@@ -3,12 +3,20 @@ from operator import itemgetter
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 
-# from cvinterface.views.base_views import *
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
-from odm2cvs.controlled_vocabularies import requests, vocabularies, request_list_view, request_list_template, \
-    request_create_view, request_create_template, request_update_view, request_update_template
+from cvinterface.views.base_views import DefaultRequestListView, DefaultRequestCreateView, DefaultRequestUpdateView
+from odm2cvs.controlled_vocabularies import vocabularies
+
+defaults = {
+    'list_view': DefaultRequestListView,
+    'create_view': DefaultRequestCreateView,
+    'update_view': DefaultRequestUpdateView,
+    'list_template': 'cvinterface/requests/default_list.html',
+    'create_template': 'cvinterface/requests/default_form.html',
+    'update_template': 'cvinterface/requests/default_update_form.html'
+}
 
 request_list_views = {}
 for request_name in requests:
