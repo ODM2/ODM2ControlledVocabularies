@@ -5,7 +5,20 @@ from django.utils import timezone
 from django.db import models
 
 
-class ControlledVocabulary(models.Model):
+class ControlledVocabularyAbstraction(models.Model):
+    term = models.CharField(max_length=255, help_text="Please enter a URI-friendly version of your term with no spaces, special characters, etc.")
+    name = models.CharField(max_length=255, help_text="Please enter the term as you would expect it to appear in a sentence.")
+    definition = models.TextField(help_text="Please enter a detailed definition of the term.", blank=True, null=True)
+    category = models.CharField(max_length=255, blank=True, null=True, help_text="You may suggest a category for the term. Refer to the vocabulary to see which categories have been used. You may also suggest a new category.")
+    provenance = models.TextField(blank=True, null=True, help_text="Enter a note about where the term came from. If you retrieved the definition of the term from a website or other source, note that here.")
+    provenance_uri = models.URLField(db_column='provenanceUri', blank=True, null=True, max_length=1024, help_text="If you retrieved the term from another formal vocabulary system, enter the URI of the term from the other system here.")
+    note = models.TextField(blank=True, null=True, help_text="Please enter any additional notes you may have about the term.")
+
+    class Meta:
+        abstract = True
+
+
+class ControlledVocabulary(ControlledVocabularyAbstraction):
     CURRENT = 'Current'
     ARCHIVED = 'Archived'
 
@@ -15,13 +28,6 @@ class ControlledVocabulary(models.Model):
     ]
 
     vocabulary_id = models.AutoField(primary_key=True)
-    term = models.CharField(max_length=255)
-    name = models.CharField(max_length=255)
-    definition = models.TextField()
-    category = models.CharField(max_length=255, blank=True, null=True)
-    provenance = models.TextField(blank=True, null=True)
-    provenance_uri = models.URLField(db_column='provenanceUri', blank=True, null=True)
-    note = models.TextField(blank=True, null=True)
     vocabulary_status = models.CharField(max_length=255, db_column='status', choices=STATUS_CHOICES, default=CURRENT)
     previous_version = models.OneToOneField('self', null=True, related_name='revised_version', on_delete=models.CASCADE)
 
@@ -44,7 +50,7 @@ class ControlledVocabulary(models.Model):
         ordering = ["name"]
 
 
-class ControlledVocabularyRequest(models.Model):
+class ControlledVocabularyRequest(ControlledVocabularyAbstraction):
     PENDING = 'Pending'
     REJECTED = 'Rejected'
     ACCEPTED = 'Accepted'
@@ -58,15 +64,6 @@ class ControlledVocabularyRequest(models.Model):
     ]
 
     request_id = models.AutoField(max_length=255, db_column='requestId', primary_key=True)
-
-    term = models.CharField(max_length=255, help_text="Please enter a URI-friendly version of your term with no spaces, special characters, etc.")
-    name = models.CharField(max_length=255, help_text="Please enter the term as you would expect it to appear in a sentence.")
-    definition = models.TextField(help_text="Please enter a detailed definition of the term.", blank=True, null=True)
-    category = models.CharField(max_length=255, blank=True, null=True, help_text="You may suggest a category for the term. Refer to the vocabulary to see which categories have been used. You may also suggest a new category.")
-    provenance = models.TextField(blank=True, null=True, help_text="Enter a note about where the term came from. If you retrieved the definition of the term from a website or other source, note that here.")
-    provenance_uri = models.URLField(db_column='provenanceUri', blank=True, null=True, max_length=1024, help_text="If you retrieved the term from another formal vocabulary system, enter the URI of the term from the other system here.")
-    note = models.TextField(blank=True, null=True, help_text="Please enter any additional notes you may have about the term.")
-
     status = models.CharField(max_length=255, db_column='status', choices=STATUS_CHOICES, default=PENDING)
     date_submitted = models.DateField(db_column='dateSubmitted', default=timezone.now)
     date_status_changed = models.DateField(db_column='dateStatusChanged', default=timezone.now)
