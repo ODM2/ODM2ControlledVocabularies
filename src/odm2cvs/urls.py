@@ -23,46 +23,33 @@ urlpatterns: List[path] = [
 # cv list views
 cv_name: str
 
-for cv_name in list_views:
-    view: ListView = list_views[cv_name]
-
+for cv_name, view in list_views.items():
     urlpatterns += [
         path(f'{cv_name}/', view, name=cv_name),
     ]
 
 # cv detail views
-for cv_name in detail_views:
-    view: DetailView = detail_views[cv_name]
-
+for cv_name, view in detail_views.items():
     urlpatterns += [
         path(f'{cv_name}/<slug:term>/', view, name=f'{cv_name}_detail'),
         path(f'{cv_name}/<slug:term>/<int:pk>', view, name=f'{cv_name}_detail')
     ]
 
 # request list views
-for request_name in request_list_views:
-    view: ListView = request_list_views[request_name]
-    vocabulary: str = controlled_vocabularies.requests[request_name]["vocabulary"]
-
+for cv_name, view in request_list_views.items():
     urlpatterns += [
-        path(f'requests/{vocabulary}/', view, name=request_name),
+        path(f'requests/{cv_name}/', view, name=f'{cv_name}request'),
     ]
 
 # request create views
-for request_name in request_create_views:
-    view: CreateView = request_create_views[request_name]
-    vocabulary: str = controlled_vocabularies.requests[request_name]["vocabulary"]
-
+for cv_name, view in request_create_views.items():
     urlpatterns += [
-        path(f'requests/{vocabulary}/new/', view, name=f'{vocabulary}_form'),
-        path(f'requests/{vocabulary}/new/<int:vocabulary_id>', view, name=f'{vocabulary}_form'),
+        path(f'requests/{cv_name}/new/', view, name=f'{cv_name}request_form'),
+        path(f'requests/{cv_name}/new/<int:vocabulary_id>', view, name=f'{cv_name}request_form'),
     ]
 
 # request update views
-for request_name in request_update_views:
-    view: UpdateView = request_update_views[request_name]
-    vocabulary: str = controlled_vocabularies.requests[request_name]["vocabulary"]
-
+for cv_name, view in request_update_views.items():
     urlpatterns += [
-        path(f'requests/{vocabulary}/<int:vocabulary_id>/', view, name=f'{vocabulary}_update_form'),
+        path(f'requests/{cv_name}/<int:vocabulary_id>/', view, name=f'{cv_name}request_update_form'),
     ]

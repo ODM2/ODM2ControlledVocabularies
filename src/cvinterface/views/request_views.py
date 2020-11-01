@@ -19,38 +19,33 @@ defaults = {
 }
 
 request_list_views = {}
-for request_name in requests:
-    request = requests[request_name]
-    vocabulary_name = vocabularies[request['vocabulary']]['name']
-    view = request['list_view'] if 'list_view' in request else request_list_view
-    template = request['list_template'] if 'list_template' in request else request_list_template
-
-    request_list_views[request_name] = view.as_view(request=request_name, model=request['model'],
-        vocabulary=request['vocabulary'], request_verbose=request['name'],
-        template_name=template, vocabulary_verbose=vocabulary_name,
-    )
-
 request_create_views = {}
-for request_name in requests:
-    request = requests[request_name]
-    vocabulary_name = vocabularies[request['vocabulary']]['name']
-    view = request['create_view'] if 'create_view' in request else request_create_view
-    template = request['create_template'] if 'create_template' in request else request_create_template
+request_update_views = {}
 
-    request_create_views[request_name] = view.as_view(request_name=request_name, model=request['model'],
-        vocabulary=request['vocabulary'], request_verbose=request['name'], template_name=template,
-        vocabulary_model=request['vocabulary_model'], vocabulary_verbose=vocabulary_name,
+for vocabulary_name, vocabulary in vocabularies.items():
+    request = vocabulary.get('request')
+
+    # list view
+    request_list_views[vocabulary_name] = request.get('list_view', defaults['list_view']).as_view(
+        request=f'{vocabulary_name}request', model=request.get('model'),
+        vocabulary=vocabulary_name, request_verbose=request.get('name'),
+        template_name=request.get('list_template', defaults['list_template']), vocabulary_verbose=vocabulary.get('name')
     )
 
-request_update_views = {}
-for request_name in requests:
-    request = requests[request_name]
-    view = request['update_view'] if 'update_view' in request else request_update_view
-    template = request['update_template'] if 'update_template' in request else request_update_template
+    # create_view
+    request_create_views[vocabulary_name] = request.get('create_view', defaults['create_view']).as_view(
+        request_name=f'{vocabulary_name}request', model=request.get('model'),
+        vocabulary=vocabulary_name, request_verbose=request.get('name'),
+        template_name=request.get('create_template', defaults['create_template']),
+        vocabulary_verbose=vocabulary.get('name'), vocabulary_model=vocabulary.get('model')
+    )
 
-    request_update_views[request_name] = view.as_view(request_name=request_name, model=request['model'],
-        vocabulary=request['vocabulary'], request_verbose=request['name'], template_name=template,
-        vocabulary_model=request['vocabulary_model']
+    # update view
+    request_update_views[vocabulary_name] = request.get('update_view', defaults['update_view']).as_view(
+        request_name=f'{vocabulary_name}request', model=request.get('model'),
+        vocabulary=vocabulary_name, request_verbose=request.get('name'),
+        template_name=request.get('update_template', defaults['update_template']),
+        vocabulary_model=vocabulary.get('model')
     )
 
 
@@ -64,14 +59,15 @@ class RequestsView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(RequestsView, self).get_context_data(**kwargs)
-        requests_list = [{'name': requests[request_name]['name'], 'url': reverse(request_name),
-                          'vocabulary': vocabularies[requests[request_name]['vocabulary']]['name']}
-                         for request_name in requests]
+        requests_list = [{'name': vocabulary.get('request').get('name'),
+                          'url': reverse(f'{vocabulary_name}request'),
+                          'vocabulary': vocabulary.get('name')}
+                         for vocabulary_name, vocabulary in vocabularies.items()]
 
-        pending_requests = [(pending_object, pending_object._meta.verbose_name, requests[request_name]['vocabulary'] + '_update_form')
-                            for request_name in requests
-                            for pending_object in requests[request_name]['model'].objects.filter(status='Pending')
-                            if requests[request_name]['model'].objects.filter(status='Pending').count() > 0]
+        pending_requests = [(pending_object, pending_object._meta.verbose_name, f'{vocabulary_name}request_update_form')
+                            for vocabulary_name, vocabulary in vocabularies.items()
+                            for pending_object in vocabulary.get('request').get('model').objects.filter(status='Pending')
+                            if vocabulary.get('request').get('model').objects.filter(status='Pending').count() > 0]
 
         context['requests'] = sorted(requests_list, key=itemgetter('name'))
         context['pending_requests'] = pending_requests

@@ -15,26 +15,21 @@ defaults = {
 
 
 list_views = {}
-for cv_name in vocabularies:
-    vocabulary = vocabularies[cv_name]
-    view = vocabulary['list_view'] if 'list_view' in vocabulary else defaults['list_view']
-    template = vocabulary['list_template'] if 'list_template' in vocabulary else defaults['list_template']
-    list_views[cv_name] = view.as_view(vocabulary=cv_name,
-                                       vocabulary_def=vocabulary['definition'],
-                                       vocabulary_verbose=vocabulary['name'],
-                                       model=vocabulary['model'],
-                                       template_name=template)
-
 detail_views = {}
-for cv_name in vocabularies:
-    vocabulary = vocabularies[cv_name]
-    view = vocabulary['detail_view'] if 'detail_view' in vocabulary else defaults['detail_view']
-    template = vocabulary['detail_template'] if 'detail_template' in vocabulary else defaults['detail_template']
 
-    detail_views[cv_name] = view.as_view(vocabulary=cv_name,
-                                         vocabulary_verbose=vocabulary['name'],
-                                         model=vocabulary['model'],
-                                         template_name=template)
+for vocabulary_name, vocabulary in vocabularies.items():
+    # list view
+    list_views[vocabulary_name] = vocabulary.get('list_view', defaults['list_view']).as_view(
+        vocabulary=vocabulary_name, vocabulary_def=vocabulary.get('description'),
+        vocabulary_verbose=vocabulary.get('name'), model=vocabulary.get('model'),
+        template_name=vocabulary.get('list_template', defaults['list_template'])
+    )
+
+    # detail view
+    detail_views[vocabulary_name] = vocabulary.get('list_view', defaults['detail_view']).as_view(
+        vocabulary=vocabulary_name, vocabulary_verbose=vocabulary.get('name'),
+        model=vocabulary.get('model'), template_name=vocabulary.get('detail_template', defaults['detail_template'])
+    )
 
 
 class VocabulariesView(ListView):
@@ -44,10 +39,10 @@ class VocabulariesView(ListView):
     def get_context_data(self, **kwargs):
         context = super(VocabulariesView, self).get_context_data(**kwargs)
 
-        vocabulary_types = [{'name': vocabularies[vocabulary_name]['name'],
-                             'definition': vocabularies[vocabulary_name]['definition'],
+        vocabulary_types = [{'name': vocabulary.get('name'),
+                             'definition': vocabulary.get('description'),
                              'url': reverse(vocabulary_name)}
-                            for vocabulary_name in vocabularies]
+                            for vocabulary_name, vocabulary in vocabularies.items()]
 
         context['vocabulary_views'] = sorted(vocabulary_types, key=itemgetter('name'))
         return context

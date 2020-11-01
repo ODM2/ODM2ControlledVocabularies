@@ -33,7 +33,7 @@ class DefaultVocabularyListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(DefaultVocabularyListView, self).get_context_data(**kwargs)
         context['vocabulary_verbose'] = self.vocabulary_verbose
-        context['create_url'] = self.vocabulary + '_form'
+        context['create_url'] = self.vocabulary + 'request_form'
         context['detail_url'] = self.vocabulary + '_detail'
         context['vocabulary_def'] = self.vocabulary_def
         context['vocabulary'] = self.vocabulary
@@ -64,7 +64,7 @@ class DefaultVocabularyDetailView(DetailView):
         context['fields'] = tuple((capwords(field.verbose_name), field.value_to_string(self.get_object())) for field in self.model._meta.fields if field.name not in self.exclude)
         context['vocabulary_verbose'] = self.vocabulary_verbose
         context['vocabulary'] = self.vocabulary
-        context['create_url'] = self.vocabulary + '_form'
+        context['create_url'] = self.vocabulary + 'request_form'
         context['detail_url'] = self.vocabulary + '_detail'
         return context
 
@@ -104,7 +104,7 @@ class DefaultRequestListView(ListView):
         context['request_verbose'] = self.request_verbose
         context['vocabulary'] = self.vocabulary
         context['vocabulary_verbose'] = self.vocabulary_verbose
-        context['update_url'] = self.vocabulary + '_update_form'
+        context['update_url'] = self.vocabulary + 'request_update_form'
         return context
 
 
@@ -140,7 +140,7 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
         context['read_only'] = self.read_only
         context['request_name'] = self.request_name
         context['request_verbose'] = self.request_verbose
-        context['update_url'] = self.vocabulary + '_update_form'
+        context['update_url'] = self.request_name + '_update_form'
         context['vocabulary'] = self.vocabulary
         context['vocabulary_detail_url'] = self.vocabulary + '_detail'
         context['success_view'] = 'request_success'
