@@ -1,36 +1,37 @@
+"""
+This is the module that defines all the vocabularies
+and it is the source of all the vocabulary and vocabulary request models.
+
+The format for each vocabulary is the following:
+
+'{vocabulary short name}': {
+    'name': {string: verbose name},
+    'classname':(optional) {string: the name of the model class. defaults to the verbose name without spaces},
+    'description': {string: a description of the vocabulary},
+    'db_table':(optional) {string: the name of the database table for this vocabulary model. short name is used if not present.},
+    'abstract_parents':(optional) {tuple: A tuple with all the abstract model classes containing any extra fields},
+    'ordering':(optional) {list: a list with the name(s) of field(s) that will be used for the default ordering},
+    'list_view':(optional) {ListView: a custom list view},
+    'detail_view':(optional) {DetailView: a custom detail view},
+    'list_template':(optional) {string: a custom list template},
+    'detail_template':(optional) {string: a custom detail template},
+    'request': {
+        'list_view':(optional) {ListView: a custom request list view},
+        'create_view':(optional) {CreateView: a custom request create view},
+        'update_view':(optional) {UpdateView: a custom request update view},
+        'list_template':(optional) {string: a custom request list template},
+        'create_template':(optional) {string: a custom request create template},
+        'update_template':(optional) {string: a custom request update template},
+    }
+}
+"""
+
 from typing import Dict, Any
 
 from cvservices.cv_fields_abstractions import AbstractActionType, AbstractSpatialOffsetType, AbstractUnitsType
 
 
 vocabularies: Dict[str, Dict[str, Any]] = {
-    """
-    This is the dictionary that defines all the vocabularies 
-    and it is the source of all the vocabulary and vocabulary request models.
-    
-    The format for each vocabulary is the following:
-    
-    '{vocabulary short name}': {
-        'name': {string: verbose name},
-        'classname':(optional) {string: the name of the model class. defaults to the verbose name without spaces},
-        'description': {string: a description of the vocabulary},
-        'db_table':(optional) {string: the name of the database table for this vocabulary model. short name is used if not present.},
-        'abstract_parents':(optional) {tuple: A tuple with all the abstract model classes containing any extra fields},
-        'ordering':(optional) {list: a list with the name(s) of field(s) that will be used for the default ordering},
-        'list_view':(optional) {ListView: a custom list view},
-        'detail_view':(optional) {DetailView: a custom detail view},
-        'list_template':(optional) {string: a custom list template},
-        'detail_template':(optional) {string: a custom detail template},
-        'request': {
-            'list_view':(optional) {ListView: a custom request list view},
-            'create_view':(optional) {CreateView: a custom request create view},
-            'update_view':(optional) {UpdateView: a custom request update view},
-            'list_template':(optional) {string: a custom request list template},
-            'create_template':(optional) {string: a custom request create template},
-            'update_template':(optional) {string: a custom request update template},
-        }
-    }
-    """
     'actiontype': {
         'name': 'Action Type',
         'description': 'A vocabulary for describing the type of actions performed in making observations. Depending on the action type, the action may or may not produce an observation result.',
