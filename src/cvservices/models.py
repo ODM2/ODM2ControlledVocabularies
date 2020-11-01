@@ -141,10 +141,12 @@ def generate_specific_models() -> None:
 
         # create vocabulary and request models
         vocabulary_model: Type = type(classname, vocabulary_parent + abstract_parents, {
+            '__module__': 'cvservices.models',
             'Meta': create_meta_class(verbose_name, table_name, vocabulary_ordering)
         })
 
         request_model: Type = type(request_classname, request_parent + abstract_parents, {
+            '__module__': 'cvservices.models',
             'Meta': create_meta_class(request_name, f'{table_name}request', request_ordering)
         })
 
