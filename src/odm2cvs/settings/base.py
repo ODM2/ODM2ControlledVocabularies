@@ -20,12 +20,11 @@ import sys
 import json
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 from typing import Dict, Any, TextIO, List, Tuple, Union
 
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR: Path = Path(__file__).resolve().parent.parent
-
-
 config: Dict[str, Any] = {}
 
 try:
@@ -39,7 +38,6 @@ except IOError as ioe:
 try:
     SECRET_KEY: str = config['secret_key']
 except KeyError:
-    print()
     exit('The secret key is required in the settings.json file.')
 
 ALLOWED_HOSTS: List[str] = []
@@ -124,11 +122,7 @@ AUTH_PASSWORD_VALIDATORS: List[Dict[str, str]] = [
 
 # Internationalization
 
-LANGUAGE_CODE: str = 'en-us'
-
 TIME_ZONE: str = 'UTC'
-
-USE_I18N: bool = True
 
 USE_L10N: bool = True
 
@@ -144,7 +138,6 @@ email_config: Dict = config['email'] if 'email' in config else {}
 EMAIL_HOST: str = email_config['host'] if 'host' in email_config else ''
 EMAIL_SENDER: str = email_config['sender'] if 'sender' in email_config else ''
 EMAIL_RECIPIENTS: List[str] = email_config['recipients'] if 'recipients' in email_config else ''
-EMAIL_BACKEND: str = 'django.core.mail.backends.smtp.EmailBackend'
 
 recaptcha_config: Dict = config['recaptcha'] if 'recaptcha' in config else {}
 RECAPTCHA_KEY: str = recaptcha_config['secret_key'] if 'secret_key' in recaptcha_config else ''
