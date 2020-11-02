@@ -39,6 +39,10 @@ class ControlledVocabulary(ControlledVocabularyAbstraction):
     vocabulary_status = models.CharField(max_length=255, db_column='status', choices=STATUS_CHOICES, default=CURRENT)
     previous_version = models.OneToOneField('self', blank=True, null=True, related_name='revised_version', on_delete=models.CASCADE)
 
+    class Meta:
+        db_table = 'controlledvocabularies'
+        ordering = ["name"]
+
     def has_revision(self):
         revision = None
         try:
@@ -52,10 +56,6 @@ class ControlledVocabulary(ControlledVocabularyAbstraction):
         while term.has_revision():
             term = term.revised_version
         return term
-
-    class Meta:
-        db_table = 'controlledvocabularies'
-        ordering = ["name"]
 
 
 class ControlledVocabularyRequest(ControlledVocabularyAbstraction):
