@@ -80,8 +80,8 @@ class ControlledVocabularyRequest(ControlledVocabularyAbstraction):
     submitter_email = models.CharField(max_length=255, db_column='submitterEmail', help_text="Enter your email address.")
     request_reason = models.TextField(db_column='requestReason', help_text="Please enter a brief description of the reason for your submission (e.g., Term does not exist yet, Term is needed for my data use case, etc.)")
 
-    request_for = models.ForeignKey('ControlledVocabulary', db_column='requestFor', blank=True, null=True, on_delete=models.CASCADE)
-    original_request = models.ForeignKey('self', db_column='originalRequestId', blank=True, null=True, on_delete=models.CASCADE)
+    request_for = models.ForeignKey('ControlledVocabulary', related_name='requests', db_column='requestFor', blank=True, null=True, on_delete=models.CASCADE)
+    original_request = models.ForeignKey('self', related_name='subsequent_request', db_column='originalRequestId', blank=True, null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'requests'
