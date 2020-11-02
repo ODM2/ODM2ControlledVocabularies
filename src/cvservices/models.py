@@ -37,7 +37,7 @@ class ControlledVocabulary(ControlledVocabularyAbstraction):
 
     vocabulary_id = models.AutoField(primary_key=True)
     vocabulary_status = models.CharField(max_length=255, db_column='status', choices=STATUS_CHOICES, default=CURRENT)
-    previous_version = models.OneToOneField('self', null=True, related_name='revised_version', on_delete=models.CASCADE)
+    previous_version = models.OneToOneField('self', blank=True, null=True, related_name='revised_version', on_delete=models.CASCADE)
 
     def has_revision(self):
         revision = None
@@ -81,7 +81,7 @@ class ControlledVocabularyRequest(ControlledVocabularyAbstraction):
     request_reason = models.TextField(db_column='requestReason', help_text="Please enter a brief description of the reason for your submission (e.g., Term does not exist yet, Term is needed for my data use case, etc.)")
 
     request_for = models.ForeignKey('ControlledVocabulary', db_column='requestFor', blank=True, null=True, on_delete=models.CASCADE)
-    original_request = models.ForeignKey('self', db_column='originalRequestId', null=True, on_delete=models.CASCADE)
+    original_request = models.ForeignKey('self', db_column='originalRequestId', blank=True, null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'requests'
