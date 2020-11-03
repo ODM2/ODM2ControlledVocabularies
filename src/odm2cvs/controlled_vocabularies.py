@@ -33,8 +33,8 @@ from django.dispatch import receiver
 from cvservices.signals import model_created
 from cvservices.cv_fields_abstractions import AbstractActionType, AbstractSpatialOffsetType, AbstractUnitsType
 
-Vocabulary = Dict[str: Any]
-VocabularyRequest = Dict[str: Any]
+Vocabulary = Dict[str, Any]
+VocabularyRequest = Dict[str, Any]
 
 
 @receiver(model_created)
