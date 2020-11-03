@@ -26,8 +26,8 @@ for vocabulary_code, vocabulary in vocabularies.items():
 
     # detail view
     detail_views[vocabulary_code] = vocabulary.get('list_view', defaults['detail_view']).as_view(
-        vocabulary=vocabulary_code, vocabulary_verbose=vocabulary.get('name'),
-        model=vocabulary.get('model'), template_name=vocabulary.get('detail_template', defaults['detail_template'])
+        vocabulary=vocabulary, vocabulary_code=vocabulary_code,
+        template_name=vocabulary.get('detail_template', defaults['detail_template'])
     )
 
 

@@ -22,12 +22,13 @@ from odm2cvs.controlled_vocabularies import Vocabulary
 
 class DefaultVocabularyListView(ListView):
     context_object_name: str = 'concepts_list'
+
     vocabulary: Vocabulary = {}
     vocabulary_code: str = ''
 
     def __init__(self, **kwargs):
-        self.vocabulary = kwargs.get('vocabulary')
         self.vocabulary_code = kwargs.get('vocabulary_code')
+        self.vocabulary = kwargs.get('vocabulary')
         self.model = self.vocabulary.get('model')
         super(DefaultVocabularyListView, self).__init__(**kwargs)
 
@@ -42,31 +43,38 @@ class DefaultVocabularyListView(ListView):
 
     def get_queryset(self):
         queryset = super(DefaultVocabularyListView, self).get_queryset()
-        queryset = queryset.filter(vocabulary_status=self.model.CURRENT)
-        return queryset
+        return queryset.filter(vocabulary_status=self.model.CURRENT)
 
 
 class DefaultVocabularyDetailView(DetailView):
-    vocabulary = None
-    vocabulary_verbose = None
-    pk_url_kwarg = 'vocabulary_id'
     exclude = ['name', 'definition', 'vocabulary_id', 'controlledvocabulary_ptr', 'vocabulary_status', 'previous_version']
-    query_pk_and_slug = True
-    slug_url_kwarg = 'term'
-    slug_field = 'term'
+    context_object_name: str = 'concept'
+    pk_url_kwarg: str = 'vocabulary_id'
+    query_pk_and_slug: bool = True
+    slug_url_kwarg: str = 'term'
+    slug_field: str = 'term'
+
+    vocabulary: Vocabulary = {}
+    vocabulary_code: str = ''
 
     def __init__(self, **kwargs):
+        self.vocabulary_code = kwargs.get('vocabulary_code')
+        self.vocabulary = kwargs.get('vocabulary')
+        self.model = self.vocabulary.get('model')
         super(DefaultVocabularyDetailView, self).__init__(**kwargs)
-        self.vocabulary = kwargs['vocabulary']
-        self.vocabulary_verbose = kwargs['vocabulary_verbose']
 
     def get_context_data(self, **kwargs):
         context = super(DefaultVocabularyDetailView, self).get_context_data(**kwargs)
-        context['fields'] = tuple((capwords(field.verbose_name), field.value_to_string(self.get_object())) for field in self.model._meta.fields if field.name not in self.exclude)
-        context['vocabulary_verbose'] = self.vocabulary_verbose
-        context['vocabulary'] = self.vocabulary
-        context['create_url'] = self.vocabulary + 'request_form'
-        context['detail_url'] = self.vocabulary + '_detail'
+        context['fields'] = tuple(
+            (capwords(field.verbose_name), field.value_to_string(self.get_object()))
+            for field in self.model._meta.fields
+            if field.name not in self.exclude
+        )
+        context['vocabulary_verbose_name'] = self.vocabulary.get('name')
+        context['create_url_name'] = self.vocabulary.get('request').get('create_url_name')
+        context['detail_url_name'] = self.vocabulary.get('detail_url_name')
+        context['vocabulary_code'] = self.vocabulary_code
+        context['ARCHIVED'] = self.model.ARCHIVED
         return context
 
     def get_object(self, queryset=None):

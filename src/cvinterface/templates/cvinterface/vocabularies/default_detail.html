@@ -1,28 +1,28 @@
 {% extends 'cvinterface/base.html' %}
 
 {% block title %}
-    <title>ODM2 CV term: {{ object.term }}</title> 
+    <title>ODM2 CV term: {{ concept.term }}</title>
 {% endblock %}
 
 {% block body %}
     <section class="concept-detail">
         <header>
             <h2>
-                {{ object.name }}<span class="vocabulary-type">{{ vocabulary_verbose }}</span>
+                {{ concept.name }}<span class="vocabulary-type">{{ vocabulary_verbose_name }}</span>
                 <span class="parent-link">
-                    <a href="{% url vocabulary %}" class="tooltip" data-tip="Navigate to the {{ vocabulary_verbose }} vocabulary list.">⤴</a>
+                    <a href="{% url vocabulary_code %}" class="tooltip" data-tip="Navigate to the {{ vocabulary_verbose_name }} vocabulary list.">⤴</a>
                 </span>
             </h2>
-            <h4>{{ object.definition }}</h4>
-            {% if object.vocabulary_status == 'Archived' %}
-                <h4>NOTE: This is an archived version of this term. There is a <a href="{% url detail_url object.revised_version.term object.revised_version.pk %}">new version</a> available.</h4>
+            <h4>{{ concept.definition }}</h4>
+            {% if concept.vocabulary_status == 'Archived' %}
+                <h4>NOTE: This is an archived version of this term. There is a <a href="{% url detail_url_name concept.revised_version.term concept.revised_version.pk %}">new version</a> available.</h4>
             {% endif %}
             <div class="vocabulary-links">
-                {% if object.vocabulary_status != 'Archived' %}
-                    <a id="btnEdit" href="{% url create_url object.pk %}" class="button white">Edit</a>
-                    <a id="btnSKOSTerm" target="_blank" href="{# {% url 'api_dispatch_detail' resource_name=vocabulary api_name='v1' term=object.term %} #}?format=skos" class="button white">View in SKOS</a>
-                    <a id="btnSKOS" download="{{vocabulary}}_{{object.term}}.rdf" href="{# {% url 'api_dispatch_detail' resource_name=vocabulary api_name='v1' term=object.term %} #}?format=skos" target="_blank" class="button white">Download Term (SKOS)</a>
-                    <a id="btnSKOS" download="{{vocabulary}}_{{object.term}}.csv" href="{# {% url 'api_dispatch_detail' resource_name=vocabulary api_name='v1' term=object.term %} #}?format=csv" target="_blank" class="button white">Download Term (CSV)</a>
+                {% if concept.vocabulary_status != ARCHIVED %}
+                    <a id="btnEdit" href="{% url create_url_name concept.pk %}" class="button white">Edit</a>
+                    <a id="btnSKOSTerm" target="_blank" href="{# {% url 'api_dispatch_detail' resource_name=vocabulary api_name='v1' term=concept.term %} #}?format=skos" class="button white">View in SKOS</a>
+                    <a id="btnSKOS" download="{{vocabulary_code}}_{{concept.term}}.rdf" href="{# {% url 'api_dispatch_detail' resource_name=vocabulary api_name='v1' term=concept.term %} #}?format=skos" target="_blank" class="button white">Download Term (SKOS)</a>
+                    <a id="btnSKOS" download="{{vocabulary_code}}_{{concept.term}}.csv" href="{# {% url 'api_dispatch_detail' resource_name=vocabulary api_name='v1' term=concept.term %} #}?format=csv" target="_blank" class="button white">Download Term (CSV)</a>
                 {% endif %}
             </div>
         </header>
@@ -42,8 +42,8 @@
         <section class="previous-versions">
             <div class="column two-columns data-view">
                 <h4>
-                    {% if object.previous_version %}
-                        Previous version of this term: <br><a href="{% url detail_url object.previous_version.term object.previous_version.pk %}">{{ object.previous_version.term }}</a> {{ object.previous_version.definition }}
+                    {% if concept.previous_version %}
+                        Previous version of this term: <br><a href="{% url detail_url_name concept.previous_version.term concept.previous_version.pk %}">{{ concept.previous_version.term }}</a> {{ concept.previous_version.definition }}
                     {% endif %}
                 </h4>
             </div>
