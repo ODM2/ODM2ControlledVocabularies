@@ -17,26 +17,27 @@ from django.urls import reverse, reverse_lazy
 
 # Vocabulary Basic Views
 from cvservices.models import ControlledVocabularyRequest, Unit
+from odm2cvs.controlled_vocabularies import Vocabulary
 
 
 class DefaultVocabularyListView(ListView):
-    vocabulary = None
-    vocabulary_verbose = None
-    vocabulary_def = None
+    context_object_name: str = 'concepts_list'
+    vocabulary: Vocabulary = {}
+    vocabulary_code: str = ''
 
     def __init__(self, **kwargs):
-        self.vocabulary = kwargs['vocabulary']
-        self.vocabulary_verbose = kwargs['vocabulary_verbose']
-        self.vocabulary_def = kwargs['vocabulary_def']
+        self.vocabulary = kwargs.get('vocabulary')
+        self.vocabulary_code = kwargs.get('vocabulary_code')
+        self.model = self.vocabulary.get('model')
         super(DefaultVocabularyListView, self).__init__(**kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(DefaultVocabularyListView, self).get_context_data(**kwargs)
-        context['vocabulary_verbose'] = self.vocabulary_verbose
-        context['create_url'] = self.vocabulary + 'request_form'
-        context['detail_url'] = self.vocabulary + '_detail'
-        context['vocabulary_def'] = self.vocabulary_def
-        context['vocabulary'] = self.vocabulary
+        context['vocabulary_verbose_name'] = self.vocabulary.get('name')
+        context['vocabulary_description'] = self.vocabulary.get('description')
+        context['create_url_name'] = self.vocabulary.get('request').get('create_url_name')
+        context['detail_url_name'] = self.vocabulary.get('detail_url_name')
+        context['vocabulary_code'] = self.vocabulary_code
         return context
 
     def get_queryset(self):

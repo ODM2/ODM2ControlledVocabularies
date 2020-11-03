@@ -17,17 +17,16 @@ defaults = {
 list_views = {}
 detail_views = {}
 
-for vocabulary_name, vocabulary in vocabularies.items():
+for vocabulary_code, vocabulary in vocabularies.items():
     # list view
-    list_views[vocabulary_name] = vocabulary.get('list_view', defaults['list_view']).as_view(
-        vocabulary=vocabulary_name, vocabulary_def=vocabulary.get('description'),
-        vocabulary_verbose=vocabulary.get('name'), model=vocabulary.get('model'),
+    list_views[vocabulary_code] = vocabulary.get('list_view', defaults['list_view']).as_view(
+        vocabulary=vocabulary, vocabulary_code=vocabulary_code,
         template_name=vocabulary.get('list_template', defaults['list_template'])
     )
 
     # detail view
-    detail_views[vocabulary_name] = vocabulary.get('list_view', defaults['detail_view']).as_view(
-        vocabulary=vocabulary_name, vocabulary_verbose=vocabulary.get('name'),
+    detail_views[vocabulary_code] = vocabulary.get('list_view', defaults['detail_view']).as_view(
+        vocabulary=vocabulary_code, vocabulary_verbose=vocabulary.get('name'),
         model=vocabulary.get('model'), template_name=vocabulary.get('detail_template', defaults['detail_template'])
     )
 
