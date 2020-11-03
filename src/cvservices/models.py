@@ -8,9 +8,7 @@ from django.db import models
 
 from cvservices.cv_fields_abstractions import AbstractUnitsType, AbstractActionType, AbstractSpatialOffsetType
 from odm2cvs.controlled_vocabularies import vocabularies
-
-vocabulary_models = {}
-requests_models = {}
+from cvservices.signals import model_created
 
 
 class ControlledVocabularyAbstraction(models.Model):
@@ -124,13 +122,13 @@ def generate_specific_models() -> None:
     vocabulary_parent: Tuple[Type] = (ControlledVocabulary, )
     request_parent: Tuple[Type] = (ControlledVocabularyRequest, )
 
-    vocabulary_name: str
+    vocabulary_code: str
     vocabulary: Dict[str, Any]
-    for vocabulary_name, vocabulary in vocabularies.items():
+    for vocabulary_code, vocabulary in vocabularies.items():
         # vocabulary metadata
         verbose_name: str = vocabulary.get('name')
         classname: str = vocabulary.get('classname', re.sub('[^A-Za-z0-9]+', '', verbose_name))
-        table_name: str = vocabulary.get('table_name', f'{vocabulary_name}cv')
+        table_name: str = vocabulary.get('table_name', f'{vocabulary_code}cv')
         abstract_parents: Tuple[Type] = vocabulary.get('abstract_parents', ())
         vocabulary_ordering: List[str] = vocabulary.get('ordering', ControlledVocabulary._meta.ordering)
 
@@ -150,18 +148,16 @@ def generate_specific_models() -> None:
             'Meta': create_meta_class(request_name, f'{table_name}requests', request_ordering)
         })
 
-        # update vocabulary dictionary with generated models and request
-        vocabulary['model'] = vocabulary_model
-        vocabulary['request'] = vocabulary.get('request', {})
-        vocabulary['request']['model'] = request_model
-        vocabulary['request']['name'] = request_name
-
-        vocabulary_models[vocabulary_name] = vocabulary_model
-        requests_models[vocabulary_name] = request_model
-
         # Add models to module scope
         globals()[classname] = vocabulary_model
         globals()[request_classname] = request_model
+
+        model_created.send(
+            sender=vocabulary_model,
+            vocabulary_code=vocabulary_code,
+            vocabulary_model=vocabulary_model,
+            request_model=request_model
+        )
 
 
 generate_specific_models()

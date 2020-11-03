@@ -26,9 +26,32 @@ The format for each vocabulary is the following:
 }
 """
 
-from typing import Dict, Any
+from typing import Dict, Any, Type
 
+from django.dispatch import receiver
+
+from cvservices.signals import model_created
 from cvservices.cv_fields_abstractions import AbstractActionType, AbstractSpatialOffsetType, AbstractUnitsType
+
+
+@receiver(model_created)
+def update_vocabularies_dict(sender: Type, **kwargs) -> None:
+    vocabulary_code: str = kwargs.get('vocabulary_code')
+    vocabulary_model: Type = kwargs.get('vocabulary_model', sender)
+    request_model: Type = kwargs.get('request_model')
+
+    vocabulary: Dict[str, Any] = vocabularies.get(vocabulary_code)
+    vocabulary['model'] = vocabulary_model
+    vocabulary['list_url_name'] = f'{vocabulary_code}'
+    vocabulary['detail_url_name'] = f'{vocabulary_code}_detail'
+
+    request: Dict[str, Any] = vocabulary.get('request', {})
+    request['model'] = request_model
+    request['name'] = f'{vocabulary["name"]} Request'
+    request['list_url_name'] = f'{vocabulary_code}request'
+    request['create_url_name'] = f'{vocabulary_code}request_form'
+    request['update_url_name'] = f'{vocabulary_code}request_update_form'
+    vocabulary['request'] = request
 
 
 vocabularies: Dict[str, Dict[str, Any]] = {
@@ -144,4 +167,3 @@ vocabularies: Dict[str, Dict[str, Any]] = {
         'abstract_parents': (AbstractUnitsType,),
     },
 }
-
