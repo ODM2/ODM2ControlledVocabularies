@@ -3,6 +3,7 @@ import requests
 from os import linesep
 from string import capwords
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
@@ -89,32 +90,31 @@ class DefaultVocabularyDetailView(DetailView):
 
 
 # Request Basic Views
-class DefaultRequestListView(ListView):
-    request = None
-    vocabulary = None
-    request_verbose = None
-    vocabulary_verbose = None
+class DefaultRequestListView(ListView, LoginRequiredMixin):
+    context_object_name: str = 'requests_list'
+    login_url = reverse_lazy('login')
 
-    @method_decorator(login_required(login_url=reverse_lazy('login')))
-    def dispatch(self, *args, **kwargs):
-        return super(DefaultRequestListView, self).dispatch(*args, **kwargs)
+    vocabulary: Vocabulary = {}
+    vocabulary_code: str = ''
 
     def __init__(self, **kwargs):
         super(DefaultRequestListView, self).__init__(**kwargs)
-        self.request_verbose = kwargs['request_verbose']
-        self.vocabulary = kwargs['vocabulary']
-        self.vocabulary_verbose = kwargs['vocabulary_verbose']
-        self.request = kwargs['request']
-        self.queryset = self.get_queryset().exclude(status=self.model.ARCHIVED)
+        self.vocabulary_code = kwargs.get('vocabulary_code')
+        self.vocabulary = kwargs.get('vocabulary')
+        self.vocabulary_request = self.vocabulary.get('request')
+        self.model = self.vocabulary_request.get('model')
 
     def get_context_data(self, **kwargs):
         context = super(DefaultRequestListView, self).get_context_data(**kwargs)
-        context['request'] = self.request
-        context['request_verbose'] = self.request_verbose
-        context['vocabulary'] = self.vocabulary
-        context['vocabulary_verbose'] = self.vocabulary_verbose
-        context['update_url'] = self.vocabulary + 'request_update_form'
+        context['vocabulary_verbose_name'] = self.vocabulary.get('name')
+        context['request_verbose_name'] = self.vocabulary_request.get('name')
+        context['update_url_name'] = self.vocabulary_request.get('update_url_name')
+        context['vocabulary_code'] = self.vocabulary_code
         return context
+
+    def get_queryset(self):
+        queryset = super(DefaultRequestListView, self).get_queryset()
+        return queryset.exclude(status=self.model.ARCHIVED)
 
 
 class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):

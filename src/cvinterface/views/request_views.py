@@ -22,28 +22,27 @@ request_list_views = {}
 request_create_views = {}
 request_update_views = {}
 
-for vocabulary_name, vocabulary in vocabularies.items():
+for vocabulary_code, vocabulary in vocabularies.items():
     request = vocabulary.get('request')
 
     # list view
-    request_list_views[vocabulary_name] = request.get('list_view', defaults['list_view']).as_view(
-        request=f'{vocabulary_name}request', model=request.get('model'),
-        vocabulary=vocabulary_name, request_verbose=request.get('name'),
-        template_name=request.get('list_template', defaults['list_template']), vocabulary_verbose=vocabulary.get('name')
+    request_list_views[vocabulary_code] = request.get('list_view', defaults['list_view']).as_view(
+        vocabulary=vocabulary, vocabulary_code=vocabulary_code,
+        template_name=request.get('list_template', defaults['list_template'])
     )
 
     # create_view
-    request_create_views[vocabulary_name] = request.get('create_view', defaults['create_view']).as_view(
-        request_name=f'{vocabulary_name}request', model=request.get('model'),
-        vocabulary=vocabulary_name, request_verbose=request.get('name'),
+    request_create_views[vocabulary_code] = request.get('create_view', defaults['create_view']).as_view(
+        request_name=f'{vocabulary_code}request', model=request.get('model'),
+        vocabulary=vocabulary_code, request_verbose=request.get('name'),
         template_name=request.get('create_template', defaults['create_template']),
         vocabulary_verbose=vocabulary.get('name'), vocabulary_model=vocabulary.get('model')
     )
 
     # update view
-    request_update_views[vocabulary_name] = request.get('update_view', defaults['update_view']).as_view(
-        request_name=f'{vocabulary_name}request', model=request.get('model'),
-        vocabulary=vocabulary_name, request_verbose=request.get('name'),
+    request_update_views[vocabulary_code] = request.get('update_view', defaults['update_view']).as_view(
+        request_name=f'{vocabulary_code}request', model=request.get('model'),
+        vocabulary=vocabulary_code, request_verbose=request.get('name'),
         template_name=request.get('update_template', defaults['update_template']),
         vocabulary_model=vocabulary.get('model')
     )
