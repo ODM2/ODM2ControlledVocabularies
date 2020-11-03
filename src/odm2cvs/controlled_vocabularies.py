@@ -33,6 +33,9 @@ from django.dispatch import receiver
 from cvservices.signals import model_created
 from cvservices.cv_fields_abstractions import AbstractActionType, AbstractSpatialOffsetType, AbstractUnitsType
 
+Vocabulary = Dict[str: Any]
+VocabularyRequest = Dict[str: Any]
+
 
 @receiver(model_created)
 def update_vocabularies_dict(sender: Type, **kwargs) -> None:
@@ -40,12 +43,12 @@ def update_vocabularies_dict(sender: Type, **kwargs) -> None:
     vocabulary_model: Type = kwargs.get('vocabulary_model', sender)
     request_model: Type = kwargs.get('request_model')
 
-    vocabulary: Dict[str, Any] = vocabularies.get(vocabulary_code)
+    vocabulary: Vocabulary = vocabularies.get(vocabulary_code)
     vocabulary['model'] = vocabulary_model
     vocabulary['list_url_name'] = f'{vocabulary_code}'
     vocabulary['detail_url_name'] = f'{vocabulary_code}_detail'
 
-    request: Dict[str, Any] = vocabulary.get('request', {})
+    request: VocabularyRequest = vocabulary.get('request', {})
     request['model'] = request_model
     request['name'] = f'{vocabulary["name"]} Request'
     request['list_url_name'] = f'{vocabulary_code}request'
@@ -54,7 +57,7 @@ def update_vocabularies_dict(sender: Type, **kwargs) -> None:
     vocabulary['request'] = request
 
 
-vocabularies: Dict[str, Dict[str, Any]] = {
+vocabularies: Dict[str, Vocabulary] = {
     'actiontype': {
         'name': 'Action Type',
         'description': 'A vocabulary for describing the type of actions performed in making observations. Depending on the action type, the action may or may not produce an observation result.',

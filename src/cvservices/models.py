@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.db import models
 
 from cvservices.cv_fields_abstractions import AbstractUnitsType, AbstractActionType, AbstractSpatialOffsetType
-from odm2cvs.controlled_vocabularies import vocabularies
+from odm2cvs.controlled_vocabularies import vocabularies, Vocabulary
 from cvservices.signals import model_created
 
 
@@ -123,7 +123,7 @@ def generate_specific_models() -> None:
     request_parent: Tuple[Type] = (ControlledVocabularyRequest, )
 
     vocabulary_code: str
-    vocabulary: Dict[str, Any]
+    vocabulary: Vocabulary
     for vocabulary_code, vocabulary in vocabularies.items():
         # vocabulary metadata
         verbose_name: str = vocabulary.get('name')
