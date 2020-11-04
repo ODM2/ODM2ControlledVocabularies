@@ -5,3 +5,6 @@ from django.apps import AppConfig
 
 class CvinterfaceConfig(AppConfig):
     name = 'cvinterface'
+
+    def ready(self):
+        import cvinterface.signals
