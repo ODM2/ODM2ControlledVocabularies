@@ -5,25 +5,25 @@
     <section class="request-update">
         <header>
             <h2>
-                {{ object.term }}
-                {% if object.request_for %}
-                    (<a href="{% url vocabulary_detail_url object.request_for.term object.request_for.vocabulary_id %}">{{ object.status }}</a>)
+                {{ vocabulary_request.term }}
+                {% if vocabulary_request.request_for %}
+                    (<a href="{% url vocabulary_detail_url_name vocabulary_request.request_for.term vocabulary_request.request_for.vocabulary_id %}">{{ vocabulary_request.status }}</a>)
                 {% else %}
-                    ({{ object.status }})
+                    ({{ vocabulary_request.status }})
                 {% endif %}
-                <span class="vocabulary-type">{{ request_verbose }}</span>
+                <span class="vocabulary-type">{{ request_verbose_name }}</span>
                 <span class="parent-link">
-                    <a href="{% url request_name %}" class="tooltip" data-tip="Navigate to the {{ request_verbose }}s list.">⤴</a>
+                    <a href="{% url request_code %}" class="tooltip" data-tip="Navigate to the {{ request_verbose_name }}s list.">⤴</a>
                 </span>
             </h2>
             <h4 class="request-info-box">
-                <span class="request-info">Requested on {{ object.date_submitted }} by {{ object.submitter_name }}
-                    &lt;<a href="mailto:{{ object.submitter_email }}">{{ object.submitter_email }}</a>&gt;
+                <span class="request-info">Requested on {{ vocabulary_request.date_submitted }} by {{ vocabulary_request.submitter_name }}
+                    &lt;<a href="mailto:{{ vocabulary_request.submitter_email }}">{{ vocabulary_request.submitter_email }}</a>&gt;
                 </span>
-                <span class="request-info">{{ object.status }} since {{ object.date_status_changed }}</span>
-                {% if object.original_request_id %}
+                <span class="request-info">{{ vocabulary_request.status }} since {{ vocabulary_request.date_status_changed }}</span>
+                {% if vocabulary_request.original_request_id %}
                     <span class="request-info">
-                        <a href="{% url update_url object.original_request_id %}">Original Request</a>
+                        <a href="{% url update_url_name vocabulary_request.original_request_id %}">Original Request</a>
                     </span>
                 {% endif %}
             </h4>
@@ -35,11 +35,11 @@
                 <div class="list-item column three-columns {% if field.field.required %}required{% endif %}">
                     <div class="form-label-item"><h3><label for="{{ field.id_for_label }}">{{ field.label }}</label></h3></div>
                     <div class="form-input-item">
-                        {% if field.name in read_only or all_disabled %}
-                                {{ field.value|default:"-" }}
-                            {% else %}
-                                {{ field|add_class:"form-input" }}
-                            {% endif %}
+                        {% if all_disabled %}
+                            {{ field.value|default:"-" }}
+                        {% else %}
+                            {{ field|add_class:"form-input" }}
+                        {% endif %}
                     </div> {% if field.field.required %} <span class="required-symbol">*</span> {% endif %}
                     <div class="form-errors-item">{{ field.errors }}</div>
                 </div>
@@ -47,7 +47,7 @@
 
             <div class="clear"></div>
             <div class="form-buttons">
-                {% if object.status == 'Pending' %}
+                {% if vocabulary_request.status == 'Pending' %}
                     <input name="request_accept" class="button white" type="submit" value="Accept Request" />
                     <input name="request_reject" class="button white" type="submit" value="Reject Request" />
                 {% endif %}

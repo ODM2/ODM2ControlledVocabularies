@@ -1,3 +1,5 @@
+from typing import List
+
 import requests
 
 from os import linesep
@@ -17,6 +19,7 @@ from django.urls import reverse, reverse_lazy
 
 
 # Vocabulary Basic Views
+from cvinterface.signals import request_approved
 from cvservices.models import ControlledVocabularyRequest, Unit
 from odm2cvs.controlled_vocabularies import Vocabulary
 
@@ -117,88 +120,71 @@ class DefaultRequestListView(ListView, LoginRequiredMixin):
         return queryset.exclude(status=self.model.ARCHIVED)
 
 
-class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
-    request_name = None
-    vocabulary = None
-    vocabulary_model = None
-    request_verbose = None
-    pk_url_kwarg = 'vocabulary_id'
-    accept_button = 'request_accept'
-    reject_button = 'request_reject'
-    success_message = 'The request has been updated.'
-    exclude = ['request_id', 'status', 'date_submitted', 'date_status_changed',
-               'request_for', 'original_request', 'submitter_name', 'submitter_email']
-    read_only = []
+class DefaultRequestUpdateView(UpdateView, LoginRequiredMixin, SuccessMessageMixin):
+    exclude: List[str] = ['request_id', 'status', 'date_submitted', 'date_status_changed', 'request_for',
+                          'original_request', 'submitter_name', 'submitter_email', 'subsequent_request']
+    success_message: str = 'The request has been updated.'
+    context_object_name: str = 'vocabulary_request'
+    accept_button: str = 'request_accept'
+    reject_button: str = 'request_reject'
+    pk_url_kwarg: str = 'vocabulary_id'
+    login_url = reverse_lazy('login')
+    read_only: List[str] = []
 
-    @method_decorator(login_required(login_url=reverse_lazy('login')))
-    def dispatch(self, *args, **kwargs):
-        return super(DefaultRequestUpdateView, self).dispatch(*args, **kwargs)
+    vocabulary: Vocabulary = {}
+    vocabulary_code: str = ''
 
     def __init__(self, **kwargs):
         super(DefaultRequestUpdateView, self).__init__(**kwargs)
-        self.request_name = kwargs['request_name']
-        self.vocabulary = kwargs['vocabulary']
-        self.vocabulary_model = kwargs['vocabulary_model']
-        self.request_verbose = kwargs['request_verbose']
-        self.success_url = reverse(self.request_name)
+        self.vocabulary_code = kwargs.get('vocabulary_code')
+        self.vocabulary = kwargs.get('vocabulary')
+        self.request_code = f'{self.vocabulary_code}request'
+        self.vocabulary_request = self.vocabulary.get('request')
+        self.model = self.vocabulary_request.get('model')
+        self.success_url = reverse(self.request_code)
         self.fields = [field.name for field in self.model._meta.fields if field.name not in self.exclude]
 
     def get_context_data(self, **kwargs):
         context = super(DefaultRequestUpdateView, self).get_context_data(**kwargs)
-        context['all_disabled'] = False if self.object.status == ControlledVocabularyRequest.PENDING else True
-        context['read_only'] = self.read_only
-        context['request_name'] = self.request_name
-        context['request_verbose'] = self.request_verbose
-        context['update_url'] = self.request_name + '_update_form'
-        context['vocabulary'] = self.vocabulary
-        context['vocabulary_detail_url'] = self.vocabulary + '_detail'
+        context['all_disabled'] = self.object.status != ControlledVocabularyRequest.PENDING
+        context['request_code'] = self.request_code
+        context['vocabulary_verbose_name'] = self.vocabulary.get('name')
+        context['request_verbose_name'] = self.vocabulary_request.get('name')
+        context['update_url_name'] = self.vocabulary_request.get('update_url_name')
+        context['vocabulary_detail_url_name'] = self.vocabulary.get('detail_url_name')
+        context['vocabulary_code'] = self.vocabulary_code
         context['success_view'] = 'request_success'
         return context
 
-    def post(self, request, *args, **kwargs):
-        object = self.model.objects.get(pk=kwargs['vocabulary_id'])
-        request.POST._mutable = True
-        for field in self.read_only:
-            request.POST[field] = object.__getattribute__(field)
-        return super(DefaultRequestUpdateView, self).post(request, *args, **kwargs)
-
     def form_valid(self, form):
-        email_subject = 'ODM2 Controlled Vocabularies - Submission Update'
-
         if self.accept_button in self.request.POST:
-            email_message = ''.join([form.instance.submitter_name, ', your submission "',
-                                     form.instance.name, '" for the ', self.vocabulary,
-                                     ' vocabulary was accepted.', linesep, linesep,
-                                     "To see an updated list of terms go to ", self.request.build_absolute_uri(reverse(self.vocabulary))])
-            send_mail(email_subject, email_message, settings.EMAIL_SENDER, [form.instance.submitter_email])
+            request_approved.send(sender=form, web_request=self.request, vocabulary=self.vocabulary)
             return self.accept_request(form)
         elif self.reject_button in self.request.POST:
-            email_message = ''.join([form.instance.submitter_name, ', your submission "',
-                                     form.instance.name, '" for the ', self.vocabulary,
-                                     ' vocabulary was rejected.'])
-            send_mail(email_subject, email_message, settings.EMAIL_SENDER, [form.instance.submitter_email])
             return self.reject_request(form)
 
     def accept_request(self, form):
-        vocabulary = self.vocabulary_model()
+        vocabulary_model = self.vocabulary.get('model')
+        updated_concept = vocabulary_model()
+
         is_editing_term = form.instance.request_for is not None
-        vocabulary_fields = [term_field.name for term_field in vocabulary._meta.fields]
+        vocabulary_fields = [term_field.name for term_field in updated_concept._meta.fields]
         request_fields = [request_field.name for request_field in form.instance._meta.fields]
 
         for field in vocabulary_fields:
             if field in request_fields:
-                vocabulary.__setattr__(field, form.instance.__getattribute__(field))
+                updated_concept.__setattr__(field, form.instance.__getattribute__(field))
 
         if is_editing_term:
-            vocabulary.previous_version = form.instance.request_for
-            form.instance.request_for.vocabulary_status = self.vocabulary_model.ARCHIVED
+            updated_concept.previous_version = form.instance.request_for
+            form.instance.request_for.vocabulary_status = vocabulary_model.ARCHIVED
             form.instance.request_for.save()
 
-        vocabulary.vocabulary_status = self.vocabulary_model.CURRENT
-        vocabulary.save()
+        updated_concept.vocabulary_status = vocabulary_model.CURRENT
+        updated_concept.save()
 
         revised_request = self.save_revised_request(form, ControlledVocabularyRequest.ACCEPTED)
-        revised_request.request_for = vocabulary
+        revised_request.request_for = updated_concept
 
         return super(DefaultRequestUpdateView, self).form_valid(form)
 

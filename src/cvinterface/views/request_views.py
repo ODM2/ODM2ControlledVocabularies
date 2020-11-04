@@ -41,10 +41,8 @@ for vocabulary_code, vocabulary in vocabularies.items():
 
     # update view
     request_update_views[vocabulary_code] = request.get('update_view', defaults['update_view']).as_view(
-        request_name=f'{vocabulary_code}request', model=request.get('model'),
-        vocabulary=vocabulary_code, request_verbose=request.get('name'),
-        template_name=request.get('update_template', defaults['update_template']),
-        vocabulary_model=vocabulary.get('model')
+        vocabulary=vocabulary, vocabulary_code=vocabulary_code,
+        template_name=request.get('update_template', defaults['update_template'])
     )
 
 
