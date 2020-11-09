@@ -19,7 +19,7 @@ from django.urls import reverse, reverse_lazy
 
 
 # Vocabulary Basic Views
-from cvinterface.signals import request_approved
+from cvinterface.signals import request_approved, request_rejected, request_made
 from cvservices.models import ControlledVocabularyRequest, Unit
 from odm2cvs.controlled_vocabularies import Vocabulary
 
@@ -129,7 +129,6 @@ class DefaultRequestUpdateView(UpdateView, LoginRequiredMixin, SuccessMessageMix
     reject_button: str = 'request_reject'
     pk_url_kwarg: str = 'vocabulary_id'
     login_url = reverse_lazy('login')
-    read_only: List[str] = []
 
     vocabulary: Vocabulary = {}
     vocabulary_code: str = ''
@@ -161,6 +160,7 @@ class DefaultRequestUpdateView(UpdateView, LoginRequiredMixin, SuccessMessageMix
             request_approved.send(sender=form, web_request=self.request, vocabulary=self.vocabulary)
             return self.accept_request(form)
         elif self.reject_button in self.request.POST:
+            request_rejected.send(sender=form, web_request=self.request, vocabulary=self.vocabulary)
             return self.reject_request(form)
 
     def accept_request(self, form):
@@ -211,33 +211,34 @@ class DefaultRequestUpdateView(UpdateView, LoginRequiredMixin, SuccessMessageMix
 
 
 class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
-    request_name = None
-    vocabulary = None
-    request_verbose = None
-    vocabulary_model = None
-    vocabulary_verbose = None
-    pk_url_kwarg = 'vocabulary_id'
-    recaptcha_key = settings.RECAPTCHA_KEY
-    success_message = 'Your request has been made successfully.'
-    exclude = ['request_id', 'status', 'date_submitted', 'date_status_changed', 'request_for', 'request_notes', 'original_request']
+    exclude: List[str] = ['request_id', 'status', 'date_submitted', 'date_status_changed',
+                          'request_for', 'request_notes', 'original_request']
+    success_message: str = 'Your request has been made successfully.'
+    context_object_name: str = 'vocabulary_request'
+    pk_url_kwarg: str = 'vocabulary_id'
+    login_url = reverse_lazy('login')
+
     submitter_fields = ['submitter_name', 'submitter_email', 'request_reason']
+    recaptcha_key = settings.RECAPTCHA_KEY
+    vocabulary: Vocabulary = {}
+    vocabulary_code: str = ''
 
     def __init__(self, **kwargs):
         super(DefaultRequestCreateView, self).__init__(**kwargs)
-        self.request_name = kwargs['request_name']
-        self.vocabulary = kwargs['vocabulary']
-        self.request_verbose = kwargs['request_verbose']
-        self.vocabulary_model = kwargs['vocabulary_model']
-        self.vocabulary_verbose = kwargs['vocabulary_verbose']
-        self.success_url = reverse(self.vocabulary)
+        self.vocabulary_code = kwargs.get('vocabulary_code')
+        self.vocabulary = kwargs.get('vocabulary')
+        self.request_code = f'{self.vocabulary_code}request'
+        self.vocabulary_request = self.vocabulary.get('request')
+        self.model = self.vocabulary_request.get('model')
+        self.success_url = reverse(self.vocabulary.get('list_url_name'))
         self.fields = [field.name for field in self.model._meta.fields if field.name not in self.exclude]
 
     def get_context_data(self, **kwargs):
         context = super(DefaultRequestCreateView, self).get_context_data(**kwargs)
-        context['request_name'] = self.request_name
-        context['request_verbose'] = self.request_verbose
-        context['vocabulary_verbose'] = self.vocabulary_verbose
-        context['vocabulary'] = self.vocabulary
+        context['request_code'] = self.request_code
+        context['vocabulary_verbose_name'] = self.vocabulary.get('name')
+        context['request_verbose_name'] = self.vocabulary_request.get('name')
+        context['vocabulary_code'] = self.vocabulary_code
         context['submitter_fields'] = self.submitter_fields
         context['recaptcha_user_key'] = settings.RECAPTCHA_USER_KEY
         return context
@@ -246,12 +247,8 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
         if 'vocabulary_id' not in self.kwargs:
             return {}
 
-        initial_data = {}
-        term = self.vocabulary_model.objects.get(pk=self.kwargs['vocabulary_id'])
-        fields = [concept_field.name for concept_field in term._meta.fields]
-        for field in fields:
-            initial_data[field] = term.__getattribute__(field)
-
+        concept = self.vocabulary.get('model').objects.get(pk=self.kwargs.get('vocabulary_id'))
+        initial_data = {field.name: concept.__getattribute__(field.name) for field in concept._meta.fields}
         return initial_data
 
     def is_captcha_valid(self, form):
@@ -273,42 +270,17 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
         }
 
         captcha_request = requests.get(url, params, headers=headers)
-        return_values = captcha_request.json()
-        return return_values["success"]
+        return captcha_request.json().get('success', False)
 
     def form_valid(self, form):
         if not self.is_captcha_valid(form):
             return super(DefaultRequestCreateView, self).form_invalid(form)
 
         if 'vocabulary_id' in self.kwargs:
-            form.instance.request_for_id = self.kwargs['vocabulary_id']
+            form.instance.request_for_id = self.kwargs.get('vocabulary_id')
 
-        # TODO: if there's no email setup, just skip...
-        self.send_confirmation_email(form)
+        request_made.send(sender=form, web_request=self.request, vocabulary=self.vocabulary)
         return super(DefaultRequestCreateView, self).form_valid(form)
-
-    def send_confirmation_email(self, form):
-        action = 'creation of a new ' if 'term' not in self.kwargs else 'update of a '
-
-        submitter_email_subject = 'ODM2 Controlled Vocabularies Submission'
-        submitter_email_message = ''.join(['Thank you for your submission to ODM2 Controlled Vocabularies.', linesep, linesep,
-                                           'Vocabulary: ', self.vocabulary_verbose, linesep,
-                                           'Term: ', form.cleaned_data['term'], linesep,
-                                           'Definition: ', form.cleaned_data['definition'], linesep,
-                                           'Notes: ', form.cleaned_data['note'],  linesep,
-                                           'Reason given for request: ', form.cleaned_data['request_reason'],
-                                           ])
-
-        admins_email_subject = 'New request for an ODM2 Controlled Vocabulary Term'
-        admins_email_message = ''.join(['User ', form.instance.submitter_name, ' (', form.instance.submitter_email, ')',
-                                        ' made a request for the ', action, self.vocabulary_verbose, ' vocabulary term.', linesep, linesep,
-                                        'Term: ', form.cleaned_data['term'], linesep,
-                                        'Definition: ', form.cleaned_data['definition'], linesep,
-                                        'Reason given for request: ', form.cleaned_data['request_reason'], linesep, linesep,
-                                        'To review this submission go to ', self.request.build_absolute_uri(reverse('requests_list'))])
-
-        send_mail(admins_email_subject, admins_email_message, settings.EMAIL_SENDER, settings.EMAIL_RECIPIENTS)
-        send_mail(submitter_email_subject, submitter_email_message, settings.EMAIL_SENDER, [form.instance.submitter_email])
 
 
 class UnitsListView(ListView):
