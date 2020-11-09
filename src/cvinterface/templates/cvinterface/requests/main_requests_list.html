@@ -52,10 +52,10 @@
             <header>
                 <h3>All Requests</h3>
             </header>
-            {% for request_type in requests %}
+            {% for request in requests %}
                 <div class="list-item column two-columns {% if forloop.last %} last-list-item {% endif %}">
-                    <div class="list-title"><a href="{{ request_type.url }}"><h3>{{ request_type.vocabulary }}</h3></a></div>
-                    <div class="list-description"><p>All requests for the {{ request_type.vocabulary }} vocabulary.</p></div>
+                    <div class="list-title"><a href="{{ request.url }}"><h3>{{ request.vocabulary_verbose_name }}</h3></a></div>
+                    <div class="list-description"><p>All requests for the {{ request.vocabulary_verbose_name }} vocabulary.</p></div>
                 </div>
             {% endfor %}
             <div class="clear"></div>
