@@ -39,7 +39,7 @@ class VocabulariesView(ListView):
         context = super(VocabulariesView, self).get_context_data(**kwargs)
 
         vocabulary_types = [{'name': vocabulary.get('name'),
-                             'definition': vocabulary.get('description'),
+                             'description': vocabulary.get('description'),
                              'url': reverse(vocabulary_name)}
                             for vocabulary_name, vocabulary in vocabularies.items()]
 
