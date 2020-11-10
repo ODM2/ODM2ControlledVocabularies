@@ -4,18 +4,18 @@
     <section class="requests-table">
         <header>
             <h2>
-                {{ request_verbose }}s
+                {{ request_verbose_name }}s
                 <span class="parent-link">
                     <a href="{% url 'requests_list' %}" class="tooltip" data-tip="Navigate to the requests page.">⤴</a>
                 </span>
             </h2>
-            <h4>Users' requests for adding or modifying {{ request_verbose|cut:" Request" }} Controlled Vocabularies.</h4>
+            <h4>Users' requests for adding or modifying {{ vocabulary_verbose_name }} Controlled Vocabularies.</h4>
             <div class="vocabulary-links">
-                <a id="btnSeeVocabulary" href="{% url vocabulary %}" class="button white">See {{ vocabulary_verbose }} Terms</a>
+                <a id="btnSeeVocabulary" href="{% url vocabulary_code %}" class="button white">See {{ vocabulary_verbose_name }} Terms</a>
             </div>
         </header>
         <div class="column three-columns">
-            {% if not object_list %}
+            {% if not requests_list %}
                 <p class="no-results-message">There are no requests for this vocabulary.</p>
             {% else %}
                 {% block data_table %}
@@ -30,13 +30,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for request in object_list %}
+                        {% for vocabulary_request in requests_list %}
                             <tr>
-                                <td><a href="{% url update_url request.request_id %}">{{ request.term }}</a></td>
-                                <td>{{ request.definition }}</td>
-                                <td>{{ request.date_submitted }}</td>
-                                <td>{{ request.status }}</td>
-                                <td>{{ request.submitter_name }}</td>
+                                <td><a href="{% url update_url_name vocabulary_request.request_id %}">{{ vocabulary_request.term }}</a></td>
+                                <td>{{ vocabulary_request.definition }}</td>
+                                <td>{{ vocabulary_request.date_submitted }}</td>
+                                <td>{{ vocabulary_request.status }}</td>
+                                <td>{{ vocabulary_request.submitter_name }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>

@@ -1,6 +1,7 @@
 from operator import itemgetter
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
 
 from django.utils.decorators import method_decorator
@@ -22,51 +23,43 @@ request_list_views = {}
 request_create_views = {}
 request_update_views = {}
 
-for vocabulary_name, vocabulary in vocabularies.items():
+for vocabulary_code, vocabulary in vocabularies.items():
     request = vocabulary.get('request')
 
     # list view
-    request_list_views[vocabulary_name] = request.get('list_view', defaults['list_view']).as_view(
-        request=f'{vocabulary_name}request', model=request.get('model'),
-        vocabulary=vocabulary_name, request_verbose=request.get('name'),
-        template_name=request.get('list_template', defaults['list_template']), vocabulary_verbose=vocabulary.get('name')
+    request_list_views[vocabulary_code] = request.get('list_view', defaults['list_view']).as_view(
+        vocabulary=vocabulary, vocabulary_code=vocabulary_code,
+        template_name=request.get('list_template', defaults['list_template'])
     )
 
     # create_view
-    request_create_views[vocabulary_name] = request.get('create_view', defaults['create_view']).as_view(
-        request_name=f'{vocabulary_name}request', model=request.get('model'),
-        vocabulary=vocabulary_name, request_verbose=request.get('name'),
+    request_create_views[vocabulary_code] = request.get('create_view', defaults['create_view']).as_view(
+        vocabulary=vocabulary, vocabulary_code=vocabulary_code,
         template_name=request.get('create_template', defaults['create_template']),
-        vocabulary_verbose=vocabulary.get('name'), vocabulary_model=vocabulary.get('model')
     )
 
     # update view
-    request_update_views[vocabulary_name] = request.get('update_view', defaults['update_view']).as_view(
-        request_name=f'{vocabulary_name}request', model=request.get('model'),
-        vocabulary=vocabulary_name, request_verbose=request.get('name'),
-        template_name=request.get('update_template', defaults['update_template']),
-        vocabulary_model=vocabulary.get('model')
+    request_update_views[vocabulary_code] = request.get('update_view', defaults['update_view']).as_view(
+        vocabulary=vocabulary, vocabulary_code=vocabulary_code,
+        template_name=request.get('update_template', defaults['update_template'])
     )
 
 
-class RequestsView(ListView):
+class RequestsView(ListView, LoginRequiredMixin):
     queryset = []
+    login_url = reverse_lazy('login')
     template_name = 'cvinterface/requests/main_requests_list.html'
-    
-    @method_decorator(login_required(login_url=reverse_lazy('login')))
-    def dispatch(self, *args, **kwargs):
-        return super(RequestsView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(RequestsView, self).get_context_data(**kwargs)
         requests_list = [{'name': vocabulary.get('request').get('name'),
-                          'url': reverse(f'{vocabulary_name}request'),
-                          'vocabulary': vocabulary.get('name')}
-                         for vocabulary_name, vocabulary in vocabularies.items()]
+                          'url': reverse(vocabulary.get('request').get('list_url_name')),
+                          'vocabulary_verbose_name': vocabulary.get('name')}
+                         for vocabulary_code, vocabulary in vocabularies.items()]
 
-        pending_requests = [(pending_object, pending_object._meta.verbose_name, f'{vocabulary_name}request_update_form')
+        pending_requests = [(pending_request, vocabulary.get('request').get('name'), vocabulary.get('request').get('update_url_name'))
                             for vocabulary_name, vocabulary in vocabularies.items()
-                            for pending_object in vocabulary.get('request').get('model').objects.filter(status='Pending')
+                            for pending_request in vocabulary.get('request').get('model').objects.filter(status='Pending')
                             if vocabulary.get('request').get('model').objects.filter(status='Pending').count() > 0]
 
         context['requests'] = sorted(requests_list, key=itemgetter('name'))

@@ -7,18 +7,18 @@
     <section class="concepts-table">
         <header>
             <h2>
-                {{ vocabulary_verbose }} Vocabulary
+                {{ vocabulary_verbose_name }} Vocabulary
                 <span class="parent-link">
                     <a href="{% url 'home' %}" class="tooltip" data-tip="Navigate to the home page.">⤴</a>
                 </span>
             </h2>
             <div class="clear"></div>
-            <h4>{{ vocabulary_def }}</h4>
+            <h4>{{ vocabulary_description }}</h4>
             <div class="vocabulary-links">
-                <a id="btnAddNew" href="{% url create_url %}" class="button white">New</a>
+                <a id="btnAddNew" href="{% url create_url_name %}" class="button white">New</a>
                 <a id="btnSKOSVocab" target="_blank" href="{# {% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %}#}?format=skos" class="button white">View in SKOS</a>
-                <a id="btnSKOS" download="{{ vocabulary }}.rdf" href="{# {% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %} #}?format=skos" class="button white">Download Vocabulary (SKOS)</a>
-                <a id="btnCSV" download="{{ vocabulary }}.csv" href="{# {% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %} #}?format=csv" class="button white">Download Vocabulary (CSV)</a>
+                <a id="btnSKOS" download="{{ vocabulary_code }}.rdf" href="{# {% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %} #}?format=skos" class="button white">Download Vocabulary (SKOS)</a>
+                <a id="btnCSV" download="{{ vocabulary_code }}.csv" href="{# {% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %} #}?format=csv" class="button white">Download Vocabulary (CSV)</a>
             </div>
         </header>
         <div class="column three-columns">
@@ -32,9 +32,9 @@
                     </tr>
                     </thead>
                     <tbody>
-                        {% for concept in object_list %}
+                        {% for concept in concepts_list %}
                             <tr>
-                                <td><a href="{% url detail_url concept.term %}">{{ concept.term }}</a></td>
+                                <td><a href="{% url detail_url_name concept.term %}">{{ concept.term }}</a></td>
                                 <td>{{ concept.name }}</td>
                                 <td>{{ concept.definition }}</td>
                             </tr>
