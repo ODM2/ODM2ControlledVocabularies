@@ -24,6 +24,27 @@ The format for each vocabulary is the following:
         'update_template':(optional) {string: a custom request update template},
     }
 }
+
+
+The links between the Controlled Vocabularies fields and SKOS are defined in
+the `rdf_field_relations` and `rdf_namespace_references` dictionaries.
+
+
+The format for each field relation is the following:
+
+'{controlled vocabulary field name}': {
+    'node': '{string: rdf equivalent tag}',
+    'namespace': '{string: namespace to be used for the rdf tag}'
+},
+
+
+For the namespace references, the format is the following:
+
+{
+    '{namespace name}': '{string: URL reference to the namespace}',
+    ...
+}
+
 """
 
 from typing import Dict, Any, Type
@@ -169,4 +190,95 @@ vocabularies: Dict[str, Vocabulary] = {
         'description': 'A vocabulary for describing the type of the Unit or the more general quantity that the Unit represents.',
         'abstract_parents': (AbstractUnitsType,),
     },
+}
+
+
+rdf_namespace_references: Dict[str, str] = {
+    'dc': 'http://purl.org/dc/elements/1.1/',
+    'skos': 'http://www.w3.org/2004/02/skos/core',
+    'odm2': 'http://vocabulary.odm2.org/ODM2/ODM2Terms'
+}
+
+
+rdf_field_relations: Dict[str, Dict[str, str]] = {
+    'name': {
+        'node': 'prefLabel',
+        'namespace': 'skos'
+    },
+    'definition': {
+        'node': 'definition',
+        'namespace': 'skos'
+    },
+    'note': {
+        'node': 'note',
+        'namespace': 'skos'
+    },
+    'provenance': {
+        'node': 'historyNote',
+        'namespace': 'skos'
+    },
+    'provenance_uri': {
+        'node': 'exactMatch',
+        'namespace': 'skos'
+    },
+    'category': {
+        'node': 'category',
+        'namespace': 'odm2'
+    },
+    'produces_result': {
+        'node': 'producesResult',
+        'namespace': 'odm2'
+    },
+    'term': {
+        'node': 'Concept',
+        'namespace': 'skos'
+    },
+    'offset1': {
+        'node': 'offset1',
+        'namespace': 'odm2'
+    },
+    'offset2': {
+        'node': 'offset2',
+        'namespace': 'odm2'
+    },
+    'offset3': {
+        'node': 'offset3',
+        'namespace': 'odm2'
+    },
+    'default_unit': {
+        'node': 'defaultUnit',
+        'namespace': 'odm2'
+    },
+    'dimension_symbol': {
+        'node': 'dimensionSymbol',
+        'namespace': 'odm2'
+    },
+    'dimension_length': {
+        'node': 'dimensionLength',
+        'namespace': 'odm2'
+    },
+    'dimension_mass': {
+        'node': 'dimensionMass',
+        'namespace': 'odm2'
+    },
+    'dimension_time': {
+        'node': 'dimensionTime',
+        'namespace': 'odm2'
+    },
+    'dimension_current': {
+        'node': 'dimensionCurrent',
+        'namespace': 'odm2'
+    },
+    'dimension_temperature': {
+        'node': 'dimensionTemperature',
+        'namespace': 'odm2'
+    },
+    'dimension_amount': {
+        'node': 'dimensionAmount',
+        'namespace': 'odm2'
+    },
+    'dimension_light': {
+        'node': 'dimensionLight',
+        'namespace': 'odm2'
+    }
 }
