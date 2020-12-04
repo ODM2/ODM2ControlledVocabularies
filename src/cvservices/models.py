@@ -1,12 +1,12 @@
 import re
-from typing import List, Type, Tuple, Dict, Any
+from typing import List, Type, Tuple
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
 from django.db import models
 
-from cvservices.cv_fields_abstractions import AbstractUnitsType, AbstractActionType, AbstractSpatialOffsetType
+from odm2cvs.cv_specific_fields import AbstractUnitsType, AbstractActionType, AbstractSpatialOffsetType
 from odm2cvs.controlled_vocabularies import vocabularies, Vocabulary
 from cvservices.signals import model_created
 

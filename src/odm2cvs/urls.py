@@ -3,9 +3,9 @@ from typing import List
 from django.urls import path, reverse_lazy
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from rest_framework.urlpatterns import format_suffix_patterns
 
-from odm2cvs import controlled_vocabularies
+from cvservices.views import api_list_views
 from cvinterface.views.base_views import UnitsListView
 from cvinterface.views.request_views import RequestsView, request_list_views, request_create_views, request_update_views
 from cvinterface.views.vocabulary_views import VocabulariesView, list_views, detail_views
@@ -21,8 +21,6 @@ urlpatterns: List[path] = [
 ]
 
 # cv list views
-cv_name: str
-
 for cv_name, view in list_views.items():
     urlpatterns += [
         path(f'{cv_name}/', view, name=cv_name),
@@ -53,3 +51,10 @@ for cv_name, view in request_update_views.items():
     urlpatterns += [
         path(f'requests/{cv_name}/<int:vocabulary_id>/', view, name=f'{cv_name}request_update_form'),
     ]
+
+
+# api list views
+for cv_name, api_view in api_list_views.items():
+    urlpatterns += format_suffix_patterns([
+        path(f'api/v1/{cv_name}/', api_view, name=f'{cv_name}_api_list')
+    ])
