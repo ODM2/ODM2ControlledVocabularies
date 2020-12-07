@@ -201,6 +201,10 @@ rdf_namespace_references: Dict[str, str] = {
 
 
 rdf_field_relations: Dict[str, Dict[str, str]] = {
+    'term': {
+        'node': 'Concept',
+        'namespace': 'skos'
+    },
     'name': {
         'node': 'prefLabel',
         'namespace': 'skos'
@@ -209,9 +213,9 @@ rdf_field_relations: Dict[str, Dict[str, str]] = {
         'node': 'definition',
         'namespace': 'skos'
     },
-    'note': {
-        'node': 'note',
-        'namespace': 'skos'
+    'category': {
+        'node': 'category',
+        'namespace': 'odm2'
     },
     'provenance': {
         'node': 'historyNote',
@@ -221,17 +225,13 @@ rdf_field_relations: Dict[str, Dict[str, str]] = {
         'node': 'exactMatch',
         'namespace': 'skos'
     },
-    'category': {
-        'node': 'category',
-        'namespace': 'odm2'
+    'note': {
+        'node': 'note',
+        'namespace': 'skos'
     },
     'produces_result': {
         'node': 'producesResult',
         'namespace': 'odm2'
-    },
-    'term': {
-        'node': 'Concept',
-        'namespace': 'skos'
     },
     'offset1': {
         'node': 'offset1',
