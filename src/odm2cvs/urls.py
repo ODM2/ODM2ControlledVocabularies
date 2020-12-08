@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from cvservices.views import api_list_views
+from cvservices.views import api_views
 from cvinterface.views.base_views import UnitsListView
 from cvinterface.views.request_views import RequestsView, request_list_views, request_create_views, request_update_views
 from cvinterface.views.vocabulary_views import VocabulariesView, list_views, detail_views
@@ -53,8 +53,9 @@ for cv_name, view in request_update_views.items():
     ]
 
 
-# api list views
-for cv_name, api_view in api_list_views.items():
+# api views
+for cv_name, api_view in api_views.items():
     urlpatterns += format_suffix_patterns([
-        path(f'api/v1/{cv_name}/', api_view, name=f'{cv_name}_api_list')
+        path(f'api/v1/{cv_name}/', api_view, name=f'{cv_name}_api_list'),
+        path(f'api/v1/{cv_name}/<slug:term>', api_view, name=f'{cv_name}_api_detail')
     ])

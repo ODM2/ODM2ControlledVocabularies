@@ -13,7 +13,6 @@ from odm2cvs.controlled_vocabularies import rdf_namespace, Vocabulary, rdf_field
 class RDFRenderer(renderers.BaseRenderer):
     excluded_fields = ['term']
     media_type = 'text/plain'
-    # media_type = 'application/rdf+xml'
     format = 'skos'
 
     def render(self, data: Union[Dict, List[Dict]], media_type: str = None, renderer_context=None) -> str:
@@ -24,7 +23,7 @@ class RDFRenderer(renderers.BaseRenderer):
         :param renderer_context: The renderer context.
         :return: A SKOS RDF rendition of the serialized controlled vocabulary.
         """
-        if data is None:
+        if not data:
             return ''
 
         if not isinstance(data, list):
@@ -86,7 +85,7 @@ class CSVRenderer(renderers.BaseRenderer):
         :param renderer_context: The renderer context.
         :return: A CSV rendition of the serialized controlled vocabulary.
         """
-        if data is None:
+        if not data:
             return ''
 
         if not isinstance(data, list):
@@ -96,10 +95,9 @@ class CSVRenderer(renderers.BaseRenderer):
         csv_buffer: StringIO = StringIO()
         # Get the fieldnames from the first object in the data
         fieldnames: KeysView = data[0].keys()
-        # Create a CSV writer with the string buffer
+        # Create a CSV writer with the string buffer and write the data
         csv_writer: csv.DictWriter = csv.DictWriter(csv_buffer, fieldnames=fieldnames)
-        # Write the headers and data to the CSV writer
         csv_writer.writeheader()
         csv_writer.writerows(data)
-        # Return the contents of the writer
+
         return csv_buffer.getvalue()
