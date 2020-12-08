@@ -3,7 +3,6 @@
   "debug_mode": "{boolean: flag to activate debug mode}",
   "host": "{string: server main domain name}",
   "host_alias": "{list: list of extra domain names to serve the application at}",
-  "scheme_creator": "{string: the name of the group or organization that created these controlled vocabularies}",
   "static": {
     "url": "{string: static files url}",
     "root": "{string: static files root path}"

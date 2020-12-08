@@ -193,10 +193,10 @@ vocabularies: Dict[str, Vocabulary] = {
 }
 
 
-rdf_namespace_references: Dict[str, str] = {
-    'dc': 'http://purl.org/dc/elements/1.1/',
-    'skos': 'http://www.w3.org/2004/02/skos/core',
-    'odm2': 'http://vocabulary.odm2.org/ODM2/ODM2Terms'
+rdf_namespace: Dict[str, str] = {
+    'name': 'odm2',
+    'uri': 'http://vocabulary.odm2.org/',
+    'creator': 'ODM2 Working Group'
 }
 
 
