@@ -74,7 +74,7 @@ def update_vocabularies_dict(sender: Type, **kwargs) -> None:
 
     request: VocabularyRequest = vocabulary.get('request', {})
     request['model'] = request_model
-    request['name'] = f'{vocabulary["name"]} Request'
+    request['name'] = request_model._meta.verbose_name
     request['list_url_name'] = f'{vocabulary_code}request'
     request['create_url_name'] = f'{vocabulary_code}request_form'
     request['update_url_name'] = f'{vocabulary_code}request_update_form'

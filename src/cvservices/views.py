@@ -1,20 +1,22 @@
 from typing import Tuple, Union, Dict, List
 
 from django.db.models import QuerySet
+from rest_framework.generics import ListAPIView
 from rest_framework.renderers import JSONRenderer, BaseRenderer
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import BaseSerializer
 from rest_framework.views import APIView
 
-from cvservices.models import ControlledVocabulary
+from cvservices.models import ControlledVocabulary, Unit
 from cvservices.renderers import CSVRenderer, RDFRenderer
-from cvservices.serializers import VocabularySerializer
+from cvservices.serializers import VocabularySerializer, UnitsSerializer
 from odm2cvs.controlled_vocabularies import Vocabulary, vocabularies
 
 api_views: Dict = {}
 
 
-class VocabularyConcept(APIView):
+class VocabularyAPIView(APIView):
     """
     API View for listing all concepts of one type of Controlled Vocabulary.
     """
@@ -32,6 +34,15 @@ class VocabularyConcept(APIView):
         return Response(serialized_vocabularies)
 
 
+class UnitsAPIView(ListAPIView):
+    """
+    API View for listing all units.
+    """
+    queryset: QuerySet = Unit.objects.all()
+    serializer_class: BaseSerializer = UnitsSerializer
+    renderer_classes: Tuple[BaseRenderer] = (JSONRenderer, CSVRenderer, )
+
+
 for vocabulary_code, vocabulary in vocabularies.items():
     # list all api views
-    api_views[vocabulary_code] = VocabularyConcept.as_view(vocabulary=vocabulary, vocabulary_code=vocabulary_code)
+    api_views[vocabulary_code] = VocabularyAPIView.as_view(vocabulary=vocabulary, vocabulary_code=vocabulary_code)

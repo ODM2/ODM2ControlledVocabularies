@@ -7,7 +7,7 @@ from django.views import View
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework.views import APIView
 
-from cvservices.views import api_views
+from cvservices.views import api_views, UnitsAPIView
 from cvinterface.views.base_views import UnitsListView
 from cvinterface.views.request_views import RequestsView, request_list_views, request_create_views, request_update_views
 from cvinterface.views.vocabulary_views import VocabulariesView, list_views, detail_views
@@ -23,6 +23,9 @@ urlpatterns: List[path] = [
     # path('accounts/', include('django.contrib.auth.urls')),
 ]
 
+urlpatterns += format_suffix_patterns([
+    path('api/v1/units/', UnitsAPIView.as_view(), name='units_list_api')
+])
 
 for vocabulary_code, vocabulary in vocabularies.items():
     request: VocabularyRequest = vocabulary.get('request')
