@@ -38,11 +38,12 @@ The format for each field relation is the following:
 },
 
 
-For the namespace references, the format is the following:
+For the custom rdf namespace, the format is the following:
 
 {
-    '{namespace name}': '{string: URL reference to the namespace}',
-    ...
+    'name': '{string: namespace name}',
+    'uri': '{string: URL reference to the namespace}',
+    'creator': '{string: The Controlled Vocabularies creator}'
 }
 
 """
@@ -68,6 +69,8 @@ def update_vocabularies_dict(sender: Type, **kwargs) -> None:
     vocabulary['model'] = vocabulary_model
     vocabulary['list_url_name'] = f'{vocabulary_code}'
     vocabulary['detail_url_name'] = f'{vocabulary_code}_detail'
+    vocabulary['api_list_url_name'] = f'{vocabulary_code}_api_list'
+    vocabulary['api_detail_url_name'] = f'{vocabulary_code}_api_detail'
 
     request: VocabularyRequest = vocabulary.get('request', {})
     request['model'] = request_model
