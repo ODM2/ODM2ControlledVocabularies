@@ -1,6 +1,12 @@
 from django import template
+from django.urls import reverse
 
 register = template.Library()
+
+
+@register.simple_tag(name='detail_url', takes_context=True)
+def get_detail_url(context, instance):
+    return reverse(context['detail_url_name'], args=(instance.term,))
 
 
 @register.filter

@@ -40,8 +40,9 @@ class DefaultVocabularyListView(ListView):
         context = super(DefaultVocabularyListView, self).get_context_data(**kwargs)
         context['vocabulary_verbose_name'] = self.vocabulary.get('name')
         context['vocabulary_description'] = self.vocabulary.get('description')
-        context['create_url_name'] = self.vocabulary.get('request').get('create_url_name')
         context['detail_url_name'] = self.vocabulary.get('detail_url_name')
+        context['create_url'] = reverse(self.vocabulary.get('request').get('create_url_name'))
+        context['api_url'] = reverse(self.vocabulary.get('api_list_url_name'))
         context['vocabulary_code'] = self.vocabulary_code
         return context
 
