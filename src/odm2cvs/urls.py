@@ -45,7 +45,7 @@ for vocabulary_code, vocabulary in vocabularies.items():
     # cv detail views
     urlpatterns += [
         path(f'{vocabulary_code}/<slug:term>/', detail_view, name=vocabulary.get('detail_url_name')),
-        path(f'{vocabulary_code}/<slug:term>/<int:vocabulary_id>', detail_view, name=vocabulary.get('detail_url_name'))
+        path(f'{vocabulary_code}/<slug:term>/<int:pk>', detail_view, name=vocabulary.get('detail_url_name'))
     ]
 
     # request list views

@@ -1,4 +1,5 @@
 {% extends 'cvinterface/index.html' %}
+{% load tools %}
 
 {% block title %}
     <title>ODM2 CV: {{ vocabulary_verbose }}</title>
@@ -15,10 +16,10 @@
             <div class="clear"></div>
             <h4>{{ vocabulary_description }}</h4>
             <div class="vocabulary-links">
-                <a id="btnAddNew" href="{% url create_url_name %}" class="button white">New</a>
-                <a id="btnSKOSVocab" target="_blank" href="{# {% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %}#}?format=skos" class="button white">View in SKOS</a>
-                <a id="btnSKOS" download="{{ vocabulary_code }}.rdf" href="{# {% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %} #}?format=skos" class="button white">Download Vocabulary (SKOS)</a>
-                <a id="btnCSV" download="{{ vocabulary_code }}.csv" href="{# {% url 'api_dispatch_list' resource_name=vocabulary api_name='v1' %} #}?format=csv" class="button white">Download Vocabulary (CSV)</a>
+                <a id="btnAddNew" href="{{ create_url }}" class="button white">New</a>
+                <a id="btnSKOSVocab" target="_blank" href="{{ api_url }}?format=skos" class="button white">View in SKOS</a>
+                <a id="btnSKOS" download="{{ vocabulary_code }}.rdf" href="{{ api_url }}?format=skos" class="button white">Download Vocabulary (SKOS)</a>
+                <a id="btnCSV" download="{{ vocabulary_code }}.csv" href="{{ api_url }}?format=csv" class="button white">Download Vocabulary (CSV)</a>
             </div>
         </header>
         <div class="column three-columns">
@@ -34,7 +35,7 @@
                     <tbody>
                         {% for concept in concepts_list %}
                             <tr>
-                                <td><a href="{% url detail_url_name concept.term %}">{{ concept.term }}</a></td>
+                                <td><a href="{% detail_url concept %}">{{ concept.term }}</a></td>
                                 <td>{{ concept.name }}</td>
                                 <td>{{ concept.definition }}</td>
                             </tr>

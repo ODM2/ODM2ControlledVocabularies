@@ -40,8 +40,9 @@ class DefaultVocabularyListView(ListView):
         context = super(DefaultVocabularyListView, self).get_context_data(**kwargs)
         context['vocabulary_verbose_name'] = self.vocabulary.get('name')
         context['vocabulary_description'] = self.vocabulary.get('description')
-        context['create_url_name'] = self.vocabulary.get('request').get('create_url_name')
         context['detail_url_name'] = self.vocabulary.get('detail_url_name')
+        context['create_url'] = reverse(self.vocabulary.get('request').get('create_url_name'))
+        context['api_url'] = reverse(self.vocabulary.get('api_list_url_name'))
         context['vocabulary_code'] = self.vocabulary_code
         return context
 
@@ -75,8 +76,10 @@ class DefaultVocabularyDetailView(DetailView):
             if field.name not in self.exclude
         )
         context['vocabulary_verbose_name'] = self.vocabulary.get('name')
-        context['create_url_name'] = self.vocabulary.get('request').get('create_url_name')
         context['detail_url_name'] = self.vocabulary.get('detail_url_name')
+        context['edit_url'] = reverse(self.vocabulary.get('request').get('create_url_name'), args=(self.object.pk, ))
+        context['api_url'] = reverse(self.vocabulary.get('api_detail_url_name'), args=(self.object.term, ))
+        context['list_url'] = reverse(self.vocabulary.get('list_url_name'))
         context['vocabulary_code'] = self.vocabulary_code
         context['ARCHIVED'] = self.model.ARCHIVED
         return context
@@ -112,7 +115,7 @@ class DefaultRequestListView(ListView, LoginRequiredMixin):
         context['vocabulary_verbose_name'] = self.vocabulary.get('name')
         context['request_verbose_name'] = self.vocabulary_request.get('name')
         context['update_url_name'] = self.vocabulary_request.get('update_url_name')
-        context['vocabulary_code'] = self.vocabulary_code
+        context['vocabulary_list_url'] = reverse(self.vocabulary.get('list_url_name'))
         return context
 
     def get_queryset(self):
@@ -146,12 +149,11 @@ class DefaultRequestUpdateView(UpdateView, LoginRequiredMixin, SuccessMessageMix
     def get_context_data(self, **kwargs):
         context = super(DefaultRequestUpdateView, self).get_context_data(**kwargs)
         context['all_disabled'] = self.object.status != ControlledVocabularyRequest.PENDING
-        context['request_code'] = self.request_code
         context['vocabulary_verbose_name'] = self.vocabulary.get('name')
         context['request_verbose_name'] = self.vocabulary_request.get('name')
         context['update_url_name'] = self.vocabulary_request.get('update_url_name')
-        context['vocabulary_detail_url_name'] = self.vocabulary.get('detail_url_name')
-        context['vocabulary_code'] = self.vocabulary_code
+        context['detail_url_name'] = self.vocabulary.get('detail_url_name')
+        context['list_url'] = reverse(self.vocabulary_request.get('list_url_name'))
         context['success_view'] = 'request_success'
         return context
 
@@ -235,12 +237,10 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(DefaultRequestCreateView, self).get_context_data(**kwargs)
-        context['request_code'] = self.request_code
         context['vocabulary_verbose_name'] = self.vocabulary.get('name')
-        context['request_verbose_name'] = self.vocabulary_request.get('name')
-        context['vocabulary_code'] = self.vocabulary_code
         context['submitter_fields'] = self.submitter_fields
         context['recaptcha_user_key'] = settings.RECAPTCHA_USER_KEY
+        context['vocabulary_list_url'] = reverse(self.vocabulary.get('list_url_name'))
         return context
 
     def get_initial(self):
