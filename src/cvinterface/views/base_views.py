@@ -2,21 +2,16 @@ from typing import List
 
 import requests
 
-from os import linesep
 from string import capwords
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.mail import send_mail
-from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 
 from django.utils import timezone
-from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse, reverse_lazy
-
 
 # Vocabulary Basic Views
 from cvinterface.signals import request_approved, request_rejected, request_made

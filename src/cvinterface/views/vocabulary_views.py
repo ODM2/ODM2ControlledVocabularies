@@ -13,7 +13,6 @@ defaults = {
     'detail_template': 'cvinterface/vocabularies/default_detail.html'
 }
 
-
 list_views = {}
 detail_views = {}
 
