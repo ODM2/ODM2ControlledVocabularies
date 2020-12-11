@@ -1,4 +1,5 @@
 {% extends 'cvinterface/base.html' %}
+{% load tools %}
 
 {% block body %}
     <section class="requests-table">
@@ -11,7 +12,7 @@
             </h2>
             <h4>Users' requests for adding or modifying {{ vocabulary_verbose_name }} Controlled Vocabularies.</h4>
             <div class="vocabulary-links">
-                <a id="btnSeeVocabulary" href="{% url vocabulary_code %}" class="button white">See {{ vocabulary_verbose_name }} Terms</a>
+                <a id="btnSeeVocabulary" href="{{ vocabulary_list_url }}" class="button white">See {{ vocabulary_verbose_name }} Terms</a>
             </div>
         </header>
         <div class="column three-columns">
@@ -32,7 +33,7 @@
                         <tbody>
                         {% for vocabulary_request in requests_list %}
                             <tr>
-                                <td><a href="{% url update_url_name vocabulary_request.request_id %}">{{ vocabulary_request.term }}</a></td>
+                                <td><a href="{% update_url vocabulary_request %}">{{ vocabulary_request.term }}</a></td>
                                 <td>{{ vocabulary_request.definition }}</td>
                                 <td>{{ vocabulary_request.date_submitted }}</td>
                                 <td>{{ vocabulary_request.status }}</td>

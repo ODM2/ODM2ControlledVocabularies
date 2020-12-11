@@ -115,7 +115,7 @@ class DefaultRequestListView(ListView, LoginRequiredMixin):
         context['vocabulary_verbose_name'] = self.vocabulary.get('name')
         context['request_verbose_name'] = self.vocabulary_request.get('name')
         context['update_url_name'] = self.vocabulary_request.get('update_url_name')
-        context['vocabulary_code'] = self.vocabulary_code
+        context['vocabulary_list_url'] = reverse(self.vocabulary.get('list_url_name'))
         return context
 
     def get_queryset(self):
