@@ -237,12 +237,10 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(DefaultRequestCreateView, self).get_context_data(**kwargs)
-        context['request_code'] = self.request_code
         context['vocabulary_verbose_name'] = self.vocabulary.get('name')
-        context['request_verbose_name'] = self.vocabulary_request.get('name')
-        context['vocabulary_code'] = self.vocabulary_code
         context['submitter_fields'] = self.submitter_fields
         context['recaptcha_user_key'] = settings.RECAPTCHA_USER_KEY
+        context['vocabulary_list_url'] = reverse(self.vocabulary.get('list_url_name'))
         return context
 
     def get_initial(self):
