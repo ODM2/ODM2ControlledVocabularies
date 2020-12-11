@@ -11,7 +11,7 @@
             <div class="clear"></div>
             <h4>Units are not treated as a CV in ODM2. However, we have provided this list of Units for those who may want to adopt and use them.</h4>
             <div class="vocabulary-links">
-                <a id="btnCSV" download="units.csv" href="{#{% url 'api_dispatch_list' resource_name='units' api_name='v1' %}#}?format=csv" class="button white">Download Units (CSV)</a>
+                <a id="btnCSV" download="units.csv" href="{% url 'units_list_api' %}?format=csv" class="button white">Download Units (CSV)</a>
             </div>
         </header>
 
