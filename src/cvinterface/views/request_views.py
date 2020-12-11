@@ -52,15 +52,25 @@ class RequestsView(ListView, LoginRequiredMixin):
 
     def get_context_data(self, **kwargs):
         context = super(RequestsView, self).get_context_data(**kwargs)
-        requests_list = [{'name': vocabulary.get('request').get('name'),
-                          'url': reverse(vocabulary.get('request').get('list_url_name')),
-                          'vocabulary_verbose_name': vocabulary.get('name')}
-                         for vocabulary_code, vocabulary in vocabularies.items()]
+        requests_list = [
+            {
+                'name': vocabulary.get('request').get('name'),
+                'url': reverse(vocabulary.get('request').get('list_url_name')),
+                'vocabulary_verbose_name': vocabulary.get('name')
+            }
+            for vocabulary_code, vocabulary in vocabularies.items()
+        ]
 
-        pending_requests = [(pending_request, vocabulary.get('request').get('name'), vocabulary.get('request').get('update_url_name'))
-                            for vocabulary_name, vocabulary in vocabularies.items()
-                            for pending_request in vocabulary.get('request').get('model').objects.filter(status='Pending')
-                            if vocabulary.get('request').get('model').objects.filter(status='Pending').count() > 0]
+        pending_requests = [
+            (
+                pending_request,
+                vocabulary.get('request').get('name'),
+                reverse(vocabulary.get('request').get('update_url_name'), args=(pending_request.pk,))
+            )
+            for vocabulary_code, vocabulary in vocabularies.items()
+            for pending_request in vocabulary.get('request').get('model').objects.filter(status='Pending')
+            if vocabulary.get('request').get('model').objects.filter(status='Pending').count() > 0
+        ]
 
         context['requests'] = sorted(requests_list, key=itemgetter('name'))
         context['pending_requests'] = pending_requests
