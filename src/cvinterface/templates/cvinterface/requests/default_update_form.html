@@ -1,5 +1,6 @@
 {% extends 'cvinterface/base.html' %}
 {% load widget_tweaks %}
+{% load tools %}
 
 {% block body %}
     <section class="request-update">
@@ -7,13 +8,13 @@
             <h2>
                 {{ vocabulary_request.term }}
                 {% if vocabulary_request.request_for %}
-                    (<a href="{% url vocabulary_detail_url_name vocabulary_request.request_for.term vocabulary_request.request_for.vocabulary_id %}">{{ vocabulary_request.status }}</a>)
+                    (<a href="{% detail_url vocabulary_request.request_for %}">{{ vocabulary_request.status }}</a>)
                 {% else %}
                     ({{ vocabulary_request.status }})
                 {% endif %}
                 <span class="vocabulary-type">{{ request_verbose_name }}</span>
                 <span class="parent-link">
-                    <a href="{% url request_code %}" class="tooltip" data-tip="Navigate to the {{ request_verbose_name }}s list.">⤴</a>
+                    <a href="{{ list_url }}" class="tooltip" data-tip="Navigate to the {{ request_verbose_name }}s list.">⤴</a>
                 </span>
             </h2>
             <h4 class="request-info-box">
@@ -23,7 +24,7 @@
                 <span class="request-info">{{ vocabulary_request.status }} since {{ vocabulary_request.date_status_changed }}</span>
                 {% if vocabulary_request.original_request_id %}
                     <span class="request-info">
-                        <a href="{% url update_url_name vocabulary_request.original_request_id %}">Original Request</a>
+                        <a href="{% update_url vocabulary_request.original_request %}">Original Request</a>
                     </span>
                 {% endif %}
             </h4>

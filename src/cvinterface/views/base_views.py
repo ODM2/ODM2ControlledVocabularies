@@ -149,12 +149,11 @@ class DefaultRequestUpdateView(UpdateView, LoginRequiredMixin, SuccessMessageMix
     def get_context_data(self, **kwargs):
         context = super(DefaultRequestUpdateView, self).get_context_data(**kwargs)
         context['all_disabled'] = self.object.status != ControlledVocabularyRequest.PENDING
-        context['request_code'] = self.request_code
         context['vocabulary_verbose_name'] = self.vocabulary.get('name')
         context['request_verbose_name'] = self.vocabulary_request.get('name')
         context['update_url_name'] = self.vocabulary_request.get('update_url_name')
-        context['vocabulary_detail_url_name'] = self.vocabulary.get('detail_url_name')
-        context['vocabulary_code'] = self.vocabulary_code
+        context['detail_url_name'] = self.vocabulary.get('detail_url_name')
+        context['list_url'] = reverse(self.vocabulary_request.get('list_url_name'))
         context['success_view'] = 'request_success'
         return context
 
