@@ -76,8 +76,10 @@ class DefaultVocabularyDetailView(DetailView):
             if field.name not in self.exclude
         )
         context['vocabulary_verbose_name'] = self.vocabulary.get('name')
-        context['create_url_name'] = self.vocabulary.get('request').get('create_url_name')
         context['detail_url_name'] = self.vocabulary.get('detail_url_name')
+        context['edit_url'] = reverse(self.vocabulary.get('request').get('create_url_name'), args=(self.object.pk, ))
+        context['api_url'] = reverse(self.vocabulary.get('api_detail_url_name'), args=(self.object.term, ))
+        context['list_url'] = reverse(self.vocabulary.get('list_url_name'))
         context['vocabulary_code'] = self.vocabulary_code
         context['ARCHIVED'] = self.model.ARCHIVED
         return context

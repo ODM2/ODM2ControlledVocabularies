@@ -1,4 +1,5 @@
 {% extends 'cvinterface/base.html' %}
+{% load tools %}
 
 {% block title %}
     <title>ODM2 CV term: {{ concept.term }}</title>
@@ -10,19 +11,19 @@
             <h2>
                 {{ concept.name }}<span class="vocabulary-type">{{ vocabulary_verbose_name }}</span>
                 <span class="parent-link">
-                    <a href="{% url vocabulary_code %}" class="tooltip" data-tip="Navigate to the {{ vocabulary_verbose_name }} vocabulary list.">⤴</a>
+                    <a href="{{ list_url }}" class="tooltip" data-tip="Navigate to the {{ vocabulary_verbose_name }} vocabulary list.">⤴</a>
                 </span>
             </h2>
             <h4>{{ concept.definition }}</h4>
-            {% if concept.vocabulary_status == 'Archived' %}
-                <h4>NOTE: This is an archived version of this term. There is a <a href="{% url detail_url_name concept.revised_version.term concept.revised_version.pk %}">new version</a> available.</h4>
+            {% if concept.vocabulary_status == ARCHIVED %}
+                <h4>NOTE: This is an archived version of this term. There is a <a href="{% detail_url concept.revised_version %}">new version</a> available.</h4>
             {% endif %}
             <div class="vocabulary-links">
                 {% if concept.vocabulary_status != ARCHIVED %}
-                    <a id="btnEdit" href="{% url create_url_name concept.pk %}" class="button white">Edit</a>
-                    <a id="btnSKOSTerm" target="_blank" href="{# {% url 'api_dispatch_detail' resource_name=vocabulary api_name='v1' term=concept.term %} #}?format=skos" class="button white">View in SKOS</a>
-                    <a id="btnSKOS" download="{{vocabulary_code}}_{{concept.term}}.rdf" href="{# {% url 'api_dispatch_detail' resource_name=vocabulary api_name='v1' term=concept.term %} #}?format=skos" target="_blank" class="button white">Download Term (SKOS)</a>
-                    <a id="btnSKOS" download="{{vocabulary_code}}_{{concept.term}}.csv" href="{# {% url 'api_dispatch_detail' resource_name=vocabulary api_name='v1' term=concept.term %} #}?format=csv" target="_blank" class="button white">Download Term (CSV)</a>
+                    <a id="btnEdit" href="{{ edit_url }}" class="button white">Edit</a>
+                    <a id="btnSKOSTerm" target="_blank" href="{{ api_url }}?format=skos" class="button white">View in SKOS</a>
+                    <a id="btnSKOS" download="{{vocabulary_code}}_{{concept.term}}.rdf" href="{{ api_url }}?format=skos" target="_blank" class="button white">Download Term (SKOS)</a>
+                    <a id="btnSKOS" download="{{vocabulary_code}}_{{concept.term}}.csv" href="{{ api_url }}?format=csv" target="_blank" class="button white">Download Term (CSV)</a>
                 {% endif %}
             </div>
         </header>
@@ -43,7 +44,7 @@
             <div class="column two-columns data-view">
                 <h4>
                     {% if concept.previous_version %}
-                        Previous version of this term: <br><a href="{% url detail_url_name concept.previous_version.term concept.previous_version.pk %}">{{ concept.previous_version.term }}</a> {{ concept.previous_version.definition }}
+                        Previous version of this term: <br><a href="{% detail_url concept.previous_version %}">{{ concept.previous_version.term }}</a> {{ concept.previous_version.definition }}
                     {% endif %}
                 </h4>
             </div>

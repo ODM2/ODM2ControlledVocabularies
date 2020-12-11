@@ -1,12 +1,17 @@
 from django import template
 from django.urls import reverse
 
+from cvservices.models import ControlledVocabulary
+
 register = template.Library()
 
 
 @register.simple_tag(name='detail_url', takes_context=True)
-def get_detail_url(context, instance):
-    return reverse(context['detail_url_name'], args=(instance.term,))
+def get_detail_url(context, instance: ControlledVocabulary):
+    if instance.vocabulary_status == instance.CURRENT:
+        return reverse(context['detail_url_name'], args=(instance.term,))
+    else:
+        return reverse(context['detail_url_name'], args=(instance.term, instance.pk))
 
 
 @register.filter
