@@ -91,15 +91,15 @@ WSGI_APPLICATION: str = 'odm2cvs.wsgi.application'
 
 # Databases
 DATABASES: Dict[str, Dict[str, Any]] = {}
-for database in config['databases']:
-    DATABASES[database['name']] = {
-        'ENGINE': database['engine'],
-        'NAME': database['schema'],
-        'USER': database['user'] if 'user' in database else '',
-        'PASSWORD': database['password'] if 'password' in database else '',
-        'HOST': database['host'] if 'host' in database else '',
-        'PORT': database['port'] if 'port' in database else '',
-        'OPTIONS': database['options'] if 'options' in database else {}
+for database in config.get('databases'):
+    DATABASES[database.get('name')] = {
+        'ENGINE': database.get('engine'),
+        'NAME': database.get('schema'),
+        'USER': database.get('user', ''),
+        'PASSWORD': database.get('password', ''),
+        'HOST': database.get('host', ''),
+        'PORT': database.get('port', ''),
+        'OPTIONS': database.get('options', {})
     }
 
 # Password validation
@@ -130,18 +130,18 @@ USE_TZ: bool = True
 
 SITE_ID: int = 1
 
-static_config: Dict = config['static'] if 'static' in config else {}
-STATIC_ROOT: str = static_config['root'] if 'root' in static_config else ''
-STATIC_URL: str = static_config['url'] if 'url' in static_config else ''
+static_config: Dict = config.get('static', {})
+STATIC_ROOT: str = static_config.get('root', '')
+STATIC_URL: str = static_config.get('url', '')
 
-email_config: Dict = config['email'] if 'email' in config else {}
-EMAIL_HOST: str = email_config['host'] if 'host' in email_config else ''
-EMAIL_SENDER: str = email_config['sender'] if 'sender' in email_config else ''
-EMAIL_RECIPIENTS: List[str] = email_config['recipients'] if 'recipients' in email_config else ''
+email_config: Dict = config.get('email', {})
+EMAIL_HOST: str = email_config.get('host', '')
+EMAIL_SENDER: str = email_config.get('sender', '')
+EMAIL_RECIPIENTS: List[str] = email_config.get('recipients', [])
 
-recaptcha_config: Dict = config['recaptcha'] if 'recaptcha' in config else {}
-RECAPTCHA_KEY: str = recaptcha_config['secret_key'] if 'secret_key' in recaptcha_config else ''
-RECAPTCHA_USER_KEY: str = recaptcha_config['user_key'] if 'user_key' in recaptcha_config else ''
+recaptcha_config: Dict = config.get('recaptcha', {})
+RECAPTCHA_KEY: str = recaptcha_config.get('secret_key', '')
+RECAPTCHA_USER_KEY: str = recaptcha_config.get('user_key', '')
 RECAPTCHA_VERIFY_URL: str = 'https://www.google.com/recaptcha/api/siteverify'
 
 DATABASE_ROUTERS: List[str] = ['odm2cvs.db_routers.ControlledVocabularyRouter']
