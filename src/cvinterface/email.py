@@ -68,7 +68,7 @@ class EmailHandler:
 
         subject: str = render_to_string(template_name=email.get('subject'))
         message: str = render_to_string(template_name=email.get('body'), context=context)
-        send_mail(subject, message, settings.EMAIL_SENDER, self.recipients.get(self.email_receiver))
+        send_mail(subject, message, settings.EMAIL_SENDER, self.recipients.get(self.email_receiver), fail_silently=True)
 
 
 def notify_update_approved(sender: Form, **kwargs) -> None:
