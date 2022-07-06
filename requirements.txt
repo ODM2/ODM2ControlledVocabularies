@@ -2,7 +2,7 @@ Django==1.9.5
 SPARQLWrapper==1.7.6
 django-tastypie==0.13.3
 django-widget-tweaks==1.4.1
-html5lib==0.9999999
+html5lib==0.999999999
 isodate==0.5.4
 keepalive==0.5
 mysqlclient==1.3.7
