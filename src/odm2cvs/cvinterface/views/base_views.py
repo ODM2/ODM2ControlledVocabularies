@@ -1,7 +1,7 @@
-import json
 from os import linesep
-from urllib2 import Request, urlopen
+import urllib3
 from string import capwords
+
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
@@ -12,11 +12,10 @@ from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
-from django.core.urlresolvers import reverse, reverse_lazy
-
+from django.urls import reverse, reverse_lazy
 
 # Vocabulary Basic Views
-from cvservices.models import ControlledVocabularyRequest, Unit
+from src.odm2cvs.cvservices.models import ControlledVocabularyRequest, Unit
 
 
 class DefaultVocabularyListView(ListView):
@@ -146,7 +145,7 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
         object = self.model.objects.get(pk=kwargs['pk'])
         request.POST._mutable = True
         for field in self.read_only:
-            request.POST[field] = unicode(object.__getattribute__(field))
+            request.POST[field] = str(object.__getattribute__(field))
         return super(DefaultRequestUpdateView, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -266,14 +265,9 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
             'secret': self.recaptcha_key,
             'response': captcha_response,
         })
-
-        request = Request(url=url, data=params, headers={
-            'Content-type': 'application/x-www-form-urlencoded',
-            'User-agent': 'reCAPTCHA Python'
-        })
-
-        response = urlopen(request)
-        return_values = json.loads(response.read())
+        headers = {'Content-type': 'application/x-www-form-urlencoded', 'User-agent': 'reCAPTCHA Python'}
+        response = urllib3.request("GET", url=url, fields=params, headers=headers)
+        return_values = response.json()
         return return_values["success"]
 
     def form_valid(self, form):

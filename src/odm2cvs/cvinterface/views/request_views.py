@@ -1,13 +1,20 @@
 from operator import itemgetter
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.views.generic import RedirectView
-from django.core.urlresolvers import reverse, reverse_lazy
 
-from cvinterface.views.base_views import *
-from cvinterface.controlled_vocabularies import requests, vocabularies, request_list_view, request_list_template, \
-    request_create_view, request_create_template, request_update_view, request_update_template
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView
+
+from src.odm2cvs.cvinterface.controlled_vocabularies import (
+    request_create_template,
+    request_create_view,
+    request_list_template,
+    request_list_view,
+    request_update_template,
+    request_update_view,
+    requests,
+    vocabularies,
+)
 
 request_list_views = {}
 for request_name in requests:

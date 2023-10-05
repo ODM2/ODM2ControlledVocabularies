@@ -1,21 +1,20 @@
+import csv
+from collections import OrderedDict
+from io import StringIO
+
 from django.conf.urls import url
-from django.db.models.query_utils import Q
+from django.db.models import Q
 from django.http.response import HttpResponse
+from rdflib import Graph, Literal, URIRef
+from rdflib import Namespace
+from rdflib.namespace import RDF, SKOS
 from tastypie.bundle import Bundle
 from tastypie.resources import ModelResource
 from tastypie.serializers import Serializer
 from tastypie.utils.mime import build_content_type
-from cvservices.models import ControlledVocabulary
 
-from .models import Scheme, FieldRelation
-
-from rdflib import Graph, URIRef, Literal
-from rdflib import Namespace
-from rdflib.namespace import SKOS, RDF
-
-from collections import OrderedDict
-import csv
-import StringIO
+from src.odm2cvs.cvservices.models import ControlledVocabulary
+from src.odm2cvs.rdfserializer.models import FieldRelation, Scheme
 
 
 class RdfSerializer(Serializer):
@@ -30,7 +29,7 @@ class RdfSerializer(Serializer):
         first = True
         options = options or {}
         excluded_fields = [u'vocabulary_id', u'vocabulary_status', u'resource_uri']
-        raw_data = StringIO.StringIO()
+        raw_data = StringIO()
         data = self.to_simple(data, options)
 
         # Entire CV

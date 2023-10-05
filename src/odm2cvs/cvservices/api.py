@@ -1,18 +1,17 @@
-import StringIO
-from collections import OrderedDict
 import csv
-from django.http.response import HttpResponse
+from collections import OrderedDict
+from io import StringIO
+
 from tastypie.api import Api
 from tastypie.resources import ModelResource
 from tastypie.serializers import Serializer
-from tastypie.utils.mime import build_content_type
-from cvservices.models import Unit
 
-from rdfserializer.api import ModelRdfResource
-from models import ActionType, MethodType, OrganizationType, SamplingFeatureGeotype, SamplingFeatureType, SiteType, \
-    AggregationStatistic, AnnotationType, CensorCode, DatasetType, DirectiveType, ElevationDatum, EquipmentType, \
-    PropertyDataType, QualityCode, Medium, ResultType, SpatialOffsetType, UnitsType, Speciation, Status, \
-    TaxonomicClassifierType, VariableName, VariableType, SpecimenType, DataQualityType, RelationshipType
+from models import ActionType, AggregationStatistic, AnnotationType, CensorCode, DataQualityType, DatasetType, \
+    DirectiveType, ElevationDatum, EquipmentType, Medium, MethodType, OrganizationType, PropertyDataType, QualityCode, \
+    RelationshipType, ResultType, SamplingFeatureGeotype, SamplingFeatureType, SiteType, SpatialOffsetType, Speciation, \
+    SpecimenType, Status, TaxonomicClassifierType, UnitsType, VariableName, VariableType, Unit
+
+from src.odm2cvs.rdfserializer.api import ModelRdfResource
 
 
 class CSVSerializer(Serializer):
@@ -26,7 +25,7 @@ class CSVSerializer(Serializer):
         data = self.to_simple(data, options)
         excluded_fields = [u'resource_uri']
 
-        raw_data = StringIO.StringIO()
+        raw_data = StringIO()
         first = True
 
         if "meta" in data.keys():

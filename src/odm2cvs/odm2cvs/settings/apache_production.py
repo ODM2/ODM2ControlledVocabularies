@@ -1,4 +1,4 @@
-from odm2cvs.settings.base import *
+from base import *
 
 ALLOWED_HOSTS = [
     '.vocabulary.odm2.org',

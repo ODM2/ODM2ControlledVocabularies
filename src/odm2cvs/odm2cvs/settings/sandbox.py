@@ -1,5 +1,4 @@
-#import sys
-from odm2cvs.settings.base import *
+from base import *
 
 #For error logging (helicon zoo error trace logging doesn't work)
 #sys.stderr = open('err.log', 'w')

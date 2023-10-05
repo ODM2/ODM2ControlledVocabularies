@@ -16,7 +16,7 @@ class Namespace(models.Model):
 
 class Node(models.Model):
     node_id = models.AutoField(primary_key=True, db_column='nodeId')
-    namespace = models.ForeignKey(Namespace, to_field='alias')
+    namespace = models.ForeignKey(Namespace, on_delete=models.CASCADE, to_field='alias')
     name = models.CharField(max_length=255)
 
     @property
@@ -32,7 +32,7 @@ class Node(models.Model):
 
 class FieldRelation(models.Model):
     field_id = models.AutoField(primary_key=True, db_column='fieldId')
-    node = models.ForeignKey(Node, to_field='node_id', db_column='nodeId')
+    node = models.ForeignKey(Node, on_delete=models.CASCADE, to_field='node_id', db_column='nodeId')
     field_name = models.CharField(max_length=255, db_column='fieldName')
 
     def __unicode__(self):
@@ -54,4 +54,3 @@ class Scheme(models.Model):
 
     class Meta:
         db_table = 'schemes'
-

@@ -151,3 +151,6 @@ EMAIL_RECIPIENTS = EMAIL_RECIPIENTS[0] if isinstance(EMAIL_RECIPIENTS, tuple) el
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 DATABASE_ROUTERS = ['odm2cvs.db_routers.ControlledVocabularyRouter']
+
+# Redirect to home URL after login (Default redirects to /accounts/profile/)
+LOGIN_REDIRECT_URL = '/'
