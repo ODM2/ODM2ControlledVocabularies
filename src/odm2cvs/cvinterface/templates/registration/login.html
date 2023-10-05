@@ -1,0 +1,28 @@
+{% extends 'cvinterface/base.html' %}
+{% load widget_tweaks %}
+
+{% block body %}
+    <section class="login">
+        <header>
+            <h2>Login to the Controlled Vocabulary Registry for ODM2</h2>
+            <h4>Enter your credentials to view and manage requests to change or add vocabulary terms.</h4>
+        </header>
+        {% if form.errors %}
+            <p>Your username and password didn't match. Please try again.</p>
+        {% endif %}
+        <form method="post" action="{% url 'django.contrib.auth.views.login' %}">{% csrf_token %}
+            {% for field in form %}
+                <div class="list-item column three-columns">
+                    <div class="form-label-item"><h3><label for="{{ field.id_for_label }}">{{ field.label }}</label></h3></div>
+                    <div class="form-input-item">{{ field|add_class:"form-input" }}</div>
+                    <div class="form-errors-item">{{ field.errors }}</div>
+                </div>
+            {% endfor %}
+            <div class="clear"></div>
+            <div class="form-buttons">
+                <input class="button white" type="submit" value="Login">
+                <input type="hidden" name="next" value="{% url 'requests_list' %}"/>
+            </div>
+        </form>
+    </section>
+{% endblock %}
