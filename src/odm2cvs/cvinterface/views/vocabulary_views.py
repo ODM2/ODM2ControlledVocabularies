@@ -3,7 +3,7 @@ from operator import itemgetter
 from django.views.generic import ListView
 from django.urls import reverse
 
-from src.odm2cvs.cvinterface.controlled_vocabularies import(
+from cvinterface.controlled_vocabularies import (
     vocabularies,
     vocabulary_list_view,
     vocabulary_list_template,

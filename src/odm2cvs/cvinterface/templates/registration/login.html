@@ -10,7 +10,7 @@
         {% if form.errors %}
             <p>Your username and password didn't match. Please try again.</p>
         {% endif %}
-        <form method="post" action="{% url 'django.contrib.auth.views.login' %}">{% csrf_token %}
+        <form method="post">{% csrf_token %}
             {% for field in form %}
                 <div class="list-item column three-columns">
                     <div class="form-label-item"><h3><label for="{{ field.id_for_label }}">{{ field.label }}</label></h3></div>

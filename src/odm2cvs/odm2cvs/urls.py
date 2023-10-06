@@ -1,29 +1,22 @@
-from django.urls import include, re_path
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.conf import settings
-from django.urls import reverse_lazy
+from django.urls import include, re_path
 
-from src.odm2cvs.cvinterface.views.base_views import UnitsListView
-from src.odm2cvs.cvservices.api import v1_api
-from src.odm2cvs.cvinterface.controlled_vocabularies import requests
-from src.odm2cvs.cvinterface.views.vocabulary_views import VocabulariesView, list_views, detail_views
-from src.odm2cvs.cvinterface.views.request_views import RequestsView, \
-    request_list_views, request_create_views, request_update_views
-
-
-logout_configuration = {
-    'next_page': reverse_lazy('home')
-}
+from cvinterface.controlled_vocabularies import requests
+from cvinterface.views.base_views import UnitsListView
+from cvinterface.views.request_views import RequestsView, request_create_views, request_list_views, request_update_views
+from cvinterface.views.vocabulary_views import VocabulariesView, detail_views, list_views
+from cvservices.api import v1_api
 
 urlpatterns = [
     re_path(r'^' + settings.SITE_URL + '$', VocabulariesView.as_view(), name='home'),
     re_path(r'^' + settings.SITE_URL + 'api/', include(v1_api.urls)),
-    re_path(r'^' + settings.SITE_URL + 'admin/', include(admin.site.urls)),
+    re_path(r'^' + settings.SITE_URL + 'admin/', admin.site.urls),
     re_path(r'^' + settings.SITE_URL + 'units/', UnitsListView.as_view(), name='units'),
     re_path(r'^' + settings.SITE_URL + 'requests/$', RequestsView.as_view(), name='requests_list'),
     re_path(r'^' + settings.SITE_URL + 'login/$', auth_views.LoginView.as_view(), name='login'),
-    re_path(r'^' + settings.SITE_URL + 'logout/$', auth_views.LogoutView.as_view(), logout_configuration, name='logout'),
+    re_path(r'^' + settings.SITE_URL + 'logout/$', auth_views.LogoutView.as_view(), name='logout'),
 ]
 
 

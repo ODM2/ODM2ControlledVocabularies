@@ -13,8 +13,8 @@ from tastypie.resources import ModelResource
 from tastypie.serializers import Serializer
 from tastypie.utils.mime import build_content_type
 
-from src.odm2cvs.cvservices.models import ControlledVocabulary
-from src.odm2cvs.rdfserializer.models import FieldRelation, Scheme
+from cvservices.models import ControlledVocabulary
+from rdfserializer.models import FieldRelation, Scheme
 
 
 class RdfSerializer(Serializer):
@@ -302,6 +302,7 @@ class ModelRdfResource(ModelResource):
         max_limit = 0
         detail_uri_name = 'term'
         serializer = RdfSerializer()
+        queryset = ControlledVocabulary.objects.filter(vocabulary_status=ControlledVocabulary.CURRENT)
 
     def prepend_urls(self):
         return [

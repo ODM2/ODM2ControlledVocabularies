@@ -15,7 +15,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse, reverse_lazy
 
 # Vocabulary Basic Views
-from src.odm2cvs.cvservices.models import ControlledVocabularyRequest, Unit
+from cvservices.models import ControlledVocabularyRequest, Unit
 
 
 class DefaultVocabularyListView(ListView):

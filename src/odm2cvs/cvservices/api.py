@@ -6,12 +6,12 @@ from tastypie.api import Api
 from tastypie.resources import ModelResource
 from tastypie.serializers import Serializer
 
-from models import ActionType, AggregationStatistic, AnnotationType, CensorCode, DataQualityType, DatasetType, \
+from cvservices.models import ActionType, AggregationStatistic, AnnotationType, CensorCode, DataQualityType, DatasetType, \
     DirectiveType, ElevationDatum, EquipmentType, Medium, MethodType, OrganizationType, PropertyDataType, QualityCode, \
     RelationshipType, ResultType, SamplingFeatureGeotype, SamplingFeatureType, SiteType, SpatialOffsetType, Speciation, \
     SpecimenType, Status, TaxonomicClassifierType, UnitsType, VariableName, VariableType, Unit
 
-from src.odm2cvs.rdfserializer.api import ModelRdfResource
+from rdfserializer.api import ModelRdfResource
 
 
 class CSVSerializer(Serializer):

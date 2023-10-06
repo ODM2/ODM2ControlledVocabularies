@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Namespace, Node, FieldRelation, Scheme
+from .models import Namespace, Node, FieldRelation, Scheme
 
 # Register your models here.
 

@@ -1,5 +1,5 @@
-from src.odm2cvs.cvservices import models as cvmodels
-from src.odm2cvs.cvinterface.views import base_views
+from cvservices import models as cvmodels
+from cvinterface.views import base_views
 
 # TODO: (Pabitra) why are these defined here?
 

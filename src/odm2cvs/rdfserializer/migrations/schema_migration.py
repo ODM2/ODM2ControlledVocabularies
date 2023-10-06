@@ -14,8 +14,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='FieldRelation',
             fields=[
-                ('field_id', models.AutoField(serialize=False, primary_key=True, db_column=b'fieldId')),
-                ('field_name', models.CharField(max_length=255, db_column=b'fieldName')),
+                ('field_id', models.AutoField(serialize=False, primary_key=True, db_column='fieldId')),
+                ('field_name', models.CharField(max_length=255, db_column='fieldName')),
             ],
             options={
                 'db_table': 'fieldsrelations',
@@ -34,9 +34,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Node',
             fields=[
-                ('node_id', models.AutoField(serialize=False, primary_key=True, db_column=b'nodeId')),
+                ('node_id', models.AutoField(serialize=False, primary_key=True, db_column='nodeId')),
                 ('name', models.CharField(max_length=255)),
-                ('namespace', models.ForeignKey(to='rdfserializer.Namespace')),
+                ('namespace', models.ForeignKey(to='rdfserializer.Namespace', on_delete=models.CASCADE)),
             ],
             options={
                 'db_table': 'nodes',
@@ -58,6 +58,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='fieldrelation',
             name='node',
-            field=models.ForeignKey(to='rdfserializer.Node', db_column=b'nodeId'),
+            field=models.ForeignKey(to='rdfserializer.Node', db_column='nodeId', on_delete=models.CASCADE),
         ),
     ]
