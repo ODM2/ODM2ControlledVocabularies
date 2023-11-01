@@ -129,7 +129,6 @@ EMAIL_RECIPIENTS = env.list('EMAIL_RECIPIENTS')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-DATABASE_ROUTERS = ['odm2cvs.db_routers.ControlledVocabularyRouter']
 
 LOGIN_URL = 'login'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
