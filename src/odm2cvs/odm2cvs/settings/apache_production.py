@@ -8,7 +8,7 @@ ALLOWED_HOSTS = [
 DEBUG = False
 TEMPLATE_DEBUG = False
 
-STATIC_ROOT = data['static_root']
+STATIC_ROOT = env('STATIC_ROOT')
 STATIC_URL = '/static/'
 SITE_URL = ''
 
