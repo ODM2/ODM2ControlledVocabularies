@@ -22,8 +22,14 @@ SECRET_KEY = env('SECRET_KEY')
 RECAPTCHA_KEY = env('RECAPTCHA_KEY')
 RECAPTCHA_USER_KEY = env('RECAPTCHA_USER_KEY')
 RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify"
+DEPLOY_TYPE = env('DEPLOYMENT_TYPE', default='prod')
 
-ALLOWED_HOSTS = []
+DEBUG = DEPLOY_TYPE != 'prod'
+
+if DEPLOY_TYPE == 'local':
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=["127.0.0.1", "localhost"])
 
 
 # Application definition
@@ -44,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -72,9 +79,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'odm2cvs.wsgi.application'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Databases
+# DATABASE SETTINGS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -86,8 +94,18 @@ DATABASES = {
     }
 }
 
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 # Password validation
-# https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/3.2/topics/auth/passwords/#enabling-password-validation
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -116,22 +134,56 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+# TASTYPIE SETTINGS
 TASTYPIE_DEFAULT_FORMATS = ['json']
 
 API_LIMIT_PER_PAGE = 0
 
+# EMAIL SETTINGS
 # TODO: (Pabitra) This email host is not going to work if the app is deployed to a server outside of USU (e.g., AWS)
 EMAIL_HOST = 'mail.usu.edu'
 
 EMAIL_SENDER = env('EMAIL_SENDER')
 EMAIL_RECIPIENTS = env.list('EMAIL_RECIPIENTS')
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+if DEPLOY_TYPE == 'local':
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+# STATIC FILES SETTINGS
+_STATIC_ROOT = env('STATIC_ROOT')
+if _STATIC_ROOT.startswith('/'):
+    # Absolute path
+    STATIC_ROOT = _STATIC_ROOT
+else:
+    # Relative path
+    STATIC_ROOT = os.path.join(BASE_DIR, _STATIC_ROOT)
 
+STATIC_URL = 'static/'
+SITE_URL = ''
+STATICFILES_FINDERS = (
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+)
+
+# LOGIN/OUT SETTINGS
 LOGIN_URL = 'login'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+# SECURITY SETTINGS FOR NON-LOCAL DEPLOYMENTS
+if DEPLOY_TYPE != 'local':
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_HTTPONLY = True
+
+    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 7 * 52  # one year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_SSL_REDIRECT = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+    SESSION_COOKIE_SECURE = True
