@@ -9,6 +9,7 @@ To set the environment variables:
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import socket
 
 import environ
 
@@ -26,11 +27,16 @@ DEPLOY_TYPE = env('DEPLOYMENT_TYPE', default='prod')
 
 DEBUG = DEPLOY_TYPE != 'prod'
 
+PROXY_BASE_URL = 'http://127.0.0.1:8000'
 if DEPLOY_TYPE == 'local':
-    ALLOWED_HOSTS = ["*"]
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 else:
-    ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=["127.0.0.1", "localhost"])
-
+    # deploying to AWS ELB (Elastic Beanstalk)
+    # This is necessary for AWS ELB Health Checks to pass.
+    hostname = socket.gethostname()
+    local_ip = socket.gethostbyname(hostname)
+    PROXY_BASE_URL = env('PROXY_BASE_URL', default=PROXY_BASE_URL)
+    ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[PROXY_BASE_URL]) + [local_ip]
 
 # Application definition
 
@@ -83,24 +89,33 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # DATABASE SETTINGS
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
+if DEPLOY_TYPE == 'local':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': env('DB_NAME'),
+            'USER': env('DB_USER'),
+            'PASSWORD': env('DB_PASSWORD'),
+            'HOST': env('DB_HOST'),
+            'PORT': env('DB_PORT'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': env('RDS_DB_NAME'),
+            'USER': env('RDS_USERNAME'),
+            'PASSWORD': env('RDS_PASSWORD'),
+            'HOST': env('RDS_HOSTNAME'),
+            'PORT': env('RDS_PORT'),
+        }
+    }
 
 
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 
@@ -152,15 +167,11 @@ else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # STATIC FILES SETTINGS
-_STATIC_ROOT = env('STATIC_ROOT')
-if _STATIC_ROOT.startswith('/'):
-    # Absolute path
-    STATIC_ROOT = _STATIC_ROOT
-else:
-    # Relative path
-    STATIC_ROOT = os.path.join(BASE_DIR, _STATIC_ROOT)
 
-STATIC_URL = 'static/'
+# NOTE: The value set for STATIC_ROOT here has a dependency on the configuration of the Elastic Beanstalk (see file
+# .ebextensions/django.config).
+STATIC_ROOT = "staticfiles"
+STATIC_URL = '/static/'
 SITE_URL = ''
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -174,16 +185,17 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 # SECURITY SETTINGS FOR NON-LOCAL DEPLOYMENTS
-if DEPLOY_TYPE != 'local':
-    CSRF_COOKIE_SECURE = True
-    CSRF_COOKIE_HTTPONLY = True
+# if DEPLOY_TYPE != 'local':
+#     CSRF_COOKIE_SECURE = True
+#     CSRF_COOKIE_HTTPONLY = True
+#
+#     SECURE_HSTS_SECONDS = 60 * 60 * 24 * 7 * 52  # one year
+#     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+#     SECURE_HSTS_PRELOAD = True
+#     SECURE_SSL_REDIRECT = True
+#     SECURE_BROWSER_XSS_FILTER = True
+#     SECURE_CONTENT_TYPE_NOSNIFF = True
+#     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+#
+#     SESSION_COOKIE_SECURE = True
 
-    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 7 * 52  # one year
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    SECURE_SSL_REDIRECT = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
-    SESSION_COOKIE_SECURE = True
