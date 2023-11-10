@@ -7,7 +7,7 @@ html5lib==1.1
 isodate==0.6.1
 #keepalive==0.5
 #mysqlclient==2.2.0
-psycopg2==2.9.9
+psycopg2-binary==2.9.9
 pyparsing==2.1.1
 python-dateutil==2.5.2
 python-mimeparse==1.5.1
