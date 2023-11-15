@@ -154,8 +154,14 @@ TASTYPIE_DEFAULT_FORMATS = ['json']
 API_LIMIT_PER_PAGE = 0
 
 # EMAIL SETTINGS
-# TODO: (Pabitra) This email host is not going to work if the app is deployed to a server outside of USU (e.g., AWS)
-EMAIL_HOST = 'mail.usu.edu'
+
+# using gmail smtp server
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_USE_SSL = False
 
 EMAIL_SENDER = env('EMAIL_SENDER')
 EMAIL_RECIPIENTS = env.list('EMAIL_RECIPIENTS')
