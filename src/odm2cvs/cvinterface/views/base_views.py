@@ -1,18 +1,16 @@
 from os import linesep
-import urllib3
 from string import capwords
 
+import urllib3
 from django.conf import settings
-from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
-
+from django.core.mail import send_mail
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.http import urlencode
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
-from django.urls import reverse, reverse_lazy
 
 # Vocabulary Basic Views
 from cvservices.models import ControlledVocabularyRequest, Unit
@@ -57,7 +55,8 @@ class DefaultVocabularyDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DefaultVocabularyDetailView, self).get_context_data(**kwargs)
-        context['fields'] = tuple((capwords(field.verbose_name), field.value_to_string(self.get_object())) for field in self.model._meta.fields if field.name not in self.exclude)
+        context['fields'] = tuple((capwords(field.verbose_name), field.value_to_string(self.get_object())) for
+                                  field in self.model._meta.fields if field.name not in self.exclude)
         context['vocabulary_verbose'] = self.vocabulary_verbose
         context['vocabulary'] = self.vocabulary
         context['create_url'] = self.vocabulary + '_form'
@@ -261,10 +260,10 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
             form.add_error(None, 'You are not human!!')
             return False
 
-        params = urlencode({
+        params = {
             'secret': self.recaptcha_key,
             'response': captcha_response,
-        })
+        }
         headers = {'Content-type': 'application/x-www-form-urlencoded', 'User-agent': 'reCAPTCHA Python'}
         response = urllib3.request("GET", url=url, fields=params, headers=headers)
         return_values = response.json()
