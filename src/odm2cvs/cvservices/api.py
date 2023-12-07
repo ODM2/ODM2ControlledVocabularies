@@ -54,7 +54,7 @@ class CSVSerializer(Serializer):
                     writer.writerow(odict)
                     first = False
                 else:
-                    writer.writerow({k: (v.encode('utf-8') if isinstance(v, int) is not True and isinstance(v, type(
+                    writer.writerow({k: (str(v) if isinstance(v, int) is not True and isinstance(v, type(
                         None)) is not True else v) for k, v in odict.items()})
         else:
             test = {}
