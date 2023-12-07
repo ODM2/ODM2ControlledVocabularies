@@ -216,7 +216,7 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
     vocabulary_model = None
     vocabulary_verbose = None
     recaptcha_key = settings.RECAPTCHA_KEY
-    success_message = 'Your request has been made successfully.'
+    success_message = 'Your request has been made successfully. A system moderator will review your request'
     exclude = ['request_id', 'status', 'date_submitted', 'date_status_changed', 'request_for', 'request_notes', 'original_request']
     submitter_fields = ['submitter_name', 'submitter_email', 'request_reason']
 
@@ -283,7 +283,8 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
         action = 'creation of a new ' if 'term' not in self.kwargs else 'update of a '
 
         submitter_email_subject = 'ODM2 Controlled Vocabularies Submission'
-        submitter_email_message = ''.join(['Thank you for your submission to ODM2 Controlled Vocabularies.', linesep, linesep,
+        submitter_email_message = ''.join(['Thank you for your submission to ODM2 Controlled Vocabularies.'
+                                           ' A system moderator will review your request', linesep, linesep,
                                            'Vocabulary: ', self.vocabulary_verbose, linesep,
                                            'Term: ', form.cleaned_data['term'], linesep,
                                            'Definition: ', form.cleaned_data['definition'], linesep,
