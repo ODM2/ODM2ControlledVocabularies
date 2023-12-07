@@ -227,8 +227,7 @@ class RdfSerializer(Serializer):
                     elif label.rstrip('\r\n') == '':
                         continue
                     else:
-                        alias = str(FieldRelation.objects.get(
-                            field_name=x).node.namespace)
+                        alias = str(FieldRelation.objects.get(field_name=x).node.namespace.alias)
                         if alias == 'odm2':
                             (graph.add((URIRef(scheme.uri + '/' +
                                                concept.obj.term),
@@ -275,8 +274,8 @@ class RdfSerializer(Serializer):
                     continue
                 else:
                     relation = FieldRelation.objects.get(field_name=field)
-                    alias = relation.node.namespace.alias
-                    if alias == u'odm2':
+                    alias = str(relation.node.namespace.alias)
+                    if alias == 'odm2':
                         (graph.add((URIRef(scheme.uri + '/' + data.obj.term),
                                     odm2[FieldRelation.objects
                                     .get(field_name=field).node.name],
