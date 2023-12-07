@@ -30,7 +30,6 @@ class CSVSerializer(Serializer):
 
         if "meta" in data.keys():
             objects = data.get("objects")
-
             for value in objects:
                 test = {}
                 for excluded_field in excluded_fields:
@@ -103,6 +102,8 @@ class UnitsResource(ModelResource):
         allowed_methods = ['get']
         resource_name = 'units'
         excludes = ['unit_id']
+        # set max_limit to 0 to remove the limit
+        max_limit = 0
 
 
 class UnitsTypeResource(ModelRdfResource):
