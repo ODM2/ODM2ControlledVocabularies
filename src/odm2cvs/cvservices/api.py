@@ -1,18 +1,17 @@
-import StringIO
-from collections import OrderedDict
 import csv
-from django.http.response import HttpResponse
+from collections import OrderedDict
+from io import StringIO
+
 from tastypie.api import Api
 from tastypie.resources import ModelResource
 from tastypie.serializers import Serializer
-from tastypie.utils.mime import build_content_type
-from cvservices.models import Unit
+
+from cvservices.models import ActionType, AggregationStatistic, AnnotationType, CensorCode, DataQualityType, DatasetType, \
+    DirectiveType, ElevationDatum, EquipmentType, Medium, MethodType, OrganizationType, PropertyDataType, QualityCode, \
+    RelationshipType, ResultType, SamplingFeatureGeotype, SamplingFeatureType, SiteType, SpatialOffsetType, Speciation, \
+    SpecimenType, Status, TaxonomicClassifierType, UnitsType, VariableName, VariableType, Unit
 
 from rdfserializer.api import ModelRdfResource
-from models import ActionType, MethodType, OrganizationType, SamplingFeatureGeotype, SamplingFeatureType, SiteType, \
-    AggregationStatistic, AnnotationType, CensorCode, DatasetType, DirectiveType, ElevationDatum, EquipmentType, \
-    PropertyDataType, QualityCode, Medium, ResultType, SpatialOffsetType, UnitsType, Speciation, Status, \
-    TaxonomicClassifierType, VariableName, VariableType, SpecimenType, DataQualityType, RelationshipType
 
 
 class CSVSerializer(Serializer):
@@ -26,12 +25,11 @@ class CSVSerializer(Serializer):
         data = self.to_simple(data, options)
         excluded_fields = [u'resource_uri']
 
-        raw_data = StringIO.StringIO()
+        raw_data = StringIO()
         first = True
 
         if "meta" in data.keys():
             objects = data.get("objects")
-
             for value in objects:
                 test = {}
                 for excluded_field in excluded_fields:
@@ -56,7 +54,7 @@ class CSVSerializer(Serializer):
                     writer.writerow(odict)
                     first = False
                 else:
-                    writer.writerow({k: (v.encode('utf-8') if isinstance(v, int) is not True and isinstance(v, type(
+                    writer.writerow({k: (str(v) if isinstance(v, int) is not True and isinstance(v, type(
                         None)) is not True else v) for k, v in odict.items()})
         else:
             test = {}
@@ -104,6 +102,8 @@ class UnitsResource(ModelResource):
         allowed_methods = ['get']
         resource_name = 'units'
         excludes = ['unit_id']
+        # set max_limit to 0 to remove the limit
+        max_limit = 0
 
 
 class UnitsTypeResource(ModelRdfResource):

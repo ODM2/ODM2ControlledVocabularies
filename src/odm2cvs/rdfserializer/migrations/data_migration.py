@@ -255,7 +255,7 @@ class Migration(migrations.Migration):
     initial = False
 
     dependencies = [
-        ('rdfserializer', 'schema_migration'),
+        ('rdfserializer', '0001_initial'),
     ]
 
     operations = [
