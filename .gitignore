@@ -14,7 +14,8 @@ develop-eggs
 lib
 lib64
 __pycache__
-
+*.pyc
+venv/
 # Installer logs
 pip-log.txt
 
@@ -34,5 +35,13 @@ nosetests.xml
 # PyCharm
 .idea
 
-# Settings data file
-src/odm2cvs/odm2cvs/settings/settings.json
+# Environment variables
+.env
+
+# static files
+staticfiles/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

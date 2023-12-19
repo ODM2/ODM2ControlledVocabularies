@@ -1,19 +1,16 @@
-import json
 from os import linesep
-from urllib2 import Request, urlopen
 from string import capwords
+
+import urllib3
 from django.conf import settings
-from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
-
+from django.core.mail import send_mail
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.http import urlencode
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
-from django.core.urlresolvers import reverse, reverse_lazy
-
 
 # Vocabulary Basic Views
 from cvservices.models import ControlledVocabularyRequest, Unit
@@ -58,7 +55,8 @@ class DefaultVocabularyDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DefaultVocabularyDetailView, self).get_context_data(**kwargs)
-        context['fields'] = tuple((capwords(field.verbose_name), field.value_to_string(self.get_object())) for field in self.model._meta.fields if field.name not in self.exclude)
+        context['fields'] = tuple((capwords(field.verbose_name), field.value_to_string(self.get_object())) for
+                                  field in self.model._meta.fields if field.name not in self.exclude)
         context['vocabulary_verbose'] = self.vocabulary_verbose
         context['vocabulary'] = self.vocabulary
         context['create_url'] = self.vocabulary + '_form'
@@ -146,7 +144,7 @@ class DefaultRequestUpdateView(SuccessMessageMixin, UpdateView):
         object = self.model.objects.get(pk=kwargs['pk'])
         request.POST._mutable = True
         for field in self.read_only:
-            request.POST[field] = unicode(object.__getattribute__(field))
+            request.POST[field] = str(object.__getattribute__(field))
         return super(DefaultRequestUpdateView, self).post(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -218,7 +216,7 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
     vocabulary_model = None
     vocabulary_verbose = None
     recaptcha_key = settings.RECAPTCHA_KEY
-    success_message = 'Your request has been made successfully.'
+    success_message = 'Your request has been made successfully. A system moderator will review your request'
     exclude = ['request_id', 'status', 'date_submitted', 'date_status_changed', 'request_for', 'request_notes', 'original_request']
     submitter_fields = ['submitter_name', 'submitter_email', 'request_reason']
 
@@ -262,18 +260,13 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
             form.add_error(None, 'You are not human!!')
             return False
 
-        params = urlencode({
+        params = {
             'secret': self.recaptcha_key,
             'response': captcha_response,
-        })
-
-        request = Request(url=url, data=params, headers={
-            'Content-type': 'application/x-www-form-urlencoded',
-            'User-agent': 'reCAPTCHA Python'
-        })
-
-        response = urlopen(request)
-        return_values = json.loads(response.read())
+        }
+        headers = {'Content-type': 'application/x-www-form-urlencoded', 'User-agent': 'reCAPTCHA Python'}
+        response = urllib3.request("GET", url=url, fields=params, headers=headers)
+        return_values = response.json()
         return return_values["success"]
 
     def form_valid(self, form):
@@ -290,7 +283,8 @@ class DefaultRequestCreateView(SuccessMessageMixin, CreateView):
         action = 'creation of a new ' if 'term' not in self.kwargs else 'update of a '
 
         submitter_email_subject = 'ODM2 Controlled Vocabularies Submission'
-        submitter_email_message = ''.join(['Thank you for your submission to ODM2 Controlled Vocabularies.', linesep, linesep,
+        submitter_email_message = ''.join(['Thank you for your submission to ODM2 Controlled Vocabularies.'
+                                           ' A system moderator will review your request', linesep, linesep,
                                            'Vocabulary: ', self.vocabulary_verbose, linesep,
                                            'Term: ', form.cleaned_data['term'], linesep,
                                            'Definition: ', form.cleaned_data['definition'], linesep,

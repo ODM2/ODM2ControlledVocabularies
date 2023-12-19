@@ -1,21 +1,20 @@
+import csv
+from collections import OrderedDict
+from io import StringIO
+
 from django.conf.urls import url
-from django.db.models.query_utils import Q
+from django.db.models import Q
 from django.http.response import HttpResponse
+from rdflib import Graph, Literal, URIRef
+from rdflib import Namespace
+from rdflib.namespace import RDF, SKOS
 from tastypie.bundle import Bundle
 from tastypie.resources import ModelResource
 from tastypie.serializers import Serializer
 from tastypie.utils.mime import build_content_type
+
 from cvservices.models import ControlledVocabulary
-
-from .models import Scheme, FieldRelation
-
-from rdflib import Graph, URIRef, Literal
-from rdflib import Namespace
-from rdflib.namespace import SKOS, RDF
-
-from collections import OrderedDict
-import csv
-import StringIO
+from rdfserializer.models import FieldRelation, Scheme
 
 
 class RdfSerializer(Serializer):
@@ -30,7 +29,7 @@ class RdfSerializer(Serializer):
         first = True
         options = options or {}
         excluded_fields = [u'vocabulary_id', u'vocabulary_status', u'resource_uri']
-        raw_data = StringIO.StringIO()
+        raw_data = StringIO()
         data = self.to_simple(data, options)
 
         # Entire CV
@@ -95,7 +94,7 @@ class RdfSerializer(Serializer):
                     writer.writerow(odict)
                     first = False
                 else:
-                    writer.writerow({k: (v.encode('utf-8') if isinstance(v, int) is not True and isinstance(v, type(
+                    writer.writerow({k: (str(v) if isinstance(v, int) is not True and isinstance(v, type(
                         None)) is not True else v) for k, v in odict.items()})
 
         # Single Term
@@ -155,7 +154,7 @@ class RdfSerializer(Serializer):
             if first:
                 writer.writeheader()
                 writer.writerow({k: (
-                    v.encode('utf-8') if isinstance(v, int) is not True and isinstance(v, type(
+                    str(v) if isinstance(v, int) is not True and isinstance(v, type(
                         None)) is not True else v) for k, v in odict.items()})
                 first = False
             else:
@@ -228,8 +227,7 @@ class RdfSerializer(Serializer):
                     elif label.rstrip('\r\n') == '':
                         continue
                     else:
-                        alias = str(FieldRelation.objects.get(
-                            field_name=x).node.namespace)
+                        alias = str(FieldRelation.objects.get(field_name=x).node.namespace.alias)
                         if alias == 'odm2':
                             (graph.add((URIRef(scheme.uri + '/' +
                                                concept.obj.term),
@@ -276,8 +274,8 @@ class RdfSerializer(Serializer):
                     continue
                 else:
                     relation = FieldRelation.objects.get(field_name=field)
-                    alias = relation.node.namespace.alias
-                    if alias == u'odm2':
+                    alias = str(relation.node.namespace.alias)
+                    if alias == 'odm2':
                         (graph.add((URIRef(scheme.uri + '/' + data.obj.term),
                                     odm2[FieldRelation.objects
                                     .get(field_name=field).node.name],
@@ -303,6 +301,7 @@ class ModelRdfResource(ModelResource):
         max_limit = 0
         detail_uri_name = 'term'
         serializer = RdfSerializer()
+        queryset = ControlledVocabulary.objects.filter(vocabulary_status=ControlledVocabulary.CURRENT)
 
     def prepend_urls(self):
         return [

@@ -47,4 +47,11 @@
         </div>
         <div class="clear"></div>
     </section>
+    <script type="text/javascript">
+        document.querySelector('form').onsubmit = e => {
+            e.target.submit();
+            e.target.reset();
+            return false;
+        };
+    </script>
 {% endblock %}
