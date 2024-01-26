@@ -39,14 +39,12 @@
     </section>
 
     {% if user.is_staff %}
-        <section class="previous-versions">
-            <div class="column two-columns data-view">
-                <h4>
-                    {% if object.previous_version %}
-                        Previous version of this term: <br><a href="{% url detail_url object.previous_version.term object.previous_version.pk %}">{{ object.previous_version.term }}</a> {{ object.previous_version.definition }}
-                    {% endif %}
-                </h4>
-            </div>
+        <section class="previous-versions data-view">
+            <h4>
+                {% if object.previous_version %}
+                    Previous version of this term: <a href="{% url detail_url object.previous_version.term object.previous_version.pk %}">{{ object.previous_version.term }}</a>
+                {% endif %}
+            </h4>
         </section>
     {% endif %}
 {% endblock %}
