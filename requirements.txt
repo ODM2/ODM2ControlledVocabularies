@@ -1,4 +1,4 @@
-Django==3.2.21
+Django==3.2.24
 SPARQLWrapper==2.0.0
 django-tastypie==0.14.6
 django-widget-tweaks==1.4.1
