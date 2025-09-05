@@ -35,6 +35,9 @@ nosetests.xml
 # PyCharm
 .idea
 
+# Mac OS X
+.DS_Store
+
 # Environment variables
 .env
 
@@ -45,3 +48,7 @@ staticfiles/
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+
+#Ignore vscode AI rules
+.github/instructions/codacy.instructions.md
