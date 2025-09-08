@@ -9,9 +9,13 @@ from cvinterface.views.base_views import UnitsListView
 from cvinterface.views.request_views import RequestsView, request_create_views, request_list_views, request_update_views
 from cvinterface.views.vocabulary_views import VocabulariesView, detail_views, list_views
 from cvservices.api import v1_api
+from cvservices.views import health_check
+
+
 
 urlpatterns = [
     re_path(r'^' + settings.SITE_URL + '$', VocabulariesView.as_view(), name='home'),
+    re_path(r'^' + settings.SITE_URL + 'health_check/', health_check, name='health_check'),
     re_path(r'^' + settings.SITE_URL + 'api/', include(v1_api.urls)),
     re_path(r'^' + settings.SITE_URL + 'admin/', admin.site.urls),
     re_path(r'^' + settings.SITE_URL + 'units/', UnitsListView.as_view(), name='units'),

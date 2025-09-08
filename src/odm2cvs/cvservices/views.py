@@ -1,3 +1,5 @@
-from django.shortcuts import render
+# view for health check
+from django.http.response import HttpResponse
 
-# Create your views here.
+def health_check(request):
+    return HttpResponse("OK")
